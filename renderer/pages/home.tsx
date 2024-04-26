@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import supabase from '@/utils/supabase/client';
+import { supabase_adp } from '@/utils/supabase/client';
+//import { SupabaseClient } from '@supabase/supabase-js';
+
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
+
 
 interface Room {
   [key: string]: any;
@@ -16,7 +21,7 @@ export default function HomePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data, error } = await supabase.from('rooms').select('*')
+        const { data, error } = await supabase_adp.from('rooms',).select('*')
         if (error) throw error;
         console.log('data:', data);
         setData(data);

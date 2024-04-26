@@ -6,6 +6,26 @@
   body {
     @apply bg-gray-900 text-white;
   }
+
+  .circle-loader {
+    animation: rotate 2s linear infinite;
+  }
+  
+  .circle-loader .path {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+    animation: dash 1.5s ease-in-out infinite;
+  }
+  
+  .circle-loader.black .path {
+    stroke: #000; /* This is black color, change it to match your design */
+  }
+  
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 }
 
 @layer components {

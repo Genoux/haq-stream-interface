@@ -17,8 +17,7 @@ if (isProd) {
   const mainWindow = createWindow('main', {
     width: 1280,
     height: 720,
-    roundedCorners: false,
-    titleBarStyle: 'customButtonsOnHover',
+    titleBarStyle: 'default',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
