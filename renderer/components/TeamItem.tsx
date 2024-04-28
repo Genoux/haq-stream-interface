@@ -1,4 +1,4 @@
-const OBSControl = ({ team, isSelected, toggleSelection }) => {
+const TeamItem = ({ team, isSelected, toggleSelection }) => {
   return (
     <div className={`flex gap-4 w-full ${isSelected ? 'border' : 'border-none'}`}>
       <p>{team.name} - {team.color}</p>
@@ -9,4 +9,4 @@ const OBSControl = ({ team, isSelected, toggleSelection }) => {
   );
 };
 
-export default OBSControl;
+export default TeamItem;
