@@ -104,6 +104,8 @@ const Page: React.FC = () => {
     )
   }
 
+ 
+
   if (error) {
     if (error.code === "PGRST116") {
       router.push('/home');

@@ -46,6 +46,7 @@ export default function HomePage() {
       </Head>
       <div className="grid grid-col-1 text-2xl w-full text-center">
         <h1 className="text-3xl font-bold">Home Page</h1>
+        <Link href={`/obs`} className='border p-4' >OBS</Link>
         {loading && <p>Loading...</p>}
         {error && <p>{error.message}</p>}
         {data && (
