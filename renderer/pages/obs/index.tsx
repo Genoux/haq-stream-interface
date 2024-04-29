@@ -1,10 +1,12 @@
+import React, { use, useEffect, useState } from 'react';
+import { supabase, supabase_ttm } from '@/utils/supabase/client';
 import TeamItem from '@/components/TeamItem';
-import { useEffect, useState } from 'react';
-import { supabase_ttm } from '@/utils/supabase/client';
 import OBSWebSocket from 'obs-websocket-js';
 import Link from 'next/link';
 import SelectedTeams from '@/components/SelectedTeams';
-import { connected, disconnect } from 'process';
+import { Button } from '@/components/ui/button';
+
+
 
 const HomePage = () => {
   const [data, setData] = useState([]);
@@ -14,9 +16,19 @@ const HomePage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (obs) {
+      obs.on('ConnectionClosed', async () => {
+        setObs(null);
+        setError('Connection to OBS was closed.');
+        setSelectedTeams([]);
+      });
+    }
+  }, [obs]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data, error } = await supabase_ttm.from('teams').select('*, versus(*)');
+        const { data, error } = await supabase_ttm.from('teams').select('*');
         if (error) throw error;
         setData(data);
       } catch (error) {
@@ -28,79 +40,86 @@ const HomePage = () => {
     };
 
     fetchData();
+    subscribeToTeams();
   }, []);
 
-  const toggleTeamSelection = (team) => {
-    const currentIndex = selectedTeams.indexOf(team);
-    let newSelectedTeams = [...selectedTeams];
+  // Subscribe to all team updates
+  const subscribeToTeams = () => {
+    const channel = supabase.channel('*')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'live_tournament',
+        table: 'teams',
+      }, payload => {
+        console.log("Team update received:", payload);
+        updateTeamData(payload.new);
+      })
+      .subscribe(() => {
+        console.log("Subscribed to team updates.");
+      });
 
-    if (currentIndex !== -1) {
-      newSelectedTeams.splice(currentIndex, 1);
-    } else {
-      if (newSelectedTeams.length >= 2) {
-        newSelectedTeams.shift();
-      }
-      newSelectedTeams.push(team);
-    }
-
-    setSelectedTeams(newSelectedTeams);
+    return () => {
+      channel.unsubscribe();
+      console.log("Unsubscribed from all team updates.");
+    };
   };
 
-  const connectOBS = async () => {
-    if (selectedTeams.length === 2 && selectedTeams[0].color === selectedTeams[1].color) {
-      setError('Cannot connect: both teams have the same color.');
+  const updateTeamData = (updatedTeam) => {
+    setData(prevData => prevData.map(team =>
+      team.id === updatedTeam.id ? { ...team, ...updatedTeam } : team
+    ));
+  };
+
+  const toggleTeamSelection = (team) => {
+    setSelectedTeams(prev => {
+      const exists = prev.find(t => t.id === team.id);
+      return exists ? prev.filter(t => t.id !== team.id) : prev.length >= 2 ? [...prev.slice(1), team] : [...prev, team];
+    });
+  };
+
+  // Connection function to OBS
+  const connectToOBS = () => {
+    const uniqueColors = new Set(selectedTeams.map(team => team.color));
+    if (uniqueColors.size < selectedTeams.length) {
+      setError('Cannot connect two teams with the same color.');
       return;
     }
 
-    if (obs) await obs.disconnect();
     const obsWebSocket = new OBSWebSocket();
-    try {
-      await obsWebSocket.connect('ws://localhost:4455', '123456');
-      console.log('Connected to OBS for selected teams!', selectedTeams);
-      setObs(obsWebSocket);
-    } catch (error) {
-      console.error('Failed to connect to OBS:', error);
-      setError('Failed to connect to OBS');
-      setObs(null);
-    }
-  };
-
-  const disconnectOBS = async () => {
-    if (obs) await obs.disconnect();
-    console.log('Disconnected from OBS');
-    setSelectedTeams([]);
-    setObs(null);
-  };
-
-  useEffect(() => {
-    if (obs) {
-      obs.on('ConnectionClosed', async (data) => {
-        await obs.disconnect();
-        setSelectedTeams([]);
-        console.log('Connection closed:', data);
-        setObs(null);
+    setLoading(true);
+    obsWebSocket.connect('ws://localhost:4455', '123456')
+      .then(() => {
+        setObs(obsWebSocket);
+        console.log('Connected to OBS!');
+        setLoading(false);
+      }).catch(error => {
+        console.error('Failed to connect to OBS:', error);
+        setError('Failed to connect to OBS');
       });
-    }
+  };
+
+  const disconnectOBS = () => {
+    obs.disconnect();
+    setObs(null);
   }
-  , [obs]);
+
 
   if (loading) return <p>Loading...</p>;
-
   if (!data.length) return <p>No data found</p>;
 
   return (
     <div>
       <h1>OBS WebSocket Control</h1>
-      <p>Error: {error}</p>
+      {error && <p>{error}</p>}
       {obs ? (
         <>
-          <Link href={`/obs`} className='border p-4'>Home</Link>
-          <SelectedTeams teams={selectedTeams} obs={obs} isConnected={connected} />
-          <button onClick={disconnectOBS}>Disconnect from OBS</button>
+          <Link href={`/obs`} className='border p-4'>Go to OBS</Link>
+          <SelectedTeams teams={selectedTeams} obs={obs} />
+          <Button onClick={disconnectOBS}>Disconnect from OBS</Button>
         </>
       ) : (
         <>
-          <Link href={`/home`} className='border p-4'>Home</Link>
+          <Link href={`/home`} className='border p-4'>Go to Home</Link>
           <div className='flex flex-col gap-2'>
             {data.map(team => (
               <TeamItem
@@ -112,7 +131,7 @@ const HomePage = () => {
             ))}
           </div>
           {selectedTeams.length === 2 && (
-            <button onClick={connectOBS}>Connect to OBS</button>
+            <button onClick={connectToOBS}>Connect to OBS</button>
           )}
         </>
       )}

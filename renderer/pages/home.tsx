@@ -7,8 +7,6 @@ import { supabase_adp } from '@/utils/supabase/client';
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-
-
 interface Room {
   [key: string]: any;
 }
@@ -36,7 +34,7 @@ export default function HomePage() {
     fetchData();
   }, []);
 
-  if(!data) return null
+  if (!data) return null
 
 
   return (
@@ -44,19 +42,23 @@ export default function HomePage() {
       <Head>
         <title>Home - Nextron (with-tailwindcss)</title>
       </Head>
-      <div className="grid grid-col-1 text-2xl w-full text-center">
-        <h1 className="text-3xl font-bold">Home Page</h1>
-        <Link href={`/obs`} className='border p-4' >OBS</Link>
-        {loading && <p>Loading...</p>}
-        {error && <p>{error.message}</p>}
-        {data && (
-          <div className='flex flex-col gap-2'>
-            {data.map((room: Room) => (
+  
+        <body className="grid grid-col-1 text-2xl w-full text-center">
+
+          <h1 className="text-3xl font-bold">Home Page</h1>
+          <Link href={`/obs`} className='border p-4' >OBS</Link>
+          {loading && <p>Loading...</p>}
+          {error && <p>{error.message}</p>}
+          {data && (
+            <div className='flex flex-col gap-2'>
+              {data.map((room: Room) => (
                 <Link href={`/${room.id}`} key={room.id}>{room.id}</Link>
-            ))}
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          )}
+
+        </body>
+   
     </React.Fragment>
   );
 }

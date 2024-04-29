@@ -1,92 +1,72 @@
-
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/utils/supabase/client';
 import HeroesSelected from '@/components/HeroesSelected';
+import HeroesBan from '@/components/HeroesBan';
 
-interface SelectedTeamProps {
-  team: {
-    [key: string]: any;
-  };
-  obs: any;
-  isConnected: boolean;
-}
-
-interface Team {
-  [key: string]: any;
-}
-
-const SelectedTeams = ({ teams, obs, isConnected }) => {
-  console.log("SelectedTeams - teams:", teams);
-  // Extract the 'blue' and 'red' team objects from the teams array
-  const teamBlue = teams.find((team: Team) => team.color === 'blue')
-  const teamRed = teams.find((team: Team) => team.color === 'red')
-  const [blue, setBlue] = useState(null);
-  const [red, setRed] = useState(null);
-
+const SelectedTeams = ({ teams, obs }) => {
+  const [teamData, setTeamData] = useState([]);
 
   useEffect(() => {
-    setBlue(teamBlue);
-    setRed(teamRed);
-  }, []);
 
-  
-  
-  // Helper function to subscribe to team updates
-  const subscribeToTeam = (team: Team) => {
-    console.log("subscribeToTeam - team:", team);
-    const teamId = team.id;
-    const channelName = `team_updates_${teamId}`;
+    // Function to sort teams to ensure blue is always first
+    const sortTeams = (teams) => {
+      return teams.sort((a, b) => (b.color === 'blue' ? 1 : -1));
+    };
 
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
+    // Initialize team data with sorted teams
+    setTeamData(sortTeams([...teams]));
+
+    // Helper function to handle subscription for each team
+    const subscribeToTeam = (team) => {
+      if (!team) return () => {};
+
+      const channel = supabase.channel(`team_updates_${team.id}`)
+        .on('postgres_changes', {
           event: 'UPDATE',
           schema: 'live_tournament',
           table: 'teams',
-          filter: `id=eq.${teamId}`,
-        },
-        (payload) => {
+          filter: `id=eq.${team.id}`,
+        }, payload => {
           console.log(`Update received for ${team.color}:`, payload.new);
-          if (team.color === 'blue') {
-            setBlue(payload.new);
-          }
-          if (team.color === 'red') {
-            setRed(payload.new);
-          }
-        }
-      )
-      .subscribe(() => {
-        console.log(`Subscribed to ${team.color} updates.`);
-      });
+          setTeamData(prevTeams => sortTeams(
+            prevTeams.map(t => t.id === payload.new.id ? {...payload.new, key: t.key} : t)
+          ));
+        })
+        .subscribe();
+
+      return () => {
+        channel.unsubscribe();
+        console.log(`Unsubscribed from ${team.color} updates.`);
+      };
+    };
+
+    // Subscribe to updates for each team
+    const unsubscribes = teams.map(team => subscribeToTeam(team));
 
     return () => {
-      channel.unsubscribe();
-      console.log(`Unsubscribed from ${team.color} updates.`);
+      unsubscribes.forEach(unsubscribe => unsubscribe());
     };
-  };
+  }, [teams]);
 
-  useEffect(() => {
-    const unsubscribeBlue = subscribeToTeam(teamBlue);
-    const unsubscribeRed = subscribeToTeam(teamRed);
-
-    // Clean up function to unsubscribe when the component unmounts or teams change
-    return () => {
-      unsubscribeBlue();
-      unsubscribeRed();
-    };
-  }, []);  // Re-subscribe when team IDs change
-
-
-  if(!blue || !red) return null;
+  if (teamData.length < 2) return null;  // Render nothing until both teams are loaded
 
   return (
     <div>
-      <div >{blue.color}{blue.name}</div>  
-      <HeroesSelected heroes={blue.heroes_selected} obs={obs} color={blue.color} />
-      <div >{red.color}{red.name}</div>  
-      <HeroesSelected heroes={red.heroes_selected} obs={obs} color={red.color} />
+      <TeamDisplay teams={teamData} obs={obs} />
+    </div>
+  );
+};
+
+const TeamDisplay = ({ teams, obs }) => {
+  return (
+    <div>
+      {teams.map((team) => (
+        <div key={team.id}>
+          <div>{team.color} {team.name}</div>
+          <HeroesSelected heroes={team.heroes_selected} obs={obs} color={team.color} />
+          <HeroesBan heroes={team.heroes_ban} obs={obs} color={team.color} />
+        </div>
+      ))}
     </div>
   );
 };
