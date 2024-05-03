@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Layout from './layout';
 import { supabase, supabase_ttm } from '@/utils/supabase/client';
 import TeamItem from '@/components/TeamItem';
 import OBSWebSocket from 'obs-websocket-js';
@@ -15,85 +16,68 @@ import { useOBS } from '@/contexts/OBSContext';
 const HomePage = () => {
   const [teams, setTeams] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [connectionError, setconnectionError] = useState("");
-  const [error, setError] = useState("");
   const { toast } = useToast()
-  const { obs, connectToOBS, disconnectOBS, teamsConnected } = useOBS();
+  const { obs, connectToOBS, disconnectOBS, teamsConnected, loading, error: obsError } = useOBS();
 
-  const fetchTeams = async () => {
-    try {
-      const { data, error } = await supabase_ttm.from('teams').select('id, name, color');
-      if (error) throw error;
-      setTeams(data);
-    } catch (error) {
-      console.error('Error fetching connected teams:', error);
-    }
-  };
-
-  
   useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const { data, error } = await supabase_ttm.from('teams').select('id, name, color');
+        if (error) throw error;
+        setTeams(data);
+      } catch (error) {
+        console.error('Error fetching connected teams:', error);
+      }
+    };
     fetchTeams();
   }, []);
-
-//   useEffect(() => {
-//     if (obs) {
-//         console.log("Connected to OBS");
-//         setData(teamsConnected);
-//     } else {
-//         console.error("Disconnected from OBS");
-//         setData([]);
-//     }
-// }, [obs, teamsConnected]);
 
   const handleValueChange = (newSelectedIds) => {
     const latestSelectedTeams = newSelectedIds.slice(-2).map(id => teams.find(team => team.id === id));
     setSelectedTeams(latestSelectedTeams);
   };
 
-  const initiateConnection = () => {
+  const initiateConnection = async () => {
     if (selectedTeams.length === 2) {
       if (selectedTeams[0].color === selectedTeams[1].color) {
         toast({
           variant: "destructive",
           title: "Cannot connect two teams with the same color.",
-        })
+        });
         return;
       }
-      console.log("initiateConnection - selectedTeams:", selectedTeams);
-    connectToOBS(selectedTeams);
+      const { error } = await connectToOBS(selectedTeams);
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: error,
+        });
+      } else {
+        toast({
+          variant: "default",
+          title: "Connected to OBS",
+        });
+      }
     } else {
       alert("Please select exactly two teams to connect.");
     }
   };
+  
 
   if (loading) return <Loading />;
-  if (connectionError) return (
-    <>
-      <Link href={`/home`} className='border p-4'>Go to OBS</Link>
-      <p>{"Can't connect to OBS"}</p>
-    </>
-  );
 
   if (!teams.length) {
     return (
       <>
-        <Link href={`/home`} className='border p-4'>Go to Home</Link>
         <p>No data found</p>
       </>
     );
   }
 
   return (
-    <div>
-      <h1>OBS WebSocket Control</h1>
-      {obs ? <p>Connected to OBS</p> : <p>Not connected to OBS</p>}
-      <Link href={'/home'}><Button>Home</Button></Link>
+    <Layout>
       {obs ? (
-        <>
-          <Button onClick={disconnectOBS}>Disconnect from OBS</Button>
           <SelectedTeams />
-        </>
       ) : (
         <div className='flex flex-col gap-2'>
           <ToggleGroup
@@ -116,7 +100,7 @@ const HomePage = () => {
           )}
         </div>
       )}
-    </div>
+    </Layout>
   );
 };
 

@@ -1,6 +1,6 @@
-appId: com.example.nextron
-productName: My Nextron App
-copyright: Copyright © 2018 Yoshihide Shiono
+appId: com.tournament.app
+productName: HAQ Tournament App
+copyright: Copyright © Howling Abyss Quebec
 directories:
   output: dist
   buildResources: resources

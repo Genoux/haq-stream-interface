@@ -9,23 +9,21 @@ export const OBSProvider = ({ children }) => {
   const [teams, setTeams] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
   const [teamsConnected, setTeamsConnected] = useState([]);
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
   const fetchConnectedTeams = async (teams) => {
     const teamsMap = teams.reduce((acc, team) => ({ ...acc, [team.color]: team }), {});
     const { blue, red } = teamsMap;
     try {
       const { data: blueTeam, error } = await supabase_ttm.from('teams').select('*').eq("id", blue.id);
-      console.log("fetchConnectedTeams - blueTeam:", blueTeam);
       const { data: redTeam, error: error2 } = await supabase_ttm.from('teams').select('*').eq("id", red.id);
-      console.log("fetchConnectedTeams - redTeam:", redTeam);
       if (error) throw error;
 
-      // merge teams
       const data = [
         { ...blue, ...blueTeam[0] },
         { ...red, ...redTeam[0] },
       ];
-      //setTeams(data);
       setTeamsConnected(data);
     } catch (error) {
       console.error('Error fetching connected teams:', error);
@@ -56,19 +54,25 @@ export const OBSProvider = ({ children }) => {
     setSubscriptions([]);
   };
 
-  const connectToOBS = async (selectedTeams: { blue: string, red: string}) => {
+  const connectToOBS = async (selectedTeams) => {
     console.log("connectToOBS - selectedTeams:", selectedTeams);
     const obsWebSocket = new OBSWebSocket();
     try {
+      setLoading(true);
       await obsWebSocket.connect('ws://localhost:4455', '123456');
       setObs(obsWebSocket);
-     // setTeamsConnected(selectedTeams);
       subscribeToTeamUpdates(selectedTeams);
       await fetchConnectedTeams(selectedTeams); // Ensure connected teams are updated upon connection
+      return { error: null }; // Explicitly return null error on success
     } catch (error) {
       console.error('Failed to connect to OBS:', error);
+      setError("Failed to connect to OBS. Please check your network and OBS settings.");
+      return { error: "Failed to connect to OBS. Please check your network and OBS settings." }; // Always return an object
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   const disconnectOBS = () => {
     if (obs) {
@@ -98,7 +102,7 @@ export const OBSProvider = ({ children }) => {
   }, [obs]);
 
   return (
-    <OBSContext.Provider value={{ obs, connectToOBS, disconnectOBS, teams, teamsConnected }}>
+    <OBSContext.Provider value={{ obs, connectToOBS, disconnectOBS, teams, teamsConnected, loading, error }}>
       {children}
     </OBSContext.Provider>
   );
