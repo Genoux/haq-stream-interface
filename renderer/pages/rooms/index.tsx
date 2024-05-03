@@ -4,7 +4,7 @@ import Link from 'next/link';
 import RoomList from '@/components/RoomsList';
 import { Button } from '@/components/ui/button';
 
-export default function HomePage() {
+export default function Rooms() {
   return (
     <React.Fragment>
       <Head>
@@ -12,9 +12,9 @@ export default function HomePage() {
       </Head>
 
       <body className="grid grid-col-1 text-2xl w-full text-center">
-        <h1 className="text-3xl font-bold">Home Page</h1>
-        <Link href={`/obs`} ><Button>OBS </Button></Link>
-        <Link href={`/rooms`} ><Button>Rooms </Button></Link>
+        <h1 className="text-3xl font-bold">Rooms Page</h1>
+        <Link href={'/home'}><Button>Home</Button></Link>
+        <RoomList />
       </body>
 
     </React.Fragment>
