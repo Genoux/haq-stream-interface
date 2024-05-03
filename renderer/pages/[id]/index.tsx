@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { use } from 'react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabase_adp } from '@/utils/supabase/client';
-import LoadingCircle from '@/components/LoadingCircle';
+import LoadingCircle from '@/components/Loading';
 import Image from 'next/image';
 // Assuming your TeamComponent stays the same
 interface TeamDataProps {
@@ -12,7 +12,14 @@ interface TeamDataProps {
   };
 }
 
+interface Team {
+  new: {
+    [key: string]: any;
+  };
+}
+
 const TeamComponent: React.FC<TeamDataProps> = ({ team }) => {
+console.log("team:", team);
 
   return (
     <div>
@@ -76,6 +83,40 @@ const Page: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
+    subscribeToTeams();
+  }
+    , []);
+
+  
+  const subscribeToTeams = () => {
+    const channel = supabase_adp.channel('*')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'aram_draft_pick',
+        table: 'teams',
+      }, (payload: Team) => {
+        console.log("Team update received:", payload);
+        // apply payload.new to data where name match, prevData is not a map
+        setData(prevData => {
+          if (prevData.blue.id === payload.new.id) {
+            return { ...prevData, blue: { ...prevData.blue, ...payload.new } };
+          } else if (prevData.red.id === payload.new.id) {
+            return { ...prevData, red: { ...prevData.red, ...payload.new } };
+          }
+          return prevData;
+        });
+      })
+      .subscribe(() => {
+        console.log("Subscribed to team updates.");
+      });
+
+    return () => {
+      channel.unsubscribe();
+      console.log("Unsubscribed from all team updates.");
+    };
+  };
+
+  useEffect(() => {
     if (id) {
       localStorage.setItem('lastTeamId', id); // Store the current id to local storage
       const fetchData = async () => {
@@ -119,7 +160,7 @@ const Page: React.FC = () => {
 
   return (
     <div className='mt-6'>
-      <Link href="/home">home</Link>
+      <Link href="/rooms">rooms</Link>
       <h1>{id}</h1>
       <p>This is a simple TSX page.</p>
       <div className='flex flex-col gap-2'>

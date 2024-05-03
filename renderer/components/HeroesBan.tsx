@@ -5,8 +5,7 @@ interface Hero {
   name: string;
 }
 
-const HeroesBan = ({ heroes, obs, color }) => {
-  console.log("HeroesBan - heroes:", heroes);
+const HeroesBan = ({ heroes, color }) => {
   // useEffect(() => {
 
   //   if (obs) {

@@ -1,35 +1,35 @@
 import React, { use, useEffect } from 'react';
+import { useOBS } from '@/contexts/OBSContext';
 
 interface Hero {
   id: string;
   name: string;
 }
 
-const HeroesSelected = ({ heroes, obs, color }) => {
-  console.log("HeroesSelected - heroes:", heroes);
+const HeroesSelected = ({ heroes, color }) => {
+  
+  const { obs } = useOBS();
   useEffect(() => {
     if (obs) {
       heroes.forEach((hero: Hero, index: number) => {
-  
-          let imageLink = ''
-          if (hero.id) {
-            imageLink = `https://draft.tournoishaq.ca/images/champions/splash/${hero.id
-              .toLowerCase()
-              .replace(/\s+/g, '')
-              .replace(/[\W_]+/g, '')}.jpg`
-          } else {
-            imageLink = `https://dummyimage.com/1280x720/00d5ff/0010f0.jpg`
+        let imageLink = ''
+        if (hero.id) {
+          imageLink = `https://draft.tournoishaq.ca/images/champions/splash/${hero.id
+            .toLowerCase()
+            .replace(/\s+/g, '')
+            .replace(/[\W_]+/g, '')}.jpg`
+        } else {
+          imageLink = `https://dummyimage.com/1280x720/00d5ff/0010f0.jpg`
+        }
+        obs.call('SetInputSettings', {
+          inputName: `${color}-h-${index}`, // Dynamic inputName based on the index
+          inputSettings: {
+            file: imageLink
           }
-          console.log("heroes.forEach - imageLink:", imageLink);
-          obs.call('SetInputSettings', {
-            inputName: `${color}-h-${index}`, // Dynamic inputName based on the index
-            inputSettings: {
-              file: imageLink
-            }
-          }).catch(error => {
-            console.error(`Failed to update OBS input settings for logo-dummy${index}`, error);
-          });
- 
+        }).catch(error => {
+          console.error(`Failed to update OBS input settings for logo-dummy${index}`, error);
+        });
+
       });
     }
   }, [heroes, obs]); // Depend on heroes and obs to re-run the effect
