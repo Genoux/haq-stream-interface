@@ -1,64 +1,55 @@
-import React, { use, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useOBS } from '@/contexts/OBSContext';
-
 interface Hero {
   id: string;
   name: string;
 }
 
+const generateImageUrl = (id: string) => {
+  if (!id) {
+    return
+  }
+
+  return `https://draft.tournoishaq.ca/images/champions/splash/${id
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[\W_]+/g, '')}.jpg`;
+};
+
+const getHeroImageStyle = (heroId: string) => ({
+  backgroundImage: `url("${generateImageUrl(heroId)}")`,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  height: '100%',
+  width: '100%',
+});
+
 const HeroesSelected = ({ heroes, color }) => {
-  
   const { obs } = useOBS();
+
   useEffect(() => {
     if (obs) {
       heroes.forEach((hero: Hero, index: number) => {
-        let imageLink = ''
-        if (hero.id) {
-          imageLink = `https://draft.tournoishaq.ca/images/champions/splash/${hero.id
-            .toLowerCase()
-            .replace(/\s+/g, '')
-            .replace(/[\W_]+/g, '')}.jpg`
-        } else {
-          imageLink = `https://dummyimage.com/1280x720/00d5ff/0010f0.jpg`
-        }
+        const imageLink = generateImageUrl(hero.id);
         obs.call('SetInputSettings', {
-          inputName: `${color}-h-${index}`, // Dynamic inputName based on the index
-          inputSettings: {
-            file: imageLink
-          }
-        }).catch(error => {
-          console.error(`Failed to update OBS input settings for logo-dummy${index}`, error);
+          inputName: `${color}-h-${index}`,
+          inputSettings: { file: imageLink },
+        }).catch((error: Error) => {
+          console.error(`Failed to update OBS input settings for ${color}-h-${index}`, error);
         });
-
       });
     }
-  }, [heroes, obs]); // Depend on heroes and obs to re-run the effect
+  }, [heroes, obs, color]);
 
   return (
-    <div className="flex flex-wrap justify-center items-center">
-      {heroes.map((hero: Hero, index: number) => {
-        if (hero.id) {
-          return (
-            <div key={index} className="m-2 p-2 border rounded-lg shadow-lg">
-              <div className="flex flex-col items-center">
-                <img
-                  src={`https://draft.tournoishaq.ca/images/champions/splash/${hero.id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.jpg`}
-                  alt={hero.name}
-                  className="h-24 w-24 object-cover rounded-full"
-                />
-                <p className="mt-2 font-semibold">{hero.name}</p>
-              </div>
-            </div>
-          );
-        } else {
-          // Render an empty box if hero.id is undefined
-          return (
-            <div key={index} className="m-2 p-2 border rounded-lg shadow-lg flex justify-center items-center h-24 w-24">
-              <span className="text-gray-400">No Hero</span>
-            </div>
-          );
-        }
-      })}
+    <div className="flex gap-1">
+      {heroes.map((hero: Hero, index: number) => (
+        <div className='h-52 w-40'>
+          <div key={index} style={hero.id ? getHeroImageStyle(hero.id) : undefined}>
+            {!hero.id && <div className="bg-zinc-900 bg-opacity-50 h-full w-full"></div>}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

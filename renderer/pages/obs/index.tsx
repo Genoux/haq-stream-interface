@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Layout from './layout';
-import { supabase, supabase_ttm } from '@/utils/supabase/client';
+import { supabase_ttm } from '@/utils/supabase/client';
 import TeamItem from '@/components/TeamItem';
-import OBSWebSocket from 'obs-websocket-js';
-import Link from 'next/link';
 import SelectedTeams from '@/components/SelectedTeams';
 import { Button } from '@/components/ui/button';
 import { useToast } from "@/components/ui/use-toast"
@@ -11,9 +8,7 @@ import Loading from '@/components/Loading';
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useOBS } from '@/contexts/OBSContext';
 
-
-
-const HomePage = () => {
+const WebsocketPage = () => {
   const [teams, setTeams] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
   const { toast } = useToast()
@@ -75,9 +70,12 @@ const HomePage = () => {
   }
 
   return (
-    <Layout>
+    <>
       {obs ? (
+          <div>
+          <Button onClick={disconnectOBS}>Disconnect from OBS</Button>
           <SelectedTeams />
+          </div>
       ) : (
         <div className='flex flex-col gap-2'>
           <ToggleGroup
@@ -100,8 +98,8 @@ const HomePage = () => {
           )}
         </div>
       )}
-    </Layout>
+    </>
   );
 };
 
-export default HomePage;
+export default WebsocketPage;

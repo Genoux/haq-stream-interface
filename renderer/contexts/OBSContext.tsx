@@ -1,8 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import OBSWebSocket from 'obs-websocket-js';
 import { supabase_ttm } from '@/utils/supabase/client';
+import { error } from 'console';
 
-const OBSContext = createContext(null);
+const defaultContextValue = {
+  obs: null,
+  connectToOBS: async (selectedTeams: any) => { // Notice the parameter here now
+   return { error: null };
+  },
+  disconnectOBS: () => {},
+  teams: [],
+  teamsConnected: [],
+  loading: false,
+  error: null
+};
+
+const OBSContext = createContext(defaultContextValue);
 
 export const OBSProvider = ({ children }) => {
   const [obs, setObs] = useState(null);

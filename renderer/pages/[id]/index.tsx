@@ -145,22 +145,15 @@ const Page: React.FC = () => {
     )
   }
 
- 
-
-  if (error) {
-    if (error.code === "PGRST116") {
-      router.push('/home');
-    }
-    return <div>Error loading data.</div>;
-  }
-
   if (!data) {
-    return <div>No data found for id: {id}</div>;
+    return <div>
+      <Link href="/">rooms</Link>
+      
+      No data found for id: {id}</div>;
   }
 
   return (
     <div className='mt-6'>
-      <Link href="/rooms">rooms</Link>
       <h1>{id}</h1>
       <p>This is a simple TSX page.</p>
       <div className='flex flex-col gap-2'>
