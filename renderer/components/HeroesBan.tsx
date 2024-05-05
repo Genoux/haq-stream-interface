@@ -22,7 +22,7 @@ const HeroesBan = ({ heroes, color }) => {
         const imageLink = getImageUrl(
           hero.id, 
           'https://draft.tournoishaq.ca/images/champions/tiles/', 
-          'https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/no-ban.png'
+          'https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/misc/noban.png'
         );
         
         obs.call('SetInputSettings', {
