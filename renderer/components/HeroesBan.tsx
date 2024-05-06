@@ -17,7 +17,7 @@ const getImageUrl = (hero, base, defaultImage) => {
       return defaultImage;
     }
   }
-  return '/images/noban.svg';
+  return 'https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/misc/noban.png';
 };
 
 const HeroesBan = ({ heroes, color }) => {

@@ -69,7 +69,7 @@ const HeroesSelected = ({ heroes, color }) => {
       {heroes.map((hero: Hero, index: number) => (
         <div key={index} className='h-52 w-40'>
           <div style={hero.id ? getHeroImageStyle(hero.id) : undefined}>
-            {!hero.id && <div className="bg-zinc-900 bg-opacity-50 h-full w-full"></div>}
+            {!hero.id && <div className="bg-zinc-900 bg-opacity-50 h-[208px] w-full"></div>}
           </div>
         </div>
       ))}
