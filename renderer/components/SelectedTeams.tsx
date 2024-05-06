@@ -10,7 +10,6 @@ const SelectedTeams = () => {
   useEffect(() => {
     if (obs) {
       teamsConnected.forEach((team: any, index: number) => {
-        console.log("teamsConnected.forEach - team:", team);
         obs.call('SetInputSettings', {
           inputName: `${team.color}-team-name`,
           inputSettings: { text: team.name },
