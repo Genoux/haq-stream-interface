@@ -78,6 +78,10 @@ export default function Layout({
           <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
           <main className='min-h-screen p-4'> {children} </main>
           </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel minSize={30}>
+            data
+          </ResizablePanel>
         </ResizablePanelGroup>
       </TooltipProvider>
     </div>

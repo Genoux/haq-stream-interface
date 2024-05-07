@@ -9,8 +9,7 @@ const defaultContextValue = {
    return { error: null };
   },
   disconnectOBS: () => {},
-  teams: [],
-  teamsConnected: [],
+  connectedTeams: [],
   loading: false,
   error: null
 };
@@ -19,9 +18,9 @@ const OBSContext = createContext(defaultContextValue);
 
 export const OBSProvider = ({ children }) => {
   const [obs, setObs] = useState(null);
-  const [teams, setTeams] = useState([]);
+  //const [teams, setTeams] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
-  const [teamsConnected, setTeamsConnected] = useState([]);
+  const [connectedTeams, setConnectedTeams] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
@@ -37,7 +36,7 @@ export const OBSProvider = ({ children }) => {
         { ...blue, ...blueTeam[0] },
         { ...red, ...redTeam[0] },
       ];
-      setTeamsConnected(data);
+      setConnectedTeams(data);
     } catch (error) {
       console.error('Error fetching connected teams:', error);
     }
@@ -55,8 +54,8 @@ export const OBSProvider = ({ children }) => {
         table: 'teams',
         filter: `id=eq.${team.id}`,
       }, payload => {
-        setTeams(prev => updateTeamsState(prev, payload));
-        setTeamsConnected(prev => updateTeamsState(prev, payload));
+      //  setTeams(prev => updateTeamsState(prev, payload));
+        setConnectedTeams(prev => updateTeamsState(prev, payload));
       })
       .subscribe());
     setSubscriptions(newSubscriptions);
@@ -93,7 +92,7 @@ export const OBSProvider = ({ children }) => {
       unsubscribeFromTeamUpdates();
       setObs(null);
       //setTeams([]);
-      setTeamsConnected([]);
+      setConnectedTeams([]);
     }
   };
 
@@ -115,7 +114,7 @@ export const OBSProvider = ({ children }) => {
   }, [obs]);
 
   return (
-    <OBSContext.Provider value={{ obs, connectToOBS, disconnectOBS, teams, teamsConnected, loading, error }}>
+    <OBSContext.Provider value={{ obs, connectToOBS, disconnectOBS, connectedTeams, loading, error }}>
       {children}
     </OBSContext.Provider>
   );

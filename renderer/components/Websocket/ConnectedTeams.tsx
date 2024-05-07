@@ -3,13 +3,13 @@ import HeroesSelected from '@/components/HeroesSelected';
 import HeroesBan from '@/components/HeroesBan';
 import { useOBS } from '@/contexts/OBSContext';
 
-const SelectedTeams = () => {
+export default function connectedTeams() {
   const [teamData, setTeamData] = useState([]);
-  const { teamsConnected, obs } = useOBS();
+  const { connectedTeams, obs } = useOBS();
 
   useEffect(() => {
     if (obs) {
-      teamsConnected.forEach((team: any, index: number) => {
+      connectedTeams.forEach((team: any, index: number) => {
         obs.call('SetInputSettings', {
           inputName: `${team.color}-team-name`,
           inputSettings: { text: team.name },
@@ -18,19 +18,19 @@ const SelectedTeams = () => {
         });
       });
     }
-  }, [obs, teamsConnected]);
+  }, [obs, connectedTeams]);
   
   useEffect(() => {
-    const sortTeams = (teamsConnected: any[]) => {
-      return teamsConnected.sort((a: any, b: { color: string; }) => (b.color === 'blue' ? 1 : -1));
+    const sortTeams = (connectedTeams: any[]) => {
+      return connectedTeams.sort((a: any, b: { color: string; }) => (b.color === 'blue' ? 1 : -1));
     };
 
-    setTeamData(sortTeams([...teamsConnected]));
-  }, [teamsConnected]);
+    setTeamData(sortTeams([...connectedTeams]));
+  }, [connectedTeams]);
 
   return (
     <div>
-      <TeamDisplay teams={teamsConnected} />
+      <TeamDisplay teams={connectedTeams} />
     </div>
   );
 };
@@ -48,5 +48,3 @@ const TeamDisplay = ({ teams }) => {
     </div>
   );
 };
-
-export default SelectedTeams;

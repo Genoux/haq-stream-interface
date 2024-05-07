@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { LucideIcon, Unplug } from "lucide-react"
+import { User2, Unplug, Rows3 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -18,24 +18,23 @@ interface NavProps {
 
 import ObsDotStatus from '@/components/ObsDotStatus';
 
-
 export default function Navigation({ isCollapsed }: NavProps) {
   const router = useRouter();
 
   const links = [
     {
-      title: "Websocket",
-      label: 'dd',
-      icon: Unplug,
+      title: "Teams",
+      label: '',
+      icon: User2,
       variant: router.pathname === "/obs" ? "default" : "ghost",
-      href: "/obs",
+      href: "/teams",
     },
     {
-      title: "Home",
-      label: '/',
-      icon: Unplug,
-      variant: router.pathname === "/" ? "default" : "ghost",
-      href: "/",
+      title: "Rooms",
+      label: '',
+      icon: Rows3,
+      variant: router.pathname === "/rooms" ? "default" : "ghost",
+      href: "/rooms",
     },
   ] as any
 
@@ -45,9 +44,8 @@ export default function Navigation({ isCollapsed }: NavProps) {
     <div
       data-collapsed={isCollapsed}
       className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2"
-    >
+      >
         <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
-        <ObsDotStatus />
         {links.map((link, index) =>
           isCollapsed ? (
             <Tooltip key={index} delayDuration={0}>
