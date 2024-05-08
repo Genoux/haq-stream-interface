@@ -2,9 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase_ttm } from '@/utils/supabase/client';
 
 type Team = {
-  id: number;
-  name: string;
-  // Add more properties as needed
+  [key: string]: any;
 };
 
 type TeamsContextValue = {

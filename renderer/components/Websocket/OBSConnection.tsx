@@ -38,7 +38,7 @@ const OBSConnection = ({ selectedTeams }) => {
       {obs ? (
         <Button onClick={disconnectOBS}>Disconnect from OBS</Button>
       ) : (
-        <Button onClick={initiateConnection} disabled={selectedTeams.length !== 2}>
+        <Button size='sm' onClick={initiateConnection} disabled={selectedTeams.length !== 2}>
           Connect to OBS
         </Button>
       )}

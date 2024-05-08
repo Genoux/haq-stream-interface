@@ -17,7 +17,7 @@ const TeamsPage = () => {
     const fetchTeams = async () => {
       setLoading(true);
       try {
-        const { data, error } = await supabase_ttm.from('teams').select('id, name, color');
+        const { data, error } = await supabase_ttm.from('teams').select('*');
         if (error) throw error;
         setTeams(data);
       } catch (error) {
@@ -34,15 +34,25 @@ const TeamsPage = () => {
 
   return (
     <TeamsProvider>
+      <section className='flex flex-col gap-4'>
+
+
+     
+      <div className='w-full flex justify-end'>
+        
       <OBSConnection selectedTeams={selectedTeams} />
 
+</div>
       {obs ? (
            <ConnectedTeams />
 
       ) : (
+          <div className='border rounded-lg p-4'>
         <Teams teams={teams} selectedTeams={selectedTeams} onSelectedTeamsChange={setSelectedTeams} />
-
-      )}
+            
+        </div>
+        )}
+         </section>
     </TeamsProvider>
   );
 };
