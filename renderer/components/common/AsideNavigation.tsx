@@ -15,8 +15,8 @@ import { useRouter } from 'next/router';
 interface NavProps {
   isCollapsed: boolean
 }
-
-import ObsDotStatus from '@/components/ObsDotStatus';
+import { appVersion } from '@/utils/version';
+import { motion } from 'framer-motion';
 
 export default function AsideNavigation() {
   const router = useRouter();
@@ -42,7 +42,7 @@ export default function AsideNavigation() {
   return (
     <TooltipProvider delayDuration={0}>
       <aside
-        className="min-w-[52px] border-r border-border/40 fixed h-full bg-black z-10"
+        className="min-w-[52px] border-r border-border/40 fixed h-full bg-black z-10 flex flex-col"
       >
         <div className="flex h-[52px] w-[52px] items-center justify-center border-b border-border/40">
           <svg width="20" height="28" viewBox="0 0 20 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -81,7 +81,28 @@ export default function AsideNavigation() {
               </Tooltip>
             )}
           </nav>
+
         </div>
+        <section className="mt-auto flex flex-col">
+          <div className="flex justify-center items-center">
+            <div className="relative border w-full h-12">
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: [0, 1.5], opacity: [0, 0.5, 0] }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "loop",
+                }}
+                className="w-4 h-4 bg-red-600 rounded-full absolute inset-0 m-auto"
+              />
+              <div className="w-3 h-3 bg-red-600 rounded-full absolute inset-0 m-auto" />
+            </div>
+          </div>
+          <div className="flex justify-center items-center border w-full h-12">
+            <span className="font-normal text-xs tracking-wider">{appVersion}</span>
+          </div>
+        </section>
       </aside>
 
     </TooltipProvider>
