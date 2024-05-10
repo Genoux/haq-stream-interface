@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, use, useContext, useEffect, useState } from 'react';
 import { supabase_ttm } from '@/utils/supabase/client';
 
 type Team = {
@@ -21,6 +21,33 @@ export const TeamsProvider = ({ children }) => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const channel = supabase_ttm
+      .channel('*')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'live_tournament',
+          table: 'teams',
+        },
+        (payload: any) => {
+          console.log('Team update received:', payload);
+          if (payload.eventType === 'INSERT') {
+            setTeams((prevTeams) => [...prevTeams, payload.new]);
+          }
+        }
+      )
+      .subscribe(() => {
+        console.log('Subscribed to team updates.');
+      });
+
+    return () => {
+      channel.unsubscribe();
+      console.log('Unsubscribed from all team updates.');
+    };
+  }, []);
 
   useEffect(() => {
     const fetchTeams = async () => {

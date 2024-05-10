@@ -8,10 +8,10 @@ import Layout from '@/pages/layout';
 import { GeistSans } from 'geist/font/sans';
 import { LayoutProvider } from '@/contexts/DataContext';
 
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <LayoutProvider>
-
     <Layout navCollapsedSize={4}>
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
         <OBSProvider>
@@ -23,7 +23,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       </ThemeProvider>
       </Layout>
       </LayoutProvider>
-
   );
 }
 

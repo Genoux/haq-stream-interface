@@ -3,18 +3,18 @@ import React, { useEffect, useState } from 'react';
 import { useOBS } from '@/contexts/OBSContext'; // If you choose to use the context directly
 
 const ObsDotStatus = () => {
-  const { obs, teamsConnected } = useOBS();  // Use context directly if more convenient
+  const { obs, connectedTeams } = useOBS();  // Use context directly if more convenient
   const [status, setStatus] = useState(false);  // Initialize status to false
     const isActive = !!obs;  // Convert obs to boolean: true if connected, false if not
   useEffect(() => {
     console.log("ObsDotStatus - isActive:", isActive);
 
-    if (teamsConnected.length > 0) {
+    if (connectedTeams.length > 0) {
       setStatus(true);
     } else {
       setStatus(false);
     }
-  }, [teamsConnected]);
+  }, [connectedTeams]);
     return (
         <>
             {status ? (

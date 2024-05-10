@@ -8,51 +8,45 @@ import { TeamsProvider } from '@/contexts/TeamsContext';
 import ConnectedTeams from '@/components/Websocket/ConnectedTeams';
 
 const TeamsPage = () => {
-  const [teams, setTeams] = useState([]);
+  //const [teams, setTeams] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const { obs } = useOBS();
 
-  useEffect(() => {
-    const fetchTeams = async () => {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase_ttm.from('teams').select('*');
-        if (error) throw error;
-        setTeams(data);
-      } catch (error) {
-        console.error('Error fetching teams:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTeams();
-  }, []);
 
-  if (loading) return <Loading />;
-  if (!teams.length) return <p>No data found</p>;
+  const [isScrolled, setIsScrolled] = useState(false);
+  const handleScroll = () => {
+    const position = window.scrollY;
+    setIsScrolled(position > 0); // Set true if scrolled down, false if at the top
+  };
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [])
+  //if (loading) return <Loading />;
 
   return (
     <TeamsProvider>
-      <section className='flex flex-col gap-4'>
+      <section className='flex flex-col'>
+        {obs ? (
+          <ConnectedTeams />
+        ) : (
+          <>
+              <div className={`border-b border-border/40 w-full h-[52px] flex items-center px-4 justify-between bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10`}>
+                <h1 className='text-xl font-bold'>Teams</h1>
+              <OBSConnection selectedTeams={selectedTeams} />
+            </div>
+              <div className='flex flex-col gap-4' >
+                
+              <Teams selectedTeams={selectedTeams} onSelectedTeamsChange={setSelectedTeams} />
 
-
-     
-      <div className='w-full flex justify-end'>
-        
-      <OBSConnection selectedTeams={selectedTeams} />
-
-</div>
-      {obs ? (
-           <ConnectedTeams />
-
-      ) : (
-          <div className='border rounded-lg p-4'>
-        <Teams teams={teams} selectedTeams={selectedTeams} onSelectedTeamsChange={setSelectedTeams} />
-            
-        </div>
+            </div>
+          </>
         )}
-         </section>
+      </section>
     </TeamsProvider>
   );
 };

@@ -34,7 +34,7 @@ const OBSConnection = ({ selectedTeams }) => {
   };
 
   return (
-    <div>
+    <>
       {obs ? (
         <Button onClick={disconnectOBS}>Disconnect from OBS</Button>
       ) : (
@@ -42,7 +42,7 @@ const OBSConnection = ({ selectedTeams }) => {
           Connect to OBS
         </Button>
       )}
-    </div>
+    </>
   );
 };
 

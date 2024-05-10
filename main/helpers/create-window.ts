@@ -73,13 +73,20 @@ export const createWindow = (
   const win = new BrowserWindow({
     ...state,
     ...options,
+    width: 1200,        // Initial width
+    height: 800,        // Initial height
+    maxWidth: 1600,     // Maximum width
+    maxHeight: 1200,    // Maximum height
+    minWidth: 800,      // Minimum width
+    minHeight: 600,     // Minimum height
+    frame: true,       // Hide default window frame
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       ...options.webPreferences,
     },
   })
-
+  console.log('state:', state)
   win.on('close', saveState)
 
   return win
