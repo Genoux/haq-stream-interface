@@ -7,6 +7,9 @@ import { useOBS } from '@/contexts/OBSContext';
 import { useLayout } from '@/contexts/DataContext';
 import { TooltipProvider } from "@/components/ui/tooltip";
 
+import '@/utils/strings'; // Import the global utility file here
+
+
 type LayoutProps = {
   children: React.ReactNode;
   navCollapsedSize: number;

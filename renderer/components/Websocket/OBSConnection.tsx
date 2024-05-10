@@ -2,9 +2,10 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from "@/components/ui/use-toast";
 import { useOBS } from '@/contexts/OBSContext';
+import Loading from '../Loading';
 
 const OBSConnection = ({ selectedTeams }) => {
-  const { connectToOBS, disconnectOBS, obs } = useOBS();
+  const { connectToOBS, disconnectOBS, obs, loading } = useOBS();
   const { toast } = useToast();
 
   const initiateConnection = async () => {
@@ -38,8 +39,8 @@ const OBSConnection = ({ selectedTeams }) => {
       {obs ? (
         <Button onClick={disconnectOBS}>Disconnect from OBS</Button>
       ) : (
-        <Button size='sm' onClick={initiateConnection} disabled={selectedTeams.length !== 2}>
-          Connect to OBS
+        <Button size='sm' onClick={initiateConnection} disabled={loading || selectedTeams.length < 2 } variant={`${loading || selectedTeams.length < 2 ? 'outline' : 'default'}`}>
+            {loading ? <Loading text='connecting'  />: "Connect to OBS"}
         </Button>
       )}
     </>
