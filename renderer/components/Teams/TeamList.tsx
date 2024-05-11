@@ -7,20 +7,6 @@ import Scrollbar from '@/components/common/Scrollbar/Scrollbar';
 
 const Teams = ({ selectedTeams, onSelectedTeamsChange }) => {
   const { teams } = useTeams();
-  const [scrollAreaHeight, setScrollAreaHeight] = useState('h-screen');
-
-  useEffect(() => {
-    const updateHeight = () => {
-      const windowHeight = window.innerHeight;
-      const heightClass = windowHeight - 200;
-      setScrollAreaHeight(heightClass as any);
-    };
-
-    updateHeight();
-    window.addEventListener('resize', updateHeight);
-
-    return () => window.removeEventListener('resize', updateHeight);
-  }, []);
 
   const handleCheckboxChange = (teamId) => {
     const isSelected = selectedTeams.some((t) => t.id === teamId);
@@ -38,7 +24,7 @@ const Teams = ({ selectedTeams, onSelectedTeamsChange }) => {
   };
 
   return (
-    <div className='-mt-3' style={{ display: 'flex', flexDirection: 'column', height: '95vh' }}>
+    <div className='-mt-3 flex flex-col h-[95vh]'>
       <Scrollbar>
         <div className='grid grid-cols-2 gap-2 py-6 pl-2'>
           {teams.map((team) => (

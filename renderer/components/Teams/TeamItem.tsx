@@ -28,14 +28,14 @@ const TeamItem = ({ team, isSelected, onSelectionChange }: TeamItemProps) => {
       className="flex flex-col items-start gap-2 rounded-lg text-left text-sm transition-all hover:bg-accent border p-3 cursor-pointer"
       onClick={onSelectionChange}
     >
-       <Checkbox
-          className='rounded-full'
-          id={`team-${team.id}`}
-          checked={isSelected}
-          onCheckedChange={onSelectionChange}
-        />
+      <Checkbox
+        className='rounded-full'
+        id={`team-${team.id}`}
+        checked={isSelected}
+        onCheckedChange={onSelectionChange}
+      />
       <div className="flex items-center justify-between w-full">
-       
+
         <p className="font-semibold">{team.name}</p>
         <div className="ml-auto text-xs text-muted-foreground">7 months ago</div>
       </div>

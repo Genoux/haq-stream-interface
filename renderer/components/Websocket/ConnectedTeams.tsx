@@ -6,6 +6,7 @@ import { useOBS } from '@/contexts/OBSContext';
 export default function connectedTeams() {
   const [teamData, setTeamData] = useState([]);
   const { connectedTeams, obs } = useOBS();
+  console.log("connectedTeams - connectedTeams:", connectedTeams);
 
   useEffect(() => {
     if (obs) {
@@ -27,6 +28,8 @@ export default function connectedTeams() {
 
     setTeamData(sortTeams([...connectedTeams]));
   }, [connectedTeams]);
+
+  if(connectedTeams.length === 0) return <p> No teams connected </p>;
 
   return (
     <div>

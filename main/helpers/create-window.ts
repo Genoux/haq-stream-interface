@@ -75,9 +75,9 @@ export const createWindow = (
     ...options,
     width: 1200,        // Initial width
     height: 800,        // Initial height
-    maxWidth: 1600,     // Maximum width
-    maxHeight: 1200,    // Maximum height
-    minWidth: 800,      // Minimum width
+    maxWidth: 1200,     // Maximum width
+    maxHeight: 800,    // Maximum height
+    minWidth: 1024,      // Minimum width
     minHeight: 600,     // Minimum height
     frame: true,       // Hide default window frame
     webPreferences: {

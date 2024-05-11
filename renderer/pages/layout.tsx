@@ -26,7 +26,7 @@ export default function Layout({ children, navCollapsedSize }: LayoutProps) {
         <div className="h-full flex items-stretch">
     
           <AsideNavigation />
-          <main className="min-h-screen pl-[54px]">{children}</main>
+          <main className="min-h-screen pl-[54px] w-full">{children}</main>
           <aside className="min-w-[440px] border-l hidden">{dataComponent}</aside>
         </div>
       </TooltipProvider>
