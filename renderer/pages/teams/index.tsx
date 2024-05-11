@@ -6,12 +6,13 @@ import OBSConnection from '@/components/Websocket/OBSConnection';
 import { useOBS } from '@/contexts/OBSContext';
 import { TeamsProvider } from '@/contexts/TeamsContext';
 import ConnectedTeams from '@/components/Websocket/ConnectedTeams';
+import TitleBar from '@/components/common/TitleBar';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const TeamsPage = () => {
   //const [teams, setTeams] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { obs } = useOBS();
+  const { obs, loading } = useOBS();
 
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -26,7 +27,6 @@ const TeamsPage = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [])
-  //if (loading) return <Loading />;
 
   return (
     <TeamsProvider>
@@ -35,14 +35,21 @@ const TeamsPage = () => {
           <ConnectedTeams />
         ) : (
           <>
-              <div className={`border-b border-border/40 w-full h-[52px] flex items-center px-4 justify-between bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10`}>
-                <h1 className='text-xl font-bold'>Teams</h1>
-              <OBSConnection selectedTeams={selectedTeams} />
-            </div>
-              <div className='flex flex-col gap-4' >
-                
+            <TitleBar title='Teams' > <OBSConnection selectedTeams={selectedTeams} /> </TitleBar>
+            {loading &&
+              <AnimatePresence>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className='absolute top-0 left-0 w-full h-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+                  <Loading text='Connecting...' />
+                </motion.div>
+              </AnimatePresence>
+            }
+            <div className='flex flex-col gap-4' >
               <Teams selectedTeams={selectedTeams} onSelectedTeamsChange={setSelectedTeams} />
-
             </div>
           </>
         )}
