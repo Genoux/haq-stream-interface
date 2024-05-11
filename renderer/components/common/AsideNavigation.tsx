@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { User2, Unplug, Rows3 } from "lucide-react"
+import { User2, Server, DoorOpen } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -10,15 +10,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { useOBS } from '@/contexts/OBSContext';
+import ServerStatusDot from "@/components/common/ServerStatusDot";
 import { useRouter } from 'next/router';
-interface NavProps {
-  isCollapsed: boolean
-}
 import { appVersion } from '@/utils/version';
-import { motion } from 'framer-motion';
+import { useContext } from "react";
+import { ServerStatusContext } from "@/contexts/ServerStatusContext";
 
 export default function AsideNavigation() {
+  const { allServersHealthy } = useContext(ServerStatusContext);
   const router = useRouter();
 
   const links = [
@@ -32,9 +31,16 @@ export default function AsideNavigation() {
     {
       title: "Rooms",
       label: '',
-      icon: Rows3,
+      icon: DoorOpen,
       variant: router.pathname === "/rooms" ? "default" : "ghost",
       href: "/rooms",
+    },
+    {
+      title: "Servers",
+      label: '',
+      icon: Server,
+      variant: router.pathname === "/servers" ? "default" : "ghost",
+      href: "/servers",
     },
   ] as any
 
@@ -81,25 +87,17 @@ export default function AsideNavigation() {
               </Tooltip>
             )}
           </nav>
-
         </div>
         <section className="mt-auto flex flex-col">
-          <div className="flex justify-center items-center">
-            <div className="relative border w-full h-12">
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: [0, 1.5], opacity: [0, 0.5, 0] }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "loop",
-                }}
-                className="w-4 h-4 bg-red-600 rounded-full absolute inset-0 m-auto"
-              />
-              <div className="w-3 h-3 bg-red-600 rounded-full absolute inset-0 m-auto" />
-            </div>
-          </div>
-          <div className="flex justify-center items-center border w-full h-12">
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger >
+              <ServerStatusDot />
+            </TooltipTrigger>
+            <TooltipContent side="right" className="flex items-center gap-4">
+              {allServersHealthy ? "All servers are healthy" : "Some servers are unhealthy"}
+            </TooltipContent>
+          </Tooltip>
+          <div className="flex justify-center items-center w-full h-12">
             <span className="font-normal text-xs tracking-wider">{appVersion}</span>
           </div>
         </section>
