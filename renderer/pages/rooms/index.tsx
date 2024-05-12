@@ -1,31 +1,19 @@
-import React, { useEffect } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
-import RoomList from '@/components/RoomsList';
+import React from 'react';
+import Rooms from '@/components/Rooms/RoomList';
+import { RoomsProvider } from '@/contexts/RoomsContext';
+import TitleBar from '@/components/common/TitleBar';
 
-const TestComponent: React.FC = () => {
+const RoomsPage = () => {
   return (
-    <div>
-      <h1>This is a Test Component</h1>
-      <p>If you see this, it means the dynamic component loading is working!</p>
-    </div>
+    <RoomsProvider>
+      <div className='flex flex-col'>
+        <TitleBar title='Rooms' />
+        <div className='px-4 py-4'>
+        <Rooms />
+        </div>
+      </div>
+    </RoomsProvider>
   );
 };
 
-export default function Rooms() {
- 
-
-  return (
-    <React.Fragment>
-      <Head>
-        <title>Home - Nextron (with-tailwindcss)</title>
-      </Head>
-
-      <body className="grid grid-col-1 text-2xl w-full text-center">
-        <h1 className="text-3xl font-bold">Rooms Page</h1>
-        <RoomList />
-      </body>
-
-    </React.Fragment>
-  );
-}
+export default RoomsPage;

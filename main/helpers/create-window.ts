@@ -3,6 +3,8 @@ import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
   Rectangle,
+  ipcMain,
+  shell
 } from 'electron'
 import Store from 'electron-store'
 
@@ -75,17 +77,25 @@ export const createWindow = (
     ...options,
     width: 1200,        // Initial width
     height: 800,        // Initial height
-    maxWidth: 1600,     // Maximum width
-    maxHeight: 1200,    // Maximum height
-    minWidth: 800,      // Minimum width
+    maxWidth: 1200,     // Maximum width
+    maxHeight: 800,    // Maximum height
+    minWidth: 1024,      // Minimum width
     minHeight: 600,     // Minimum height
     frame: true,       // Hide default window frame
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      preload: __dirname + '/preload.js',
       ...options.webPreferences,
     },
   })
+
+  win.loadURL('http://localhost:8888');
+  
+  ipcMain.on('open-external-link', (event, url) => {
+    shell.openExternal(url);
+  });
+
   console.log('state:', state)
   win.on('close', saveState)
 

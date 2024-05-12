@@ -7,22 +7,26 @@ import { OBSProvider } from '@/contexts/OBSContext';
 import Layout from '@/pages/layout';
 import { GeistSans } from 'geist/font/sans';
 import { LayoutProvider } from '@/contexts/DataContext';
-
+import { ServerStatusProvider } from "@/contexts/ServerStatusContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <LayoutProvider>
-    <Layout navCollapsedSize={4}>
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-        <OBSProvider>
-          <main className={GeistSans.className}>
-            <Component {...pageProps} />
-          </main>
-          <Toaster />
-        </OBSProvider>
-      </ThemeProvider>
-      </Layout>
-      </LayoutProvider>
+      <ServerStatusProvider>
+        <Layout navCollapsedSize={4}>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+
+            <OBSProvider>
+              <main className={GeistSans.className}>
+                <Component {...pageProps} />
+              </main>
+              <Toaster />
+            </OBSProvider>
+
+          </ThemeProvider>
+        </Layout>
+      </ServerStatusProvider>
+    </LayoutProvider>
   );
 }
 

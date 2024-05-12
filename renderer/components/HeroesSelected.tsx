@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useOBS } from '@/contexts/OBSContext';
+import Image from 'next/image';
 
 interface Hero {
-  id: string;
-  name: string;
+  [key: string]: any;
 }
 
 const generateImageUrl = (id: string) => {
@@ -16,14 +16,6 @@ const generateImageUrl = (id: string) => {
     .replace(/\s+/g, '')
     .replace(/[\W_]+/g, '')}.jpg`;
 };
-
-const getHeroImageStyle = (heroId: string) => ({
-  backgroundImage: `url("${generateImageUrl(heroId)}")`,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  height: '100%',
-  width: '100%',
-});
 
 const HeroesSelected = ({ heroes, color }) => {
   const { obs } = useOBS();
@@ -65,12 +57,33 @@ const HeroesSelected = ({ heroes, color }) => {
   }, [heroes, obs, color]);
 
   return (
-    <div className="flex gap-1">
+    <div className="flex w-full gap-2">
       {heroes.map((hero: Hero, index: number) => (
-        <div key={index} className='h-52 w-40'>
-          <div style={hero.id ? getHeroImageStyle(hero.id) : undefined}>
-            {!hero.id && <div className="bg-zinc-900 bg-opacity-50 h-[208px] w-full"></div>}
+        <div key={index} className=''>
+          <div>
+            {!hero.id ?
+              <Image
+                src={`https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/misc/nochamp.png`}
+                alt={hero.name}
+                width={108}
+                height={108}
+                className='opacity-50 w-full'
+              />
+
+              :
+              <Image
+                src={`https://draft.tournoishaq.ca/images/champions/splash/${hero.id
+                  .toLowerCase()
+                  .replace(/\s+/g, '')
+                  .replace(/[\W_]+/g, '')}.jpg`}
+                alt={hero.name}
+                width={108}
+                height={108}
+                className='w-full'
+              />
+            }
           </div>
+          <p>{hero.id}</p>
         </div>
       ))}
     </div>

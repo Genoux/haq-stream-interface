@@ -68,7 +68,7 @@ const HeroesBan = ({ heroes, color }) => {
   }, [heroes, obs, color]);
 
   return (
-    <div className="flex gap-1">
+    <div className="flex">
       {heroes.map((hero: Hero, index: number) => (
         <div key={index} className="items-center">
           <Image
@@ -78,9 +78,9 @@ const HeroesBan = ({ heroes, color }) => {
               '/images/noban.svg'
             )}
             alt={hero.name || "No Hero"}
-            className="h-20 w-20 object-cover"
-            width={60}
-            height={60}
+            className="object-cover"
+            width={58}
+            height={58}
           />
         </div>
       ))}

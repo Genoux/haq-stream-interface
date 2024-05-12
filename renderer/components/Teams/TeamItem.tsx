@@ -23,34 +23,32 @@ const TeamItem = ({ team, isSelected, onSelectionChange }: TeamItemProps) => {
     }
   }, [setDataComponent, isSelected]);
 
+  const GetChampionSelectedCount = () => {
+    return team.heroes_selected.filter((hero) => hero.selected).length;
+  }
+
   return (
     <div
-      className="flex flex-col items-start gap-2 rounded-lg text-left text-sm transition-all hover:bg-accent border p-3 cursor-pointer"
+      className="bg-black flex justify-between items-center gap-2 rounded-lg text-left text-sm transition-all hover:bg-accent border p-3 cursor-pointer"
       onClick={onSelectionChange}
     >
-       <Checkbox
-          className='rounded-full'
-          id={`team-${team.id}`}
-          checked={isSelected}
-          onCheckedChange={onSelectionChange}
-        />
-      <div className="flex items-center justify-between w-full">
-       
-        <p className="font-semibold">{team.name}</p>
-        <div className="ml-auto text-xs text-muted-foreground">7 months ago</div>
-      </div>
-      <div className="line-clamp-2 text-xs text-muted-foreground">
-        Thank you for the project update. It looks great! I've gone through the report, and the progress is impressive.
-        The team has done a fantastic job, and I appreciate the hard work everyone has put in.
-
-        I have a few minor suggestions that I'll include in the attached document.
-
-        Let's discuss these duri...
-      </div>
-      <div className="flex items-center gap-2">
-        <div className={`bg-${team.color}-500 text-white inline-flex items-center rounded-md  px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparentshadow hover:bg-primary/80`}>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between w-full gap-1">
+          <p className="font-semibold">{team.name}</p>
+          <div className="ml-auto text-xs text-muted-foreground">({GetChampionSelectedCount()})</div>
+        </div>
+        <div className="line-clamp-2 text-xs text-muted-foreground hidden"></div>
+        <div className="flex items-center gap-2">
+          <div className={`bg-${team.color}-600 w-full h-1 rounded-full`}>
+          </div>
         </div>
       </div>
+      <Checkbox
+        className='rounded-full'
+        id={`team-${team.id}`}
+        checked={isSelected}
+        onCheckedChange={onSelectionChange}
+      />
     </div>
   );
 };
