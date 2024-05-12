@@ -39,7 +39,6 @@ const Rooms = () => {
             <TableHeader>
               <TableRow >
                 <TableHead className="w-[100px]">ID</TableHead>
-              
                 <TableHead >
                   <div className='flex gap-1 items-center'>
                     <span className='w-2 h-2 rounded-full bg-blue-600'></span>
@@ -52,8 +51,8 @@ const Rooms = () => {
                     <p>Red team</p>
                   </div>
                 </TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead>Created</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead className="text-right">Spectator</TableHead>
               </TableRow>
             </TableHeader>

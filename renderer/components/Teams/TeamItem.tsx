@@ -48,7 +48,7 @@ const TeamItem = ({ team, isSelected, onSelectionChange }: TeamItemProps) => {
         Let's discuss these duri...
       </div>
       <div className="flex items-center gap-2">
-        <div className={`bg-${team.color}-500 text-white inline-flex items-center rounded-md  px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparentshadow hover:bg-primary/80`}>
+        <div className={`bg-${team.color}-600 text-white inline-flex items-center rounded-md  px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparentshadow hover:bg-primary/80`}>
         </div>
       </div>
     </div>

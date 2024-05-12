@@ -3,6 +3,8 @@ import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
   Rectangle,
+  ipcMain,
+  shell
 } from 'electron'
 import Store from 'electron-store'
 
@@ -83,9 +85,17 @@ export const createWindow = (
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      preload: __dirname + '/preload.js',
       ...options.webPreferences,
     },
   })
+
+  win.loadURL('http://localhost:8888');
+  
+  ipcMain.on('open-external-link', (event, url) => {
+    shell.openExternal(url);
+  });
+
   console.log('state:', state)
   win.on('close', saveState)
 

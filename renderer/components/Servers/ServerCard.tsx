@@ -19,6 +19,11 @@ type ServerCardProps = {
 
 
 export default function ServerCard({ server }: ServerCardProps) {
+
+  function openLinkExternally(url: string) {
+    window.ipc.send('open-external-link', url);
+  }
+
   return (
     <Card className={`${!server.status ? 'border border-red-600 border-opacity-50 bg-red-600 bg-opacity-5 hover:bg-opacity-10' : 'hover:bg-zinc-800 hover:bg-opacity-15'} transition-all`} >
       <CardHeader className="flex flex-col justify-start items-start pb-2 gap-2">
@@ -33,7 +38,7 @@ export default function ServerCard({ server }: ServerCardProps) {
       </CardHeader>
       <CardContent>
         <p className="text-xs text-muted-foreground">{server.description}</p>
-        <Link href={`https://${server.host}`} target="_blank">  <Button className="p-0 text-zinc-500 flex gap-1" variant="link" size="sm" > {server.host} <ExternalLink size={12} /> </Button> </Link>
+        <Button onClick={()=>openLinkExternally(`https://${server.host}`)} className="p-0 text-zinc-500 flex gap-1" variant="link" size="sm" > {server.host} <ExternalLink size={12} /> </Button>
       </CardContent>
     </Card>
   )

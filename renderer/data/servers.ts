@@ -14,7 +14,7 @@ const servers: ServerInfo[] = [
     host: "tournoishaq.ca",
     port: 80,
     status: null,
-    description: "Live server for production",
+    description: "Hownling Abyss Quebec website",
     type: "Frontend"
   },
   {
@@ -22,7 +22,7 @@ const servers: ServerInfo[] = [
     host: "sdedknsmucuwsvgfxrxs.supabase.co",
     port: 80,
     status: null,
-    description: "Live server for production",
+    description: "Hownling Abyss Quebec database for ADP and Registering teams",
     type: "Backend"
   },
   {
@@ -30,7 +30,7 @@ const servers: ServerInfo[] = [
     host: "inscription.tournoishaq.ca",
     port: 80,
     status: null,
-    description: "Local server for development",
+    description: "Registration website for HAQ tournaments",
     type: "Frontend"
   },
   {
@@ -38,7 +38,7 @@ const servers: ServerInfo[] = [
     host: "draft.tournoishaq.ca",
     port: 80,
     status: null,
-    description: "Local server for development",
+    description: "Aram Draft Pick website for HAQ tournaments",
     type: "Frontend"
   },
   {
@@ -46,7 +46,7 @@ const servers: ServerInfo[] = [
     host: "adpb.tournoishaq.ca",
     port: 80,
     status: null,
-    description: "Local server for development",
+    description: "Backend server for ADP",
     type: "Backend"
   },
   {
@@ -54,7 +54,7 @@ const servers: ServerInfo[] = [
     host: "bot.tournoishaq.ca",
     port: 80,
     status: null,
-    description: "Local server for development",
+    description: "Bot for Howling Abyss Quebec discord",
     type: "Backend"
   },
   {
@@ -62,7 +62,7 @@ const servers: ServerInfo[] = [
     host: "prize.tournoishaq.ca",
     port: 80,
     status: null,
-    description: "Local server for development",
+    description: "Prize generator for live tournament stream",
     type: "Frontend"
   },
   {
@@ -70,8 +70,16 @@ const servers: ServerInfo[] = [
     host: "localhost",
     port: 4455,
     status: null,
-    description: "Local server for development",
+    description: "Live stream websocket OBS",
     type: "OBS"
+  },
+  {
+    name: "Rules",
+    host: "reglements.tournoishaq.ca",
+    port: 80,
+    status: null,
+    description: "Howling Abyss Quebec rules website",
+    type: "Frontend"
   },
 ];
 
