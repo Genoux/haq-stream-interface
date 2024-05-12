@@ -5,6 +5,7 @@ import { useOBS } from '@/contexts/OBSContext';
 import Loading from '../Loading';
 
 const OBSConnection = ({ selectedTeams }) => {
+  console.log("OBSConnection - selectedTeams:", selectedTeams);
   const { connectToOBS, disconnectOBS, obs, loading } = useOBS();
   const { toast } = useToast();
 
@@ -37,7 +38,7 @@ const OBSConnection = ({ selectedTeams }) => {
   return (
     <>
       {obs ? (
-        <Button onClick={disconnectOBS}>Disconnect from OBS</Button>
+        <Button size='sm' variant="outline" onClick={disconnectOBS}>Disconnect</Button>
       ) : (
         <Button size='sm' onClick={initiateConnection} disabled={loading || selectedTeams.length < 2 } variant={`${loading || selectedTeams.length < 2 ? 'outline' : 'default'}`}>
             {loading ? <Loading text='connecting'  />: "Connect to OBS"}

@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import OBSWebSocket from 'obs-websocket-js';
 import { supabase_ttm } from '@/utils/supabase/client';
-import { error } from 'console';
 
 const defaultContextValue = {
   obs: null,
