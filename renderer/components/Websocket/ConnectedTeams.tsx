@@ -3,7 +3,7 @@ import HeroesSelected from '@/components/HeroesSelected';
 import HeroesBan from '@/components/HeroesBan';
 import { useOBS } from '@/contexts/OBSContext';
 import TitleBar from '@/components/common/TitleBar';
-import OBSConnection from '@/components/Websocket/OBSConnection';
+import OBSConnection from '@/components/Websocket/ConnectionButton';
 import { AnimatePresence, motion } from 'framer-motion';
 import Loading from '@/components/Loading';
 export default function connectedTeams() {

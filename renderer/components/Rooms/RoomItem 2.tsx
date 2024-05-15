@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz'; // for timezone conversion
-import OBSConnection from '@/components/Websocket/ConnectionButton';
+import OBSConnection from '@/components/Websocket/OBSConnection';
 interface TeamItemProps {
   room: {
     [key: string]: any;

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { Plug, Server, DoorOpen } from "lucide-react"
+import { User2, Plug, Server, DoorOpen } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -28,6 +28,13 @@ export default function AsideNavigation() {
       icon: Plug,
       variant: router.pathname === "/websocket" ? "default" : "ghost",
       href: "/websocket",
+    },
+    {
+      title: "Teams",
+      label: '',
+      icon: User2,
+      variant: router.pathname === "/teams" ? "default" : "ghost",
+      href: "/teams",
     },
     {
       title: "Rooms",

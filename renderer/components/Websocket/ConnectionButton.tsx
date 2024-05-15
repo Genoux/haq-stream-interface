@@ -5,7 +5,6 @@ import { useOBS } from '@/contexts/OBSContext';
 import Loading from '../Loading';
 
 const OBSConnection = ({ selectedTeams }) => {
-  console.log("OBSConnection - selectedTeams:", selectedTeams);
   const { connectToOBS, disconnectOBS, obs, loading } = useOBS();
   const { toast } = useToast();
 
