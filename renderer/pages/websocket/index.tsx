@@ -8,8 +8,6 @@ import ConnectedTeams from '@/components/Websocket/ConnectedTeams';
 import TitleBar from '@/components/common/TitleBar';
 import { motion, AnimatePresence } from 'framer-motion';
 
-//TODO: Refactor Teams because we need to show team list with teams info but without the websocket features
-
 const WebsocketPage = () => {
   const [selectedTeams, setSelectedTeams] = useState([]);
   const { obs, loading } = useOBS();

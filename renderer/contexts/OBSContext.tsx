@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { connectOBS, disconnectOBS } from '@/services/websocket/obsConnection';
-import { supabase_ttm } from '@/utils/supabase/client';
+import { supabase_adp, supabase_ttm } from '@/utils/supabase/client';
 import { RealtimePostgresUpdatePayload } from '@supabase/supabase-js';
 
 type Hero = {
@@ -62,8 +62,8 @@ export const OBSProvider = ({ children }) => {
 
   const subscribeToTeamUpdates = (teams: Team[]) => {
     const newSubscriptions = teams.map(team => 
-      supabase_ttm.channel(`team_updates_${team.id}`)
-        .on('postgres_changes', { event: 'UPDATE', schema: 'live_tournament', table: 'teams', filter: `id=eq.${team.id}` },
+      supabase_adp.channel(`team_updates_${team.id}`)
+        .on('postgres_changes', { event: 'UPDATE', schema: 'aram_draft_pick', table: 'teams', filter: `id=eq.${team.id}` },
           payload => setConnectedTeams(prev => updateTeamsState(prev, payload))
         )
         .subscribe()

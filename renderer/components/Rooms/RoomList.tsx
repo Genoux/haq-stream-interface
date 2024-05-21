@@ -1,7 +1,7 @@
 import React from 'react';
 import RoomItem from './RoomItem';
 import { useRooms } from '@/contexts//RoomsContext';
-
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Table,
   TableBody,
@@ -26,16 +26,15 @@ const Rooms = () => {
   const { rooms } = useRooms();
   const { obs, connectedTeams, loading } = useOBS();
 
-  if (rooms.length === 0 && !loading) return (
-    <EmptyBlock title='No rooms' message="There's no room in the database yet." />
-  );
-
-  if (loading) return (
-    <Loading text='Loading rooms...' />
-  );
+  const sortedRooms = [...rooms].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   return (
     <div className='my-4'>
+
+      {rooms.length === 0 && (
+        <EmptyBlock title='No rooms' message="There's no room in the database yet." />
+      )}
+
       <Card>
         <CardHeader className="px-7">
           <CardTitle>Number: {rooms.length}</CardTitle>
@@ -45,26 +44,27 @@ const Rooms = () => {
           <Table >
             <TableHeader>
               <TableRow >
-                <TableHead className="w-[100px]">ID</TableHead>
+                <TableHead>ID</TableHead>
                 <TableHead >
                   <div className='flex gap-1 items-center'>
                     <span className='w-2 h-2 rounded-full bg-blue-600'></span>
-                    <p>Blue team</p>
+                    <p>Blue</p>
                   </div>
                 </TableHead>
                 <TableHead >
                   <div className='flex gap-1 items-center'>
                     <span className='w-2 h-2 rounded-full bg-red-600'></span>
-                    <p>Red team</p>
+                    <p>Red</p>
                   </div>
                 </TableHead>
                 <TableHead>Created</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="text-right">Spectator</TableHead>
+                <TableHead className='text-right'></TableHead>
+                <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rooms.map((room) => (
+              {sortedRooms.map((room) => (
                 <RoomItem
                   key={room.id}
                   room={room}
