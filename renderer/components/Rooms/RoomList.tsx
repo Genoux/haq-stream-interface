@@ -18,17 +18,24 @@ import {
 } from "@/components/ui/card"
 
 import EmptyBlock from '@/components/common/EmptyBlock';
-
+import ConnectedTeam from '../Websocket/ConnectedTeam';
+import { useOBS } from '@/contexts/OBSContext';
+import Loading from '@/components/Loading';
 
 const Rooms = () => {
   const { rooms } = useRooms();
+  const { obs, connectedTeams, loading } = useOBS();
 
-  if (rooms.length === 0) return (
+  if (rooms.length === 0 && !loading) return (
     <EmptyBlock title='No rooms' message="There's no room in the database yet." />
   );
 
+  if (loading) return (
+    <Loading text='Loading rooms...' />
+  );
+
   return (
-    <>
+    <div className='my-4'>
       <Card>
         <CardHeader className="px-7">
           <CardTitle>Number: {rooms.length}</CardTitle>
@@ -68,7 +75,7 @@ const Rooms = () => {
         </CardContent>
       </Card>
 
-    </>
+    </div>
   );
 };
 

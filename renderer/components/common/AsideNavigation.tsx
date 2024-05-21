@@ -50,6 +50,13 @@ export default function AsideNavigation() {
       variant: router.pathname === "/servers" ? "default" : "ghost",
       href: "/servers",
     },
+    {
+      title: "Draft",
+      label: '',
+      icon: Server,
+      variant: router.pathname === "/" ? "default" : "ghost",
+      href: "/",
+    },
   ] as any
 
 

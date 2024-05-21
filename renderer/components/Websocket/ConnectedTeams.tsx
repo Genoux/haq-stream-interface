@@ -6,14 +6,14 @@ import TitleBar from '@/components/common/TitleBar';
 import OBSConnection from '@/components/Websocket/ConnectionButton';
 import { AnimatePresence, motion } from 'framer-motion';
 import Loading from '@/components/Loading';
-export default function connectedTeams() {
-  const [teamData, setTeamData] = useState([]);
-  const { connectedTeams, obs } = useOBS();
 
+export default function ConnectedTeams() {
+  const [teamData, setTeamData] = useState([]);
+  const { connectedTeams, obs, loading } = useOBS();
 
   useEffect(() => {
     if (obs) {
-      connectedTeams.forEach((team: any, index: number) => {
+      connectedTeams.forEach((team: any) => {
         obs.call('SetInputSettings', {
           inputName: `${team.color}-team-name`,
           inputSettings: { text: team.name },
@@ -38,41 +38,41 @@ export default function connectedTeams() {
 };
 
 const TeamDisplay = ({ teams }) => {
-  const { loading } = useOBS();
+  const { loading, connectedTeams } = useOBS();
   return (
-    <div >
-      <TitleBar title='Teams' > <OBSConnection selectedTeams={connectedTeams} /> </TitleBar>
+    <div>
+      <TitleBar title='Teams'>
+        <OBSConnection selectedTeams={connectedTeams} />
+      </TitleBar>
       {loading ?
         <AnimatePresence>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0}}
+            transition={{ duration: 0 }}
             className='absolute top-0 left-0 w-full h-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
             <Loading text='Connecting...' />
           </motion.div>
         </AnimatePresence>
         :
         <div className='p-4 flex flex-col gap-4 relative -z-10'>
-        {teams.map((team) => (
-          <div key={team.id} className='flex flex-col gap-2'>
-            {team.color}
-            <div className='p-4 flex flex-col border rounded-md'>
-              <div className='w-full flex justify-between items-center'>
-                <h1 className='text-xl font-bold'>{team.name.capitalize()}</h1>
-                {/* <HeroesBan heroes={team.heroes_ban} color={team.color} /> */}
-              </div>
-              <div>
-                <HeroesSelected heroes={team.heroes_selected} color={team.color} />
+          {teams.map((team) => (
+            <div key={team.id} className='flex flex-col gap-2'>
+              {team.color}
+              <div className='p-4 flex flex-col border rounded-md'>
+                <div className='w-full flex justify-between items-center'>
+                  <h1 className='text-xl font-bold'>{team.name}</h1>
+                  {<HeroesBan heroes={team.heroes_ban} color={team.color} />}
+                </div>
+                <div>
+                  <HeroesSelected heroes={team.heroes_selected} color={team.color} />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-
+          ))}
+        </div>
       }
-     
     </div>
   );
 };

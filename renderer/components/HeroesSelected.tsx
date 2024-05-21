@@ -32,7 +32,6 @@ const HeroesSelected = ({ heroes, color }) => {
         }).then(data => {
           const item = data.sceneItems.find(item => item.sourceName === `${color}-h-${index}`);
           if (item) {
-            console.log("heroes.forEach - item:", item);
             // Update transform properties
             obs.call('SetSceneItemTransform', {
               sceneName: 'Prematch',

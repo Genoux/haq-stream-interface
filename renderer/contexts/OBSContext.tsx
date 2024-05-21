@@ -1,62 +1,73 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import OBSWebSocket from 'obs-websocket-js';
+import { connectOBS, disconnectOBS } from '@/services/websocket/obsConnection';
 import { supabase_ttm } from '@/utils/supabase/client';
+import { RealtimePostgresUpdatePayload } from '@supabase/supabase-js';
 
-const defaultContextValue = {
+type Hero = {
+  id: string;
+  name: string;
+  selected: boolean;
+};
+
+interface Team {
+  id: string;
+  color: string;
+  name: string;
+  heroes_selected: Hero[]
+}
+
+interface OBSContextType {
+  obs: any;
+  connectToOBS: (selectedTeams: Team[]) => Promise<{ error: string | null }>;
+  disconnectOBS: () => void;
+  connectedTeams: Team[];
+  loading: boolean;
+  error: string | null;
+}
+
+const defaultContextValue: OBSContextType = {
   obs: null,
-  connectToOBS: async (selectedTeams: any) => { // Notice the parameter here now
-   return { error: null };
-  },
+  connectToOBS: async () => ({ error: null }),
   disconnectOBS: () => {},
   connectedTeams: [],
   loading: false,
-  error: null
+  error: null,
 };
 
-const OBSContext = createContext(defaultContextValue);
+const OBSContext = createContext<OBSContextType>(defaultContextValue);
 
 export const OBSProvider = ({ children }) => {
-  const [obs, setObs] = useState(null);
-  //const [teams, setTeams] = useState([]);
-  const [subscriptions, setSubscriptions] = useState([]);
-  const [connectedTeams, setConnectedTeams] = useState([]);
+  const [obs, setObs] = useState<any>(null);
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [connectedTeams, setConnectedTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  
-  const fetchConnectedTeams = async (teams) => {
-    const teamsMap = teams.reduce((acc, team) => ({ ...acc, [team.color]: team }), {});
-    const { blue, red } = teamsMap;
-    try {
-      const { data: blueTeam, error } = await supabase_ttm.from('teams').select('*').eq("id", blue.id);
-      const { data: redTeam, error: error2 } = await supabase_ttm.from('teams').select('*').eq("id", red.id);
-      if (error) throw error;
+  const [error, setError] = useState<string | null>(null);
 
-      const data = [
-        { ...blue, ...blueTeam[0] },
-        { ...red, ...redTeam[0] },
-      ];
-      setConnectedTeams(data);
+  const fetchConnectedTeams = async (teams: Team[]) => {
+    try {
+      const teamsArray: { [key: string]: Team } = teams.reduce((acc, team) => {
+        acc[team.color] = team;
+        return acc;
+      }, {});
+
+      const { blue, red } = teamsArray;
+      setConnectedTeams([blue, red]);
     } catch (error) {
       console.error('Error fetching connected teams:', error);
     }
   };
 
-  const updateTeamsState = (prevTeams, payload) => prevTeams.map(team =>
-    team.id === payload.new.id ? { ...team, ...payload.new } : team
-  );
+  const updateTeamsState = (prevTeams: Team[], payload: RealtimePostgresUpdatePayload<{ [key: string]: any }>) => 
+    prevTeams.map(team => team.id === payload.new.id ? { ...team, ...payload.new } : team);
 
-  const subscribeToTeamUpdates = (teams) => {
-    const newSubscriptions = teams.map(team => supabase_ttm.channel(`team_updates_${team.id}`)
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'live_tournament',
-        table: 'teams',
-        filter: `id=eq.${team.id}`,
-      }, payload => {
-      //  setTeams(prev => updateTeamsState(prev, payload));
-        setConnectedTeams(prev => updateTeamsState(prev, payload));
-      })
-      .subscribe());
+  const subscribeToTeamUpdates = (teams: Team[]) => {
+    const newSubscriptions = teams.map(team => 
+      supabase_ttm.channel(`team_updates_${team.id}`)
+        .on('postgres_changes', { event: 'UPDATE', schema: 'live_tournament', table: 'teams', filter: `id=eq.${team.id}` },
+          payload => setConnectedTeams(prev => updateTeamsState(prev, payload))
+        )
+        .subscribe()
+    );
     setSubscriptions(newSubscriptions);
   };
 
@@ -65,55 +76,60 @@ export const OBSProvider = ({ children }) => {
     setSubscriptions([]);
   };
 
-  const connectToOBS = async (selectedTeams) => {
-    console.log("connectToOBS - selectedTeams:", selectedTeams);
-    const obsWebSocket = new OBSWebSocket();
+  const connectToOBS = async (selectedTeams: Team[]) => {
     try {
       setLoading(true);
-      await obsWebSocket.connect('ws://localhost:4455', '123456');
-      setObs(obsWebSocket);
+      const obsInstance = await connectOBS('ws://localhost:4455', '123456');
+      setObs(obsInstance);
       subscribeToTeamUpdates(selectedTeams);
-      await fetchConnectedTeams(selectedTeams); // Ensure connected teams are updated upon connection
-      return { error: null }; // Explicitly return null error on success
+      await fetchConnectedTeams(selectedTeams);
+      localStorage.setItem('connectedTeams', JSON.stringify(selectedTeams));
+      return { error: null };
     } catch (error) {
       console.error('Failed to connect to OBS:', error);
-      setError("Failed to connect to OBS. Please check your network and OBS settings.");
-      return { error: "Failed to connect to OBS. Please check your network and OBS settings." }; // Always return an object
+      const errorMessage = "Failed to connect to OBS. Please check your network and OBS settings.";
+      setError(errorMessage);
+      return { error: errorMessage };
     } finally {
       setLoading(false);
     }
   };
-  
 
-  const disconnectOBS = () => {
-    if (obs) {
-      obs.disconnect();
-      unsubscribeFromTeamUpdates();
-      setObs(null);
-      //setTeams([]);
-      setConnectedTeams([]);
-    }
+  const disconnectOBSConnection = () => {
+    disconnectOBS(obs);
+    unsubscribeFromTeamUpdates();
+    setObs(null);
+    setConnectedTeams([]);
+    localStorage.removeItem('connectedTeams');
   };
 
   useEffect(() => {
-    //fetchConnectedTeams();
-    const handleConnectionClosed = async () => {
+    const cachedTeams = localStorage.getItem('connectedTeams');
+    if (cachedTeams) {
+      const teams: Team[] = JSON.parse(cachedTeams);
+      connectToOBS(teams);
+    }
+
+    const handleConnectionClosed = () => {
       console.log("Connection to OBS was closed.");
-      //await fetchConnectedTeams(); // Fetch latest connected teams from the database
-      disconnectOBS();
+      disconnectOBSConnection();
     };
 
-    const obsConnection = obs?.on('ConnectionClosed', handleConnectionClosed);
+    if (obs) {
+      obs.on('ConnectionClosed', handleConnectionClosed);
+    }
 
     return () => {
-      obs?.disconnect();
+      if (obs) {
+        obs.off('ConnectionClosed', handleConnectionClosed);
+        obs.disconnect();
+      }
       unsubscribeFromTeamUpdates();
-      obsConnection?.disconnect(); // Ensure to cleanup the event listener
     };
-  }, [obs]);
+  }, []); // Only run on mount and unmount
 
   return (
-    <OBSContext.Provider value={{ obs, connectToOBS, disconnectOBS, connectedTeams, loading, error }}>
+    <OBSContext.Provider value={{ obs, connectToOBS, disconnectOBS: disconnectOBSConnection, connectedTeams, loading, error }}>
       {children}
     </OBSContext.Provider>
   );

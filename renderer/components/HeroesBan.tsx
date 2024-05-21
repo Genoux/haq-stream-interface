@@ -10,6 +10,7 @@ interface Hero {
 
 // Helper function to generate image URLs
 const getImageUrl = (hero, base, defaultImage) => {
+  console.log("getImageUrl - base:", base);
   if ('id' in hero && hero.selected) {
     if (hero.id) {
       return `${base}${hero.id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.jpg`;
@@ -21,7 +22,8 @@ const getImageUrl = (hero, base, defaultImage) => {
 };
 
 const HeroesBan = ({ heroes, color }) => {
-  const { obs } = useOBS();
+  const { obs, connectedTeams } = useOBS();
+  console.log("HeroesBan - connectedTeams:", connectedTeams);
 
   useEffect(() => {
     if (obs) {
@@ -44,7 +46,6 @@ const HeroesBan = ({ heroes, color }) => {
             return item.sourceName === `${color}-h-ban-${index}`;
           });
           if (item) {
-            console.log("heroes.forEach - item:", item);
             // Item found, update its transform properties
             obs.call('SetSceneItemTransform', {
               sceneName: 'Prematch',

@@ -31,7 +31,7 @@ export const TeamsProvider = ({ children }) => {
         'postgres_changes',
         {
           event: '*',
-          schema: 'live_tournament',
+          schema: 'aram_draft_pick',
           table: 'teams',
         },
         (payload: any) => {

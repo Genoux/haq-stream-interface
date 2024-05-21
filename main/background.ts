@@ -11,7 +11,14 @@ if (isProd) {
   app.setPath('userData', `${app.getPath('userData')} (development)`)
 }
 
+// Using an IIFE to handle the asynchronous code
 ;(async () => {
+  // Dynamically import electron-store
+  const Store = (await import('electron-store')).default
+
+  // Initialize the store
+  const store = new Store()
+
   await app.whenReady()
 
   const mainWindow = createWindow('main', {
