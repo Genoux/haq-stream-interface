@@ -14,7 +14,16 @@ interface TeamItemProps {
 
 const RoomItem = ({ room }: TeamItemProps) => {
   const timeZone = 'America/New_York'; // EST timezone
-  window.open('http://localhost:3000/room/1/1', '_blank', 'top=500,left=200,frame=false,nodeIntegration=no')
+
+
+  const handleOpenDraftWindow = (room) => {
+    console.log("handleOpenDraftWindow - room:", room);
+    if (window.ipc && window.ipc.send) {
+      const roomParams = new URLSearchParams(room).toString();
+      window.ipc.send('open-draft-window', roomParams);
+    }
+  };
+
   function openLinkExternally(url: string) {
     window.ipc.send('open-external-link', url);
   }
@@ -73,7 +82,7 @@ const RoomItem = ({ room }: TeamItemProps) => {
           ) : (
             <OBSConnection className='min-w-32' selectedTeams={[room.blue, room.red]} />
           )}
-          <Button onClick={() => openLinkExternally(`${process.env.NEXT_PUBLIC_SUPABASE_API}/room/${room.id}/spectator`)} variant="outline" size={'sm'}>View</Button>
+          <Button onClick={() => handleOpenDraftWindow(room as TeamItemProps)} variant="outline" size={'sm'}>View</Button>
         </div>
       </TableCell>
     </TableRow>

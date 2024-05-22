@@ -1,0 +1,6 @@
+/* pages/draft/DraftLayout.module.css */
+.container {
+  padding: 20px;
+  background-color: #f4f4f4; /* Example background color */
+  min-height: 100vh; /* Ensure the layout covers the full viewport height */
+}

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { User2, Plug, Server, DoorOpen } from "lucide-react"
+import { User2, Plug, Server, DoorOpen, LayoutPanelTop  } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -53,9 +53,9 @@ export default function AsideNavigation() {
     {
       title: "Draft",
       label: '',
-      icon: Server,
-      variant: router.pathname === "/" ? "default" : "ghost",
-      href: "/",
+      icon: LayoutPanelTop,
+      variant: router.pathname === "/draft" ? "default" : "ghost",
+      href: "/draft",
     },
   ] as any
 
