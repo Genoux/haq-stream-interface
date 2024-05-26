@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { Plug, Server, DoorOpen } from "lucide-react"
+import { User2, Plug, Server, DoorOpen, LayoutPanelTop  } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -23,18 +23,18 @@ export default function AsideNavigation() {
 
   const links = [
     {
-      title: "Websocket",
-      label: '',
-      icon: Plug,
-      variant: router.pathname === "/websocket" ? "default" : "ghost",
-      href: "/websocket",
-    },
-    {
       title: "Rooms",
       label: '',
       icon: DoorOpen,
       variant: router.pathname === "/rooms" ? "default" : "ghost",
       href: "/rooms",
+    },
+    {
+      title: "Teams",
+      label: '',
+      icon: User2,
+      variant: router.pathname === "/teams" ? "default" : "ghost",
+      href: "/teams",
     },
     {
       title: "Servers",
@@ -48,7 +48,6 @@ export default function AsideNavigation() {
 
   return (
     <TooltipProvider delayDuration={0}>
-
       <aside
         className="min-w-[52px] border-r border-border/40 fixed h-full bg-black z-10 flex flex-col"
       >

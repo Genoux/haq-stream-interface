@@ -1,8 +1,17 @@
-// global.d.ts
-interface ElectronAPI {
-  openLink: (url: string) => void;
+interface IpcHandler {
+  send(channel: string, value: unknown): void;
+  on(channel: string, callback: (...args: unknown[]) => void): () => void;
 }
 
-interface Window {
-  electron: ElectronAPI;
+interface ElectronAPI {
+  closeWindow: () => void;
 }
+
+declare global {
+  interface Window {
+    ipc: IpcHandler;
+    electron: ElectronAPI;
+  }
+}
+
+export {};

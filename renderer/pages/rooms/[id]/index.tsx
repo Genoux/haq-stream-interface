@@ -5,21 +5,20 @@ import { useRouter } from 'next/router';
 import { supabase_adp } from '@/utils/supabase/client';
 import LoadingCircle from '@/components/Loading';
 import Image from 'next/image';
-// Assuming your TeamComponent stays the same
-interface TeamDataProps {
+
+type TeamDataProps = {
   team: {
     [key: string]: any;
   };
 }
 
-interface Team {
+type Team = {
   new: {
     [key: string]: any;
   };
 }
 
 const TeamComponent: React.FC<TeamDataProps> = ({ team }) => {
-console.log("team:", team);
 
   return (
     <div>
@@ -50,7 +49,7 @@ console.log("team:", team);
                       ? `https://draft.tournoishaq.ca/images/champions/splash/${hero.id
                         .toLowerCase()
                         .replace(/\s+/g, '')
-                        .replace(/[\W_]+/g, '')}.jpg`
+                        .replace(/[\W_]+/g, '')}.webp`
                       : ''
                   }
                   alt={''}
