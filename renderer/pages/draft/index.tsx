@@ -14,7 +14,8 @@ const DraftPage = () => {
 
   useEffect(() => {
     const query = router.query;
-    setRoom(query);
+    console.log("useEffect - query:", query.id);
+    setRoom(query.id);
   }, [router]);
 
   const handleIframeLoad = () => {
@@ -45,7 +46,7 @@ const DraftPage = () => {
         className="h-full"
       >
         <iframe
-          src={`${domain}/room/${room.id}/spectator`}
+          src={`${domain}/room/${room}/spectator`}
           onLoad={handleIframeLoad}
           className="w-full h-full border-none"
         />

@@ -23,11 +23,11 @@ export default function AsideNavigation() {
 
   const links = [
     {
-      title: "Websocket",
+      title: "Rooms",
       label: '',
-      icon: Plug,
-      variant: router.pathname === "/websocket" ? "default" : "ghost",
-      href: "/websocket",
+      icon: DoorOpen,
+      variant: router.pathname === "/rooms" ? "default" : "ghost",
+      href: "/rooms",
     },
     {
       title: "Teams",
@@ -37,32 +37,17 @@ export default function AsideNavigation() {
       href: "/teams",
     },
     {
-      title: "Rooms",
-      label: '',
-      icon: DoorOpen,
-      variant: router.pathname === "/rooms" ? "default" : "ghost",
-      href: "/rooms",
-    },
-    {
       title: "Servers",
       label: '',
       icon: Server,
       variant: router.pathname === "/servers" ? "default" : "ghost",
       href: "/servers",
     },
-    {
-      title: "Draft",
-      label: '',
-      icon: LayoutPanelTop,
-      variant: router.pathname === "/draft" ? "default" : "ghost",
-      href: "/draft",
-    },
   ] as any
 
 
   return (
     <TooltipProvider delayDuration={0}>
-
       <aside
         className="min-w-[52px] border-r border-border/40 fixed h-full bg-black z-10 flex flex-col"
       >

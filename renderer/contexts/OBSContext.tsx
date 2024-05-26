@@ -13,7 +13,9 @@ interface Team {
   id: string;
   color: string;
   name: string;
+  room: string;
   heroes_selected: Hero[]
+  heroes_ban: Hero[]
 }
 
 interface OBSContextType {
@@ -102,6 +104,43 @@ export const OBSProvider = ({ children }) => {
     setConnectedTeams([]);
     localStorage.removeItem('connectedTeams');
   };
+
+  useEffect(() => {
+    const reconnectOBS = async () => {
+      const cachedTeams = localStorage.getItem('connectedTeams');
+      if (cachedTeams) {
+        const teams: Team[] = JSON.parse(cachedTeams);
+        await connectToOBS(teams).then(res => {
+          if (res.error) {
+            console.error("Reconnection failed:", res.error);
+            // Optionally attempt to reconnect after a delay
+            setTimeout(reconnectOBS, 5000);
+          }
+        });
+      }
+    };
+  
+    const handleConnectionClosed = () => {
+      console.log("Connection to OBS was closed unexpectedly.");
+      disconnectOBSConnection();
+      // Optional: Attempt to reconnect
+      reconnectOBS();
+    };
+  
+    if (obs) {
+      obs.on('ConnectionClosed', handleConnectionClosed);
+    }
+  
+    return () => {
+      if (obs) {
+        obs.off('ConnectionClosed', handleConnectionClosed);
+        disconnectOBS(obs);
+      }
+      unsubscribeFromTeamUpdates();
+    };
+  }, [obs]); // Rerun when `obs` changes
+  
+  
 
   useEffect(() => {
     const cachedTeams = localStorage.getItem('connectedTeams');

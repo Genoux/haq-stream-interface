@@ -2,7 +2,7 @@ import React from 'react';
 import Rooms from '@/components/Rooms/RoomList';
 import { RoomsProvider } from '@/contexts/RoomsContext';
 import TitleBar from '@/components/common/TitleBar';
-import ConnectedTeam from '@/components/Websocket/ConnectedTeam';
+import ConnectedTeams from '@/components/Websocket/ConnectedTeams';
 import { useOBS } from '@/contexts/OBSContext';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -13,7 +13,7 @@ const RoomsPage = () => {
     <RoomsProvider>
 
       {obs && connectedTeams.length > 0 && (
-        <ConnectedTeam />
+        <ConnectedTeams />
       )}
       <div className={`flex flex-col relative ${obs ? '-z-10' : 'z-0'}`}>
         <TitleBar title='Rooms' />

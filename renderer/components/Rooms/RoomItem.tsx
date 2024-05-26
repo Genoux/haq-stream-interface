@@ -1,11 +1,11 @@
 import { TableRow, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 import { format, formatDistanceToNow, isToday, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz'; // for timezone conversion
 import OBSConnection from '@/components/Websocket/ConnectionButton';
 import { useOBS } from '@/contexts/OBSContext';
-
 interface TeamItemProps {
   room: {
     [key: string]: any;
@@ -13,13 +13,12 @@ interface TeamItemProps {
 }
 
 const RoomItem = ({ room }: TeamItemProps) => {
+  const domain = process.env.NEXT_PUBLIC_DRAFT || 'http://localhost:3000';
   const timeZone = 'America/New_York'; // EST timezone
 
-
-  const handleOpenDraftWindow = (room) => {
-    console.log("handleOpenDraftWindow - room:", room);
+  const handleOpenDraftWindow = (roomID) => {
     if (window.ipc && window.ipc.send) {
-      const roomParams = new URLSearchParams(room).toString();
+      const roomParams = new URLSearchParams({id: roomID}).toString();
       window.ipc.send('open-draft-window', roomParams);
     }
   };
@@ -59,7 +58,7 @@ const RoomItem = ({ room }: TeamItemProps) => {
       return `${formatDistanceToNow(zonedDate, { addSuffix: true })}`;
     }
   };
-
+//{`${domain}/room/${room.id}/${room.blue.id}`}
   return (
     <TableRow>
       <TableCell className="w-[150px]">
@@ -68,11 +67,11 @@ const RoomItem = ({ room }: TeamItemProps) => {
           {room.name}
         </p>
       </TableCell>
-      <TableCell className="w-[130px]">{room.blue.name}</TableCell>
-      <TableCell className="w-[130px]">{room.red.name}</TableCell>
+      <TableCell className="w-[130px] pl-0"><Button className="px-1" onClick={()=> openLinkExternally(`${domain}/room/${room.id}/${room.blue.id}`)} variant="link">{room.blue.name}</Button><span className="text-white opacity-50 font-normal">({room.blue.id})</span></TableCell>
+      <TableCell className="w-[130px] pl-0"><Button className="px-1" onClick={()=> openLinkExternally(`${domain}/room/${room.id}/${room.red.id}`)} variant="link">{room.red.name}</Button><span className="text-white opacity-50 font-normal">({room.red.id})</span></TableCell>
       <TableCell className="text-xs text-muted-foreground">{formatDateToRelative(room.created_at)}</TableCell>
       <TableCell>
-        <Badge className="align-middle flex justify-center items-center w-full" variant={getBadgeVariant(room.status)}>{room.status}</Badge>
+        <Badge className="min-w-[70px] flex justify-center w-fit" variant={getBadgeVariant(room.status)}>{room.status}</Badge>
       </TableCell>
       <TableCell className="text-right"></TableCell>
       <TableCell className="text-right py-4">
@@ -82,7 +81,7 @@ const RoomItem = ({ room }: TeamItemProps) => {
           ) : (
             <OBSConnection className='min-w-32' selectedTeams={[room.blue, room.red]} />
           )}
-          <Button onClick={() => handleOpenDraftWindow(room as TeamItemProps)} variant="outline" size={'sm'}>View</Button>
+          <Button onClick={() => handleOpenDraftWindow(room.id)} variant="outline" size={'sm'}>View</Button>
         </div>
       </TableCell>
     </TableRow>

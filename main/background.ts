@@ -26,6 +26,11 @@ let mainWindow: BrowserWindow | null;
     },
   });
 
+//   mainWindow.on('minimize', (event: { preventDefault: () => void; }) => {
+//     event.preventDefault();
+//     mainWindow.hide();  // Hides the window to tray instead of minimizing
+// });
+
   mainWindow.center();
 
   if (isProd) {
@@ -48,18 +53,23 @@ ipcMain.on('close-window', (event) => {
   }
 });
 
-ipcMain.on('open-draft-window', (event, roomParams) => {
+//get the client aream menu bare height as a variable
+
+ipcMain.on('open-draft-window', (event, roomID) => {
+
   const draftWindow = new BrowserWindow({
-    width: 1344,
-    height: 756,
-    minWidth: 1344,
-    minHeight: 756,
+    width: 1536,
+    height: 864 + 28,
+    minWidth: 1536,
+    minHeight: 864 + 28,
     maxWidth: 1920, // maxWidth to prevent resizing
     maxHeight: 1080, // Add maxHeight and
     x: 0,
     y: 0,
     roundedCorners: false,
-    frame: false,
+    thickFrame:false,
+    //frame: false,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -68,8 +78,8 @@ ipcMain.on('open-draft-window', (event, roomParams) => {
   });
 
   const url = isProd 
-    ? `app://./draft?${roomParams}` 
-    : `http://localhost:${process.argv[2]}/draft?${roomParams}`;
+    ? `app://./draft?${roomID}` 
+    : `http://localhost:${process.argv[2]}/draft?${roomID}`;
 
   draftWindow.loadURL(url);
   draftWindow.webContents.openDevTools();

@@ -1,7 +1,6 @@
 import React from 'react';
 import RoomItem from './RoomItem';
-import { useRooms } from '@/contexts//RoomsContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useRooms } from '@/contexts/RoomsContext';
 import {
   Table,
   TableBody,
@@ -18,14 +17,9 @@ import {
 } from "@/components/ui/card"
 
 import EmptyBlock from '@/components/common/EmptyBlock';
-import ConnectedTeam from '../Websocket/ConnectedTeam';
-import { useOBS } from '@/contexts/OBSContext';
-import Loading from '@/components/Loading';
 
 const Rooms = () => {
   const { rooms } = useRooms();
-  const { obs, connectedTeams, loading } = useOBS();
-
   const sortedRooms = [...rooms].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   return (

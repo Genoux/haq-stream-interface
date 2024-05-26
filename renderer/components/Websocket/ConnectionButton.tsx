@@ -1,5 +1,5 @@
 // components/Websocket/ConnectionButton.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from "@/components/ui/use-toast";
 import { useOBS } from '@/contexts/OBSContext';
@@ -16,13 +16,6 @@ const OBSConnection = ({ selectedTeams, className }: OBSConnectionProps) => {
 
   const initiateConnection = async () => {
     if (selectedTeams.length === 2) {
-      if (selectedTeams[0].color === selectedTeams[1].color) {
-        toast({
-          variant: "destructive",
-          title: "Cannot connect two teams with the same color.",
-        });
-        return;
-      }
       const { error } = await connectToOBS(selectedTeams);
       if (error) {
         toast({
