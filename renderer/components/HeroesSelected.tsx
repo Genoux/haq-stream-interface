@@ -7,8 +7,8 @@ interface Hero {
 }
 
 const HeroesSelected = ({ heroes, color, onLoadingComplete }) => {
-
   useObsHeroImageSetup(heroes, color, selectConfiguration, onLoadingComplete);
+  
   return (
     <div className="flex w-full gap-2">
       {heroes.map((hero: Hero, index: number) => (

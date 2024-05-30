@@ -3,7 +3,6 @@ import { useOBS } from '@/contexts/OBSContext';
 
 // Helper function shared by both components
 const generateImageUrl = (id, type) => {
-  console.log("generateImageUrl - type:", type);
   if (!id) {
     return `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/misc/${type}_empty.png`;
   }
@@ -13,7 +12,6 @@ const generateImageUrl = (id, type) => {
 
 export const useObsHeroImageSetup = (heroes, color, config, onLoadingComplete) => {
   const { obs } = useOBS();
-
   useEffect(() => {
     if (!obs || heroes.length === 0) {
       return;
@@ -45,7 +43,7 @@ export const useObsHeroImageSetup = (heroes, color, config, onLoadingComplete) =
 };
 
 
-export const updateObsTeamTitle = (obs, textUpdates) => {
+export const updateObsTeamCard = (obs, textUpdates) => {
   // This function would call OBS to set text properties
   // This is a simple simulation of what the function might look like:
   return Promise.all(Object.entries(textUpdates).map(([source, text]) => {
@@ -54,4 +52,11 @@ export const updateObsTeamTitle = (obs, textUpdates) => {
       inputSettings: { text: text }
     });
   }));
+}
+
+export const updateObsLayoutTitle = (obs, text) => {
+  return obs.call('SetInputSettings', {
+    inputName: 'Match',
+    inputSettings: { text: text }
+  })
 }
