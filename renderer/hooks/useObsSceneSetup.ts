@@ -5,7 +5,7 @@ import { useOBS } from '@/contexts/OBSContext';
 const generateImageUrl = (id, type) => {
   console.log("generateImageUrl - type:", type);
   if (!id) {
-    return 'https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/misc/nochamp.png';
+    return `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/misc/${type}_empty.png`;
   }
 
   return `https://draft.tournoishaq.ca/images/champions/${type}/${id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`;

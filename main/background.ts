@@ -4,11 +4,14 @@ import serve from 'electron-serve';
 import { createWindow } from './helpers';
 
 const isProd = process.env.NODE_ENV === 'production';
+console.log("isProd:", isProd);
 
 if (isProd) {
   serve({ directory: 'app' });
+  require('dotenv').config({ path: path.join(__dirname, '.env.production') });
 } else {
   app.setPath('userData', `${app.getPath('userData')} (development)`);
+  require('dotenv').config({ path: path.join(__dirname, '.env.development') });
 }
 
 let mainWindow: BrowserWindow | null;

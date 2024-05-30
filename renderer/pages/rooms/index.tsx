@@ -17,7 +17,6 @@ const RoomsPage = () => {
       )}
       <div className={`flex flex-col relative ${obs ? '-z-10' : 'z-0'}`}>
         <TitleBar title='Rooms' />
-        <div className='px-4'>
           <AnimatePresence mode='wait'>
             <motion.div
               initial={{ opacity: 0 }}
@@ -28,7 +27,6 @@ const RoomsPage = () => {
               <Rooms />
             </motion.div>
           </AnimatePresence>
-        </div>
       </div>
 
     </RoomsProvider>

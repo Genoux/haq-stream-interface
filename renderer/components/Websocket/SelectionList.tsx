@@ -2,10 +2,13 @@
 
 import React from 'react';
 import { useTeams } from '@/contexts/TeamsContext';
-import Scrollbar from '@/components/common/Scrollbar/Scrollbar';
 import { Checkbox } from '@/components/ui/checkbox';
 
-interface SelectionItemProps {
+type Hero = {
+  [key: string]: any;
+};
+
+type SelectionItemProps = {
   team: {
     [key: string]: any;
   };
@@ -16,7 +19,7 @@ interface SelectionItemProps {
 const SelectionItem = ({ team, isSelected, onSelectionChange }: SelectionItemProps) => {
 
   const GetChampionSelectedCount = () => {
-    return team.heroes_selected.filter((hero) => hero.selected).length;
+    return team.heroes_selected.filter((hero: Hero) => hero.selected).length;
   }
 
   return (
@@ -79,30 +82,28 @@ const SelectionList = ({ selectedTeams, onSelectedTeamsChange }) => {
 
   return (
     <div className='py-4 pl-3 w-full'>
-      <Scrollbar>
-        <div className='flex flex-col gap-4'>
-          <div className='grid grid-cols-3 gap-2 border border-zinc-600 border-opacity-10 bg-zinc-600 bg-opacity-5 p-4 rounded-md'>
-            {blueTeams.map((team) => (
-              <SelectionItem
-                key={team.id}
-                team={team}
-                isSelected={selectedTeams.some(t => t.id === team.id)}
-                onSelectionChange={() => handleCheckboxChange(team.id, 'blue')}
-              />
-            ))}
-          </div>
-          <div className='grid grid-cols-3 gap-2 border border-zinc-600 border-opacity-10 bg-zinc-600 bg-opacity-5 p-4 rounded-md'>
-            {redTeams.map((team) => (
-              <SelectionItem
-                key={team.id}
-                team={team}
-                isSelected={selectedTeams.some(t => t.id === team.id)}
-                onSelectionChange={() => handleCheckboxChange(team.id, 'red')}
-              />
-            ))}
-          </div>
+      <div className='flex flex-col gap-4'>
+        <div className='grid grid-cols-3 gap-2 border border-zinc-600 border-opacity-10 bg-zinc-600 bg-opacity-5 p-4 rounded-md'>
+          {blueTeams.map((team) => (
+            <SelectionItem
+              key={team.id}
+              team={team}
+              isSelected={selectedTeams.some(t => t.id === team.id)}
+              onSelectionChange={() => handleCheckboxChange(team.id, 'blue')}
+            />
+          ))}
         </div>
-      </Scrollbar>
+        <div className='grid grid-cols-3 gap-2 border border-zinc-600 border-opacity-10 bg-zinc-600 bg-opacity-5 p-4 rounded-md'>
+          {redTeams.map((team) => (
+            <SelectionItem
+              key={team.id}
+              team={team}
+              isSelected={selectedTeams.some(t => t.id === team.id)}
+              onSelectionChange={() => handleCheckboxChange(team.id, 'red')}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

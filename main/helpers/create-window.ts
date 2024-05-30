@@ -80,7 +80,7 @@ export const createWindow = (
     maxWidth: 1200,     // Maximum width
     maxHeight: 800,    // Maximum height
     minWidth: 1024,      // Minimum width
-    minHeight: 600,     // Minimum height
+    minHeight: 700,     // Minimum height
     frame: true,       // Hide default window frame
     webPreferences: {
       nodeIntegration: false,

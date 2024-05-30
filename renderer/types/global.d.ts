@@ -4,6 +4,7 @@ interface IpcHandler {
 }
 
 interface ElectronAPI {
+  openLink(url: any): unknown;
   closeWindow: () => void;
 }
 
