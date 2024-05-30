@@ -32,7 +32,6 @@ const RoomItem = ({ room }: TeamItemProps) => {
   const isRoomConnected = connectedTeams.length === 2 &&
     connectedTeams.some(team => team.name === room.blue.name) &&
     connectedTeams.some(team => team.name === room.red.name);
-  console.log("RoomItem - isRoomConnected:", isRoomConnected);
 
   const getBadgeVariant = (status) => {
     switch (status) {
@@ -61,15 +60,15 @@ const RoomItem = ({ room }: TeamItemProps) => {
 //{`${domain}/room/${room.id}/${room.blue.id}`}
   return (
     <TableRow>
-      <TableCell className="w-[150px]">
+      <TableCell className="w-[125px]">
         <div className="font-medium">{room.id}</div>
         <p className="hidden text-xs text-muted-foreground">
           {room.name}
         </p>
       </TableCell>
-      <TableCell className="w-[130px] pl-0"><Button className="px-1" onClick={()=> openLinkExternally(`${domain}/room/${room.id}/${room.blue.id}`)} variant="link">{room.blue.name}</Button><span className="text-white opacity-50 font-normal">({room.blue.id})</span></TableCell>
-      <TableCell className="w-[130px] pl-0"><Button className="px-1" onClick={()=> openLinkExternally(`${domain}/room/${room.id}/${room.red.id}`)} variant="link">{room.red.name}</Button><span className="text-white opacity-50 font-normal">({room.red.id})</span></TableCell>
-      <TableCell className="text-xs text-muted-foreground">{formatDateToRelative(room.created_at)}</TableCell>
+      <TableCell className="w-[150px] pl-0"><Button className="px-1" onClick={()=> openLinkExternally(`${domain}/room/${room.id}/${room.blue.id}`)} variant="link">{room.blue.name}</Button><span className="text-white opacity-50 font-normal">({room.blue.id})</span></TableCell>
+      <TableCell className="w-[150px] pl-0"><Button className="px-1" onClick={()=> openLinkExternally(`${domain}/room/${room.id}/${room.red.id}`)} variant="link">{room.red.name}</Button><span className="text-white opacity-50 font-normal">({room.red.id})</span></TableCell>
+      <TableCell className="w-[150px] text-xs text-muted-foreground">{formatDateToRelative(room.created_at)}</TableCell>
       <TableCell>
         <Badge className="min-w-[70px] flex justify-center w-fit" variant={getBadgeVariant(room.status)}>{room.status}</Badge>
       </TableCell>

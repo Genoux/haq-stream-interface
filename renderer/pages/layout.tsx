@@ -1,9 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { cn } from "@/lib/utils";
+import React, { useEffect } from 'react';
 import AsideNavigation from "@/components/common/AsideNavigation";
-import { useOBS } from '@/contexts/OBSContext';
 import { useLayout } from '@/contexts/DataContext';
 import { TooltipProvider } from "@/components/ui/tooltip";
 

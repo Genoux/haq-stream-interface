@@ -1,14 +1,12 @@
-// pages/index.js
+import React from 'react';
 
-export async function getServerSideProps(context: any) {
-  return {
-    redirect: {
-      destination: '/rooms/',
-      permanent: false, // Set to true if this redirect will always be in place
-    }
-  };
-}
+const IndexPage: React.FC = () => {
+  return (
+    <div>
+      <h1>Welcome to my app!</h1>
+      <p>This is the index page.</p>
+    </div>
+  );
+};
 
-export default function Home() {
-  return <div>Redirecting...</div>;
-}
+export default IndexPage;

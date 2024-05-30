@@ -50,6 +50,7 @@ export default function ConnectedTeams() {
       });
 
   }, [obs, connectedTeams]);
+  
   const handleReloadHeroes = () => {
     setIsLoading(true);  // Start loading
     setReloadTrigger(prev => prev + 1);
