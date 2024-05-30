@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useObsHeroImageSetup } from '@/hooks/useObsSceneSetup';  // Adjust the import path as needed
 import { banConfiguration } from '@/lib/constants';
 
-const HeroesBan = ({ heroes, color, reloadTrigger, onLoadingComplete }) => {
+const HeroesBan = ({ heroes, color, onLoadingComplete }) => {
   useObsHeroImageSetup(heroes, color, banConfiguration, onLoadingComplete);
 
   return (

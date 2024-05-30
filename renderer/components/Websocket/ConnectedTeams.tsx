@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useOBS } from '@/contexts/OBSContext';
-import OBSConnection from '@/components/Websocket/ConnectionButton';
-import Loading from '@/components/Loading';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useRooms } from '@/contexts/RoomsContext';
@@ -9,9 +7,10 @@ import { Badge } from '@/components/ui/badge';
 import { EyeIcon } from 'lucide-react';
 import HeroesSelected from '@/components/HeroesSelected';
 import HeroesBan from '@/components/HeroesBan';
-import { updateObsTeamTitle } from '@/hooks/useObsSceneSetup';
+import { updateObsTeamCard, updateObsLayoutTitle } from '@/hooks/useObsSceneSetup';
 import SpinnerCircle from '@/components/common/SpinnerCircle';
 import { Check } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 export default function ConnectedTeams() {
   const { connectedTeams, obs, loading, disconnectOBS } = useOBS();
@@ -21,12 +20,13 @@ export default function ConnectedTeams() {
   const [reloadTrigger, setReloadTrigger] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const domain = process.env.NEXT_PUBLIC_DRAFT || 'http://localhost:3000';
+  const [inputValue, setInputValue] = useState('Match 1');
 
   const handleOpenDraftWindow = (roomID: string) => {
     if (window.ipc && window.ipc.send) {
       const roomParams = new URLSearchParams({ id: roomID }).toString();
-      window.ipc.send('open-draft-window', roomParams);
-    }
+      window.ipc.send('open-draft-window', roomParams)
+    } 
   };
 
   function openLinkExternally(url: string) {
@@ -41,7 +41,7 @@ export default function ConnectedTeams() {
     }, {});
 
     // Process all updates at once
-    updateObsTeamTitle(obs, teamNameUpdates)
+    updateObsTeamCard(obs, teamNameUpdates)
       .then(() => {
         console.log("All team names updated successfully.");
       })
@@ -49,8 +49,10 @@ export default function ConnectedTeams() {
         console.error('Error updating OBS text:', error);
       });
 
+    updateObsLayoutTitle(obs, inputValue);
+
   }, [obs, connectedTeams]);
-  
+
   const handleReloadHeroes = () => {
     setIsLoading(true);  // Start loading
     setReloadTrigger(prev => prev + 1);
@@ -60,8 +62,15 @@ export default function ConnectedTeams() {
     setIsLoading(false);
   };
 
+
+  const handleInputChange = (event: any) => {
+    setInputValue(event.target.value);
+    updateObsLayoutTitle(obs, event.target.value);
+  };
+
   return (
     <AnimatePresence mode='wait'>
+
       <div
         className='ml-[26px] flex justify-center h-screen items-center absolute top-0 left-0 z-90 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
         <motion.div
@@ -81,16 +90,17 @@ export default function ConnectedTeams() {
               <div className='flex gap-2 items-center w-full justify-between border-b pb-4'>
                 <div className='flex gap-4'>
                   <div className='flex gap-2 items-center'>
-                      <div className='border border-green-600 rounded-full bg-green-600 bg-opacity-30 p-0.5'>
-                        <Check size={12} className='text-green-600' />
-                      </div>
+                    <div className='border border-green-600 rounded-full bg-green-600 bg-opacity-30 p-0.5'>
+                      <Check size={12} className='text-green-600' />
+                    </div>
                     <h1 className='text-lg font-medium'>Room {roomID}</h1>
                   </div>
                   <Badge variant='secondary' className='rounded-full'>{room?.status.capitalize()}</Badge>
                 </div>
-                <div className='flex gap-1'>
-                  <Button onClick={() => handleOpenDraftWindow(roomID)} variant="default" size={'sm'}><EyeIcon size={16} /></Button>
-                  <Button onClick={handleReloadHeroes} variant="outline" size={'sm'} className='w-16'>
+                <div className='flex gap-1 items-center h-fit justify-end'>
+                  <Input className='w-24 h-8 uppercase' placeholder='' onChange={handleInputChange} value={inputValue} />
+                  <Button className='h-8' onClick={() => handleOpenDraftWindow(roomID)} variant="default" size={'sm'}><EyeIcon size={16} /></Button>
+                  <Button className='h-8' onClick={handleReloadHeroes} variant="outline" size={'sm'}>
                     {isLoading ? (
                       <SpinnerCircle />
                     ) : (
@@ -110,10 +120,10 @@ export default function ConnectedTeams() {
                       </div>
                       <div className='flex flex-col gap-2'>
                         <div>
-                          <HeroesSelected heroes={team.heroes_selected} color={team.color} reloadTrigger={reloadTrigger} onLoadingComplete={onLoadingComplete} />
+                          <HeroesSelected heroes={team.heroes_selected} color={team.color} onLoadingComplete={onLoadingComplete} />
                         </div>
                         <div>
-                          <HeroesBan heroes={team.heroes_ban} color={team.color} reloadTrigger={reloadTrigger} onLoadingComplete={onLoadingComplete} />
+                          <HeroesBan heroes={team.heroes_ban} color={team.color} onLoadingComplete={onLoadingComplete} />
                         </div>
                       </div>
                     </section>

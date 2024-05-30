@@ -14,7 +14,6 @@ const DraftPage = () => {
 
   useEffect(() => {
     const query = router.query;
-    console.log("useEffect - query:", query.id);
     setRoom(query.id);
   }, [router]);
 
