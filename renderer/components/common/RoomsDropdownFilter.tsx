@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-const DropdownFilter = ({ options, onSelect, defaultValue }) => {
+const RoomsDropdownFilter = ({ options, onSelect, defaultValue }) => {
   return (
     <Select onValueChange={(value) => onSelect(value)} defaultValue={defaultValue}>
       <SelectTrigger className="w-[180px]">
@@ -24,4 +24,4 @@ const DropdownFilter = ({ options, onSelect, defaultValue }) => {
   );
 };
 
-export default DropdownFilter;
+export default RoomsDropdownFilter;

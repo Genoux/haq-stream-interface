@@ -13,20 +13,22 @@ const RoomsPage = () => {
     <RoomsProvider>
 
       {obs && connectedTeams.length > 0 && (
-        <ConnectedTeams />
+        <div>
+          <ConnectedTeams />
+        </div>
       )}
       <div className={`flex flex-col relative ${obs ? '-z-10' : 'z-0'}`}>
         <TitleBar title='Rooms' />
-          <AnimatePresence mode='wait'>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, delay: 0.2 }}
-            >
-              <Rooms />
-            </motion.div>
-          </AnimatePresence>
+        <AnimatePresence mode='wait'>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, delay: 0.2 }}
+          >
+            <Rooms />
+          </motion.div>
+        </AnimatePresence>
       </div>
 
     </RoomsProvider>

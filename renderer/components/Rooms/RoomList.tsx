@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/card"
 import EmptyBlock from '@/components/common/EmptyBlock';
 import { ScrollArea } from "@/components/ui/scroll-area"
-import DropdownFilter from '@/components/common/DropdownFilter';
+import RoomsDropdownFilter from '@/components/common/RoomsDropdownFilter';
 
 const Rooms = () => {
   const { rooms } = useRooms();
@@ -46,54 +46,60 @@ const Rooms = () => {
 
   return (
     <div className={`flex flex-col px-3.5 py-4`} style={{ height: `calc(100vh - 52px)` }}>
-      {rooms.length === 0 && (
-        <EmptyBlock title='No rooms' message="There's no room in the database yet." />
-      )}
-      <Card className="flex flex-col flex-grow pr-2 py-4 rounded-sm">
+      <Card className={`flex flex-col flex-grow ${rooms.length === 0 ? '0' : 'pr-2'} rounded-sm`}>
         <CardHeader>
           <div className='flex w-full justify-between items-center'>
             <div>
               <CardTitle>Rooms: {rooms.length}</CardTitle>
               <CardDescription>Recent aram draft pick rooms</CardDescription>
             </div>
-            <DropdownFilter options={statusOptions} onSelect={handleStatusFilter} defaultValue="all" />
+            <RoomsDropdownFilter options={statusOptions} onSelect={handleStatusFilter} defaultValue="all" />
           </div>
         </CardHeader>
-        <ScrollArea className='flex-grow h-[100px]' >
-          <CardContent className="flex-grow flex flex-col  px-4 py-0">
-            <Table>
-              <TableHeader>
-                <TableRow >
-                  <TableHead>ID</TableHead>
-                  <TableHead >
-                    <div className='flex gap-1 items-center'>
-                      <span className='w-2 h-2 rounded-full bg-blue-600'></span>
-                      <p>Blue</p>
-                    </div>
-                  </TableHead>
-                  <TableHead >
-                    <div className='flex gap-1 items-center'>
-                      <span className='w-2 h-2 rounded-full bg-red-600'></span>
-                      <p>Red</p>
-                    </div>
-                  </TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className='text-right'></TableHead>
-                  <TableHead className="text-right"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredRooms.map((room) => (
-                  <RoomItem
-                    key={room.id}
-                    room={room}
-                  />
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </ScrollArea>
+        {rooms.length === 0 ? (
+          <div className='border-t p-4 flex justify-center items-center h-full'>
+            <EmptyBlock title='No rooms' message="There's no room in the database yet." />
+          </div>
+        ) : (
+          <ScrollArea className='flex-grow h-[100px]' >
+            <CardContent className="flex-grow flex flex-col  px-4 py-0">
+              <Table>
+                <TableHeader>
+                  <TableRow >
+                    <TableHead>ID</TableHead>
+                    <TableHead >
+                      <div className='flex gap-1 items-center'>
+                        <span className='w-2 h-2 rounded-full bg-blue-600'></span>
+                        <p>Blue</p>
+                      </div>
+                    </TableHead>
+                    <TableHead >
+                      <div className='flex gap-1 items-center'>
+                        <span className='w-2 h-2 rounded-full bg-red-600'></span>
+                        <p>Red</p>
+                      </div>
+                    </TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className='text-right'></TableHead>
+                    <TableHead className="text-right"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredRooms.map((room) => (
+                    <RoomItem
+                      key={room.id}
+                      room={room}
+                    />
+                  ))}
+
+                </TableBody>
+              </Table>
+            </CardContent>
+          </ScrollArea>
+
+        )}
+
       </Card>
     </div>
   );
