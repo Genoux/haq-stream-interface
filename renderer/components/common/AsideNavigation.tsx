@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { User2, Plug, Server, DoorOpen, LayoutPanelTop  } from "lucide-react"
+import { User2, Server, DoorOpen } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {

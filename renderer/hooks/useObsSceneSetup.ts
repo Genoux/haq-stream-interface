@@ -60,3 +60,11 @@ export const updateObsLayoutTitle = (obs, text) => {
     inputSettings: { text: text }
   })
 }
+
+
+export const updateObsGameType= (obs, text) => {
+  return obs.call('SetInputSettings', {
+    inputName: 'Game Type',
+    inputSettings: { file: `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/${text}.png` },
+  })
+}

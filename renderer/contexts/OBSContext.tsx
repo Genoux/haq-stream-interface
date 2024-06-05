@@ -81,7 +81,7 @@ export const OBSProvider = ({ children }) => {
   const connectToOBS = async (selectedTeams: Team[]) => {
     try {
       setLoading(true);
-      const obsInstance = await connectOBS('ws://96.23.228.247:4455', '123456');
+      const obsInstance = await connectOBS('ws://localhost:4455', '123456');
       setObs(obsInstance);
       subscribeToTeamUpdates(selectedTeams);
       await fetchConnectedTeams(selectedTeams);

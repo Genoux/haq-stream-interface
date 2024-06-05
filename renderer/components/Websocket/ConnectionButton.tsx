@@ -10,7 +10,7 @@ type OBSConnectionProps = {
   className?: string;
 };
 
-const OBSConnection = ({ selectedTeams, className }: OBSConnectionProps) => {
+const ConnectionButton = ({ selectedTeams, className }: OBSConnectionProps) => {
   const { connectToOBS, disconnectOBS, obs, loading } = useOBS();
   const { toast } = useToast();
 
@@ -48,4 +48,4 @@ const OBSConnection = ({ selectedTeams, className }: OBSConnectionProps) => {
   );
 };
 
-export default OBSConnection;
+export default ConnectionButton;

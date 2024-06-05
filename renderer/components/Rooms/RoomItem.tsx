@@ -1,10 +1,9 @@
 import { TableRow, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Link from 'next/link';
 import { format, formatDistanceToNow, isToday, parseISO } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz'; // for timezone conversion
-import OBSConnection from '@/components/Websocket/ConnectionButton';
+import { toZonedTime } from 'date-fns-tz';
+import ConnectionButton from '@/components/Websocket/ConnectionButton';
 import { useOBS } from '@/contexts/OBSContext';
 interface TeamItemProps {
   room: {
@@ -78,7 +77,7 @@ const RoomItem = ({ room }: TeamItemProps) => {
           {isRoomConnected ? (
             <Button className='min-w-32' size="sm" variant="outline" onClick={disconnectOBS}>Disconnect</Button>
           ) : (
-            <OBSConnection className='min-w-32' selectedTeams={[room.blue, room.red]} />
+            <ConnectionButton className='min-w-32' selectedTeams={[room.blue, room.red]} />
           )}
           <Button onClick={() => handleOpenDraftWindow(room.id)} variant="outline" size={'sm'}>View</Button>
         </div>

@@ -12,7 +12,7 @@ const EmptyBlock = ({ title, message }: EmptyBlockProps) => {
   const router = useRouter();
 
   return (
-    <div className="h-screen top-0 left-0 absolute w-full flex flex-1 items-center justify-center rounded-lg shadow-sm">
+    <div className=" top-0 left-0  w-full flex flex-1 items-center justify-center rounded-lg shadow-sm">
       <div className="flex flex-col items-center gap-1 text-center">
         <h3 className="text-2xl font-bold tracking-tight">
           {title}
