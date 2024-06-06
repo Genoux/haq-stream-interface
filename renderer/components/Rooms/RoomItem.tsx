@@ -41,11 +41,6 @@ const RoomItem = ({ room, checkedRoom, setCheckedRoom }: ItemProps) => {
     window.ipc.send('open-external-link', url);
   }
 
-  const { game, disconnectOBS } = useOBS();
-  const isRoomConnected = game && game.teams.length === 2 &&
-    game.teams.some(team => team.name === room.blue.name) &&
-    game.teams.some(team => team.name === room.red.name);
-
   const getBadgeVariant = (status) => {
     switch (status) {
       case 'waiting':
@@ -73,7 +68,6 @@ const RoomItem = ({ room, checkedRoom, setCheckedRoom }: ItemProps) => {
 
 
   const handleRowClick = (e) => {
-    console.log("handleRowClick - e:", e);
     // Ignore click if it's on an interactive element
     if (
       e.target.tagName === 'BUTTON' ||
@@ -87,7 +81,6 @@ const RoomItem = ({ room, checkedRoom, setCheckedRoom }: ItemProps) => {
     } else {
       setCheckedRoom(room);
     }
-   
   };
 
   return (
