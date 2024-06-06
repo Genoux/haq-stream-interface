@@ -2,19 +2,19 @@ import React from 'react';
 import Rooms from '@/components/Rooms/RoomList';
 import { RoomsProvider } from '@/contexts/RoomsContext';
 import TitleBar from '@/components/common/TitleBar';
-import ConnectedTeams from '@/components/Websocket/ConnectedTeams';
+import ConnectedGame from '@/components/Websocket/ConnectedGame';
 import { useOBS } from '@/contexts/OBSContext';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const RoomsPage = () => {
-  const { obs, connectedTeams } = useOBS();
+  const { obs, game } = useOBS();
 
   return (
     <RoomsProvider>
 
-      {obs && connectedTeams.length > 0 && (
+      {obs && game && (
         <div>
-          <ConnectedTeams />
+          <ConnectedGame />
         </div>
       )}
       <div className={`flex flex-col relative ${obs ? '-z-10' : 'z-0'}`}>

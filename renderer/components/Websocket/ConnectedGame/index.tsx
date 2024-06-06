@@ -1,23 +1,29 @@
-// app/components/Websocket/ConnectedTeams.tsx
 import React, { useEffect, useState } from 'react';
 import { useOBS } from '@/contexts/OBSContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import ConnectedTeamsHeader from './ConnectedTeamsHeader';
-import TeamSection from './TeamSection';
+import ConnectedTeamsHeader from './HeaderSection';
+import TeamSection from './DraftSection';
 import SpinnerCircle from '@/components/common/SpinnerCircle';
 import { useRooms } from '@/contexts/RoomsContext';
-import { updateObsTeamCard, updateObsLayoutTitle } from '@/hooks/useObsSceneSetup';
+import { updateObsTeamCard, updateObsLayoutTitle, updateObsGameType } from '@/hooks/useObsSceneSetup';
 import { Button } from '@/components/ui/button';
 
 export default function ConnectedTeams() {
-  const { connectedTeams, obs, loading, disconnectOBS } = useOBS();
+  const { game, obs, loading, disconnectOBS, updateGameTitle, updateGameType } = useOBS();
   const { rooms } = useRooms();
-  const roomID = connectedTeams.map(team => team.room)[0];
-  const room = rooms.find(r => r.id === roomID);
+  const roomID = game.id;
+  const room = rooms.find(r => r.id === (roomID as unknown as string));
   const [reloadTrigger, setReloadTrigger] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const domain = process.env.NEXT_PUBLIC_DRAFT || 'http://localhost:3000';
-  const [inputValue, setInputValue] = useState('Match 1');
+  
+  const [inputValue, setInputValue] = useState(game.title || 'Match 1');
+  const [gameType, setGameType] = useState(game.gameType || 'bo3');
+
+  const teamNameUpdates = game.teams.reduce((updates, team) => {
+    updates[`${team.color}-team-name`] = team.name;
+    return updates;
+  }, {});
 
   const handleOpenDraftWindow = (roomID: string) => {
     if (window.ipc && window.ipc.send) {
@@ -28,18 +34,12 @@ export default function ConnectedTeams() {
 
   useEffect(() => {
     if (!obs) return;
-    const teamNameUpdates = connectedTeams.reduce((updates, team) => {
-      updates[`${team.color}-team-name`] = team.name;
-      return updates;
-    }, {});
 
     updateObsTeamCard(obs, teamNameUpdates)
-      .then(() => console.log("All team names updated successfully."))
-      .catch(error => console.error('Error updating OBS text:', error));
-
     updateObsLayoutTitle(obs, inputValue);
+    updateObsGameType(obs, gameType);
 
-  }, [obs, connectedTeams]);
+  }, [obs, game, inputValue, gameType]);
 
   const handleReloadHeroes = () => {
     setIsLoading(true);
@@ -50,9 +50,22 @@ export default function ConnectedTeams() {
     setIsLoading(false);
   };
 
-  const handleInputChange = (event: any) => {
+  const OnInputChange = (event: any) => {
     setInputValue(event.target.value);
     updateObsLayoutTitle(obs, event.target.value);
+    const teamId = game.id; // Assuming single team for simplicity
+    if (teamId) {
+      updateGameTitle(event.target.value);
+    }
+  };
+
+  const handleGameTypeChange = (value: string) => {
+    setGameType(value);
+    updateObsGameType(obs, value);
+    const teamId = game.id; // Assuming single team for simplicity
+    if (teamId) {
+      updateGameType(value);
+    }
   };
 
   return (
@@ -69,14 +82,16 @@ export default function ConnectedTeams() {
               <ConnectedTeamsHeader
                 room={room}
                 inputValue={inputValue}
-                handleInputChange={handleInputChange}
+                OnInputChange={OnInputChange}
                 handleOpenDraftWindow={handleOpenDraftWindow}
                 handleReloadHeroes={handleReloadHeroes}
                 isLoading={isLoading}
                 disconnectOBS={disconnectOBS}
+                handleGameTypeChange={handleGameTypeChange}
+                gameType={gameType}
               />
               <div className='flex flex-col gap-6'>
-                {connectedTeams.map((team) => (
+                {game.teams.map((team) => (
                   <TeamSection key={team.id} team={team} room={room} domain={domain} onLoadingComplete={onLoadingComplete} />
                 ))}
               </div>
