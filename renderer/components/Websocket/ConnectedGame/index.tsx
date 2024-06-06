@@ -2,25 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { useOBS } from '@/contexts/OBSContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import ConnectedTeamsHeader from './HeaderSection';
-import TeamSection from './DraftSection';
+import DraftSection from './DraftSection';
 import SpinnerCircle from '@/components/common/SpinnerCircle';
 import { useRooms } from '@/contexts/RoomsContext';
 import { updateObsTeamCard, updateObsLayoutTitle, updateObsGameType } from '@/hooks/useObsSceneSetup';
 import { Button } from '@/components/ui/button';
+import ScoreSection from './ScoreSection';
 
 export default function ConnectedTeams() {
-  const { game, obs, loading, disconnectOBS, updateGameTitle, updateGameType } = useOBS();
+  const { game, obs, loading, disconnectOBS, updateGame } = useOBS();
   const { rooms } = useRooms();
-  const roomID = game.id;
+  const roomID = game?.id;
   const room = rooms.find(r => r.id === (roomID as unknown as string));
   const [reloadTrigger, setReloadTrigger] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const domain = process.env.NEXT_PUBLIC_DRAFT || 'http://localhost:3000';
-  
-  const [inputValue, setInputValue] = useState(game.title || 'Match 1');
-  const [gameType, setGameType] = useState(game.gameType || 'bo3');
 
-  const teamNameUpdates = game.teams.reduce((updates, team) => {
+  const [inputValue, setInputValue] = useState(game?.title || 'Match 1');
+  const [gameType, setGameType] = useState(game?.gameType || 'bo3');
+
+  const teams = [game?.blue, game?.red].filter(Boolean);
+
+  const teamNameUpdates = teams.reduce((updates, team) => {
     updates[`${team.color}-team-name`] = team.name;
     return updates;
   }, {});
@@ -35,11 +37,10 @@ export default function ConnectedTeams() {
   useEffect(() => {
     if (!obs) return;
 
-    updateObsTeamCard(obs, teamNameUpdates)
+    updateObsTeamCard(obs, teamNameUpdates);
     updateObsLayoutTitle(obs, inputValue);
     updateObsGameType(obs, gameType);
-
-  }, [obs, game, inputValue, gameType]);
+  }, [obs, teamNameUpdates, inputValue, gameType]);
 
   const handleReloadHeroes = () => {
     setIsLoading(true);
@@ -50,21 +51,20 @@ export default function ConnectedTeams() {
     setIsLoading(false);
   };
 
-  const OnInputChange = (event: any) => {
-    setInputValue(event.target.value);
-    updateObsLayoutTitle(obs, event.target.value);
-    const teamId = game.id; // Assuming single team for simplicity
-    if (teamId) {
-      updateGameTitle(event.target.value);
+  const onInputChange = (event: any) => {
+    const newTitle = event.target.value;
+    setInputValue(newTitle);
+    updateObsLayoutTitle(obs, newTitle);
+    if (game) {
+      updateGame({ title: newTitle });
     }
   };
 
   const handleGameTypeChange = (value: string) => {
     setGameType(value);
     updateObsGameType(obs, value);
-    const teamId = game.id; // Assuming single team for simplicity
-    if (teamId) {
-      updateGameType(value);
+    if (game) {
+      updateGame({ gameType: value });
     }
   };
 
@@ -82,7 +82,7 @@ export default function ConnectedTeams() {
               <ConnectedTeamsHeader
                 room={room}
                 inputValue={inputValue}
-                OnInputChange={OnInputChange}
+                OnInputChange={onInputChange}
                 handleOpenDraftWindow={handleOpenDraftWindow}
                 handleReloadHeroes={handleReloadHeroes}
                 isLoading={isLoading}
@@ -91,8 +91,11 @@ export default function ConnectedTeams() {
                 gameType={gameType}
               />
               <div className='flex flex-col gap-6'>
-                {game.teams.map((team) => (
-                  <TeamSection key={team.id} team={team} room={room} domain={domain} onLoadingComplete={onLoadingComplete} />
+                {teams.map((team) => (
+                  <div key={team.id} className='flex flex-col gap-2'>
+                    <ScoreSection team={team} />
+                    <DraftSection key={team.id} team={team} onLoadingComplete={onLoadingComplete} />
+                  </div>
                 ))}
               </div>
               <div className='flex flex-col border-t w-full items-end pt-4'>
