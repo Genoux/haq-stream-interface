@@ -4,8 +4,12 @@ export const connectOBS = async (url, password) => {
   const obs = new OBSWebSocket();
   try {
     console.log('Attempting to connect to OBS WebSocket...');
-    await obs.connect(url, password);
-    console.log('Successfully connected to OBS WebSocket');
+    await obs.connect(url, password).then(() => {
+      console.log("awaitobs.connect - obs:", obs);
+      console.log('Successfully connected to OBS WebSocket');
+    }).catch((error) => {
+      throw error;
+    });
     return obs;
   } catch (error) {
     console.error('Failed to connect to OBS WebSocket:', error);
