@@ -8,6 +8,7 @@ import { useRooms } from '@/contexts/RoomsContext';
 import { updateObsTeamCard, updateObsLayoutTitle, updateObsGameType } from '@/hooks/useObsSceneSetup';
 import { Button } from '@/components/ui/button';
 import ScoreSection from './ScoreSection';
+import { X } from 'lucide-react';
 
 export default function ConnectedTeams() {
   const { game, obs, loading, disconnectOBS, updateGame } = useOBS();
@@ -71,7 +72,19 @@ export default function ConnectedTeams() {
   return (
     <AnimatePresence mode='wait'>
       <div className='ml-[26px] flex justify-center h-screen items-center absolute top-0 left-0 z-90 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          className="h-full"
+        >
+          <Button className='mr-[56px] absolute top-0 right-0 p-1 h-6 w- mt-6 ' size="sm" variant="ghost" onClick={disconnectOBS}>
+            <X size={18} />
+          </Button>
+        </motion.div>
+
         <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: 0.2 }}>
+
           {loading ? (
             <div className="w-full flex items-center justify-center gap-2">
               <SpinnerCircle />
@@ -82,23 +95,23 @@ export default function ConnectedTeams() {
               <ConnectedTeamsHeader
                 room={room}
                 inputValue={inputValue}
-                OnInputChange={onInputChange}
+                onInputChange={onInputChange}
+                onGameTypeChange={handleGameTypeChange}
                 handleOpenDraftWindow={handleOpenDraftWindow}
                 handleReloadHeroes={handleReloadHeroes}
                 isLoading={isLoading}
                 disconnectOBS={disconnectOBS}
-                handleGameTypeChange={handleGameTypeChange}
                 gameType={gameType}
               />
-              <div className='flex flex-col gap-6'>
+              <div className='flex flex-col gap-4'>
                 {teams.map((team) => (
-                  <div key={team.id} className='flex flex-col gap-2'>
+                  <div key={team.id} className='flex flex-col gap-1 border border-zinc-900 border-opacity-70 p-4 rounded-md bg-zinc-950/80 hover:border-opacity-100 hover:bg-background transition-all duration-100'>
                     <ScoreSection team={team} />
                     <DraftSection key={team.id} team={team} onLoadingComplete={onLoadingComplete} />
                   </div>
                 ))}
               </div>
-              <div className='flex flex-col border-t w-full items-end pt-4'>
+              <div className='hidden flex-col border-t w-full items-end pt-4'>
                 <Button className='bg-red-900 hover:bg-red-800 border-red-950' size="sm" variant="outline" onClick={disconnectOBS}>
                   Disconnect
                 </Button>

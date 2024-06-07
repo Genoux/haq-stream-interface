@@ -60,4 +60,8 @@
   body {
     @apply bg-background text-foreground overflow-hidden;
   }
+
+  .hide-check-icon [data-state="checked"] {
+    display: none !important;
+  }
 }
