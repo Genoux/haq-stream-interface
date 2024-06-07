@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Check } from 'lucide-react';
 import SpinnerCircle from '@/components/common/SpinnerCircle';
-import { EyeIcon } from 'lucide-react';
+import { EyeIcon, Webhook } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useOBS } from '@/contexts/OBSContext';
 import {
@@ -22,18 +22,18 @@ type Room = {
 interface HeaderProps {
   room: Room;
   inputValue: string;
-  OnInputChange: (event: any) => void;
+  onInputChange: (event: any) => void;
   handleOpenDraftWindow: (roomID: string) => void;
   handleReloadHeroes: () => void;
   isLoading: boolean;
   disconnectOBS: () => void;
-  handleGameTypeChange: (value: string) => void;
+  onGameTypeChange: (value: string) => void;
   gameType: string;
 }
 
-const DropdownGameType: React.FC<{ handleGameTypeChange: (value: string) => void; gameType: string }> = ({ handleGameTypeChange, gameType }) => {
+const DropdownGameType: React.FC<{ onGameTypeChange: (value: string) => void; gameType: string }> = ({ onGameTypeChange, gameType }) => {
   return (
-    <Select onValueChange={handleGameTypeChange} defaultValue={gameType}>
+    <Select onValueChange={onGameTypeChange} defaultValue={gameType}>
       <SelectTrigger className="w-[120px] h-8">
         <SelectValue placeholder="All" />
       </SelectTrigger>
@@ -46,15 +46,14 @@ const DropdownGameType: React.FC<{ handleGameTypeChange: (value: string) => void
 };
 
 const ConnectedTeamsHeader: React.FC<HeaderProps> = ({
-  room, inputValue, OnInputChange, handleOpenDraftWindow, handleReloadHeroes, isLoading, disconnectOBS, handleGameTypeChange, gameType,
+  room, inputValue, onInputChange, handleOpenDraftWindow, handleReloadHeroes, isLoading, disconnectOBS, onGameTypeChange, gameType,
 }) => {
-  const { obs } = useOBS();
 
   return (
-    <div className='flex flex-col gap-6 items-start w-full justify-between border-b pb-4'>
-      <div className='flex gap-4'>
+    <div className='flex gap-6 items-start w-full justify-between border-b pb-2'>
+      <div className='flex gap-2'>
         <div className='flex gap-2 items-center'>
-          <div className='border border-green-600 rounded-full bg-green-600 bg-opacity-30 p-0.5'>
+          <div className='hidden border border-green-600 rounded-full bg-green-600 bg-opacity-30 p-0.5'>
             <Check size={12} className='text-green-600' />
           </div>
           <h1 className='text-lg font-medium'>Room {room?.id}</h1>
@@ -62,8 +61,8 @@ const ConnectedTeamsHeader: React.FC<HeaderProps> = ({
         <Badge variant='secondary' className='rounded-full'>{room?.status.capitalize()}</Badge>
       </div>
       <div className='flex gap-1 items-center h-fit justify-start'>
-        <DropdownGameType handleGameTypeChange={handleGameTypeChange} gameType={gameType} />
-        <Input className='w-24 h-8 uppercase' placeholder='' onChange={OnInputChange} value={inputValue} />
+        <DropdownGameType onGameTypeChange={onGameTypeChange} gameType={gameType} />
+        <Input className='w-24 h-8 uppercase bg-background/95' placeholder='' onChange={onInputChange} value={inputValue} />
         <Button className='h-8' onClick={handleReloadHeroes} variant="outline" size={'sm'}>
           {isLoading ? <SpinnerCircle /> : 'Resync'}
         </Button>
