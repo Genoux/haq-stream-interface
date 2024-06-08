@@ -1,6 +1,5 @@
 // context/ServerStatusContext.js
 import { createContext, useState, useEffect } from "react";
-import { ServerInfo } from "@/data/servers"; // Make sure this import path is correct
 
 const ServerStatusContext = createContext({
   servers: [],

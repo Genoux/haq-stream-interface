@@ -12,8 +12,8 @@ interface Hero {
   [key: string]: any;
 }
 
-const HeroesSelected = ({ heroes, color, onLoadingComplete }) => {
-  useObsHeroImageSetup(heroes, color, selectConfiguration, onLoadingComplete);
+const HeroesSelected = ({ heroes, color }) => {
+  useObsHeroImageSetup(heroes, color, selectConfiguration);
 
   return (
     <TooltipProvider>
