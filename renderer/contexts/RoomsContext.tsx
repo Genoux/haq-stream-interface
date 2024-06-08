@@ -1,27 +1,28 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase_adp, supabase_ttm } from '@/utils/supabase/client';
-
-type Room = {
-  id: string; // Ensure this matches your team ID field type
-  [key: string]: any;
-};
+import { supabase_adp } from '@/utils/supabase/client';
+import { Room } from '@/types/global';
 
 type RoomsContextValue = {
   rooms: Room[];
   loading: boolean;
   error: Error | null;
+  activeRoom: Room | null;
+  setActiveRoom: (room: Room | null) => void;
 };
 
 const RoomsContext = createContext<RoomsContextValue>({
   rooms: [],
   loading: false,
   error: null,
+  activeRoom: null,
+  setActiveRoom: () => {},
 });
 
 export const RoomsProvider = ({ children }) => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
+  const [activeRoom, setActiveRoom] = useState<Room | null>(null);
 
   useEffect(() => {
     // Subscribe to room updates
@@ -75,6 +76,7 @@ export const RoomsProvider = ({ children }) => {
   };
 
 
+
   useEffect(() => {
     const fetchRooms = async () => {
       try {
@@ -95,7 +97,7 @@ export const RoomsProvider = ({ children }) => {
   }, []);
 
   return (
-    <RoomsContext.Provider value={{ rooms, loading, error }}>
+    <RoomsContext.Provider value={{ rooms, loading, error, activeRoom, setActiveRoom }}>
       {children}
     </RoomsContext.Provider>
   );

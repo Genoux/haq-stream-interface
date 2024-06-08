@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { OBSProvider } from '@/contexts/OBSContext';
 import Layout from '@/pages/layout';
 import { GeistSans } from 'geist/font/sans';
-import { LayoutProvider } from '@/contexts/DataContext';
 import { ServerStatusProvider } from "@/contexts/ServerStatusContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -24,11 +23,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   ));
 
   return (
-    <LayoutProvider>
-      <ServerStatusProvider>
-        {getLayout(<Component {...pageProps} />)}
-      </ServerStatusProvider>
-    </LayoutProvider>
+    <ServerStatusProvider>
+      {getLayout(<Component {...pageProps} />)}
+    </ServerStatusProvider>
   );
 }
 

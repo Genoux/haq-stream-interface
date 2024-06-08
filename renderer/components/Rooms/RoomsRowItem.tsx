@@ -1,12 +1,10 @@
+// components/Rooms/RoomsRowItem.tsx
 import { TableRow, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import { format, formatDistanceToNow, isToday, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import ConnectionButton from '@/components/Websocket/ConnectionButton';
-import { useOBS } from '@/contexts/OBSContext';
-import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
+import { useRooms } from '@/contexts/RoomsContext';
 
 type Room = {
   [key: string]: any;
@@ -14,21 +12,13 @@ type Room = {
 
 interface ItemProps {
   room: Room;
-  checkedRoom: Room;
-  setCheckedRoom: (room: Room) => void;
+  onSetRoom?: () => void; // Optional prop for setting match
 }
 
-const RoomItem = ({ room, checkedRoom, setCheckedRoom }: ItemProps) => {
+const RoomsRowItem = ({ room, onSetRoom }: ItemProps) => {
+  const { setActiveRoom } = useRooms(); // Access setActiveRoom from context
   const domain = process.env.NEXT_PUBLIC_DRAFT || 'http://localhost:3000';
   const timeZone = 'America/New_York'; // EST timezone
-
-  const onCheckedChange = () => {
-    if (checkedRoom === room) {
-      setCheckedRoom(null); // Uncheck if it's already checked
-    } else {
-      setCheckedRoom(room); // Check the new one
-    }
-  };
 
   const handleOpenDraftWindow = (roomID) => {
     if (window.ipc && window.ipc.send) {
@@ -66,31 +56,10 @@ const RoomItem = ({ room, checkedRoom, setCheckedRoom }: ItemProps) => {
     }
   };
 
-
-  const handleRowClick = (e) => {
-    // Ignore click if it's on an interactive element
-    if (
-      e.target.tagName === 'BUTTON' ||
-      e.target.tagName === 'A' ||
-      e.target.tagName === 'INPUT'
-    ) {
-      return;
-    }
-    if(checkedRoom === room) {
-      setCheckedRoom(null);
-    } else {
-      setCheckedRoom(room);
-    }
-  };
-
   return (
-    <TableRow onClick={handleRowClick} className={` ${checkedRoom === room ? 'bg-zinc-900 bg-opacity-50 hover:bg-zinc-900 hover:bg-opacity-80' : 'bg-transparent'} `}>
+    <TableRow>
       <TableCell className="w-[125px]">
         <div className="flex items-center gap-2">
-          <Checkbox
-            checked={checkedRoom === room}
-            onCheckedChange={onCheckedChange}
-          />
           <p className="font-medium">{room.id}</p>
         </div>
       </TableCell>
@@ -107,11 +76,12 @@ const RoomItem = ({ room, checkedRoom, setCheckedRoom }: ItemProps) => {
         <Badge className="min-w-[70px] flex justify-center w-fit" variant={getBadgeVariant(room.status)}>{room.status}</Badge>
       </TableCell>
       <TableCell className="text-right"></TableCell>
-      <TableCell className="text-right py-4">
+      <TableCell className="text-right py-4 flex gap-2">
         <Button onClick={() => handleOpenDraftWindow(room.id)} variant="outline" size={'sm'}>View</Button>
+        {onSetRoom && <Button onClick={onSetRoom} variant="outline" size={'sm'}>Set Match</Button>}
       </TableCell>
     </TableRow>
   );
 };
 
-export default RoomItem;
+export default RoomsRowItem;

@@ -1,34 +1,72 @@
-type TeamItemProps = {
-  team: {
-    [key: string]: any;
-  };
-}
+// components/Teams/TeamItem.tsx
+import React from 'react';
+import { TableRow, TableCell } from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
 
-const TeamItem = ({ team }: TeamItemProps) => {
+type Team = {
+  id: string;
+  name: string;
+  email: string;
+  coaches: { discord: string }[];
+  players: { discord: string }[];
+  substitutes: { discord: string }[];
+};
+
+type TeamItemProps = {
+  team: Team
+  onSelect: (team: any) => void;
+  isSelected: boolean;
+};
+
+const TeamItem = ({ team, onSelect, isSelected }: TeamItemProps) => {
+  const onCheckedChange = (event) => {
+    event.stopPropagation();
+    onSelect(team);
+  };
+
+  const handleRowClick = () => {
+    onSelect(team);
+  };
 
   return (
-    <div
-      className="bg-black flex justify-between items-center gap-2 rounded-lg text-left text-sm transition-all hover:bg-accent border p-3 cursor-pointer"
+    <TableRow
+      className={` ${isSelected ? 'bg-zinc-900 bg-opacity-50 hover:bg-zinc-900 hover:bg-opacity-80' : 'bg-transparent'} `}
+      onClick={handleRowClick}
     >
-      <div className="flex flex-col gap-2">
-        <div>
-          <p>{team.name}</p>
-          <p>{team.email}</p>
-          <p>coaches</p>
-          {team.coaches.map((coache) => (
-            <p>{coache.discord}</p>
-          ))}
-          <p>players</p>
-          {team.players.map((player) => (
-            <p>{player.discord}</p>
-          ))}
-          <p>Substitutes</p>
-          {team.substitutes.map((sub) => (
-            <p>{sub.discord}</p>
-          ))}
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <Checkbox
+            checked={isSelected}
+            onChange={onCheckedChange}
+          />
+          <p className="font-medium">{team.id}</p>
         </div>
-      </div>
-    </div>
+      </TableCell>
+      <TableCell>
+        <p>{team.name}</p>
+      </TableCell>
+      <TableCell>
+        <p>{team.email}</p>
+      </TableCell>
+      <TableCell className="w-[200px] pl-0 hidden">
+        <p>coaches</p>
+        {team.coaches.map((coache) => (
+          <p key={coache.discord}>{coache.discord}</p>
+        ))}
+      </TableCell>
+      <TableCell className="w-[200px] pl-0 hidden">
+        <p>players</p>
+        {team.players.map((player) => (
+          <p key={player.discord}>{player.discord}</p>
+        ))}
+      </TableCell>
+      <TableCell className="w-[200px] pl-0 hidden">
+        <p>Substitutes</p>
+        {team.substitutes.map((sub) => (
+          <p key={sub.discord}>{sub.discord}</p>
+        ))}
+      </TableCell>
+    </TableRow>
   );
 };
 

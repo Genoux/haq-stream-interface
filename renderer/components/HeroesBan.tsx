@@ -9,8 +9,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-const HeroesBan = ({ heroes, color, onLoadingComplete }) => {
-  useObsHeroImageSetup(heroes, color, banConfiguration, onLoadingComplete);
+const HeroesBan = ({ heroes, color }) => {
+  useObsHeroImageSetup(heroes, color, banConfiguration);
 
   return (
     <TooltipProvider>

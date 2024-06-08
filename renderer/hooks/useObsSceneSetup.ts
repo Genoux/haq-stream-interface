@@ -10,8 +10,9 @@ const generateImageUrl = (id, type) => {
   return `https://draft.tournoishaq.ca/images/champions/${type}/${id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`;
 };
 
-export const useObsHeroImageSetup = (heroes, color, config, onLoadingComplete) => {
+export const useObsHeroImageSetup = (heroes, color, config) => {
   const { obs } = useOBS();
+  
   useEffect(() => {
     if (!obs || heroes.length === 0) {
       return;
@@ -35,11 +36,10 @@ export const useObsHeroImageSetup = (heroes, color, config, onLoadingComplete) =
         });
     });
 
-    Promise.all(operations).then(() => onLoadingComplete()).catch(error => {
+    Promise.all(operations).then(() => console.log('OBS commands processed successfully.')).catch(error => {
       console.error('Error in processing OBS commands:', error);
-      onLoadingComplete();
     });
-  }, [obs, heroes, color, config, onLoadingComplete]);
+  }, [obs, heroes, color, config]);
 };
 
 
