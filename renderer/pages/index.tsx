@@ -1,12 +1,14 @@
-import React from 'react';
+// pages/index.js or any other component
+import React, { useEffect } from 'react';
 
-const IndexPage: React.FC = () => {
+const HomePage = () => {
+
+
   return (
     <div>
-      <h1>Welcome to my app!</h1>
-      <p>This is the index page.</p>
+      <h1>Home Page</h1>
     </div>
   );
 };
 
-export default IndexPage;
+export default HomePage;

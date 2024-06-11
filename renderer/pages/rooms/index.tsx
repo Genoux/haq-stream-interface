@@ -1,24 +1,54 @@
-import React from 'react';
-import Rooms from '@/components/Rooms/RoomList';
+import React, { useState } from 'react';
+import RoomsRowItem from '@/components/Rooms/RoomsRowItem';
+import RoomsTable from '@/components/Rooms/RoomsTable';
 import { RoomsProvider } from '@/contexts/RoomsContext';
 import TitleBar from '@/components/common/TitleBar';
-import ConnectedGame from '@/components/Websocket/ConnectedGame';
-import { useOBS } from '@/contexts/OBSContext';
 import { AnimatePresence, motion } from 'framer-motion';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const RoomsDropdownFilter = ({ options, onSelect, defaultValue }) => {
+  return (
+    <Select onValueChange={(value) => onSelect(value)} defaultValue={defaultValue}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="All" />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((option) => (
+          <SelectItem key={option} value={option.toLowerCase()}>
+            {option.charAt(0).toUpperCase() + option.slice(1)}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+};
 
 const RoomsPage = () => {
-  const { obs, game } = useOBS();
+  const [selectedStatus, setSelectedStatus] = useState('all');
+
+  const filterAllRooms = (rooms) => {
+    if (selectedStatus === 'all') {
+      return rooms;
+    }
+    return rooms.filter(room => room.status.toLowerCase() === selectedStatus);
+  };
 
   return (
     <RoomsProvider>
-
-      {obs && game && (
-        <div>
-          <ConnectedGame />
-        </div>
-      )}
-      <div className={`flex flex-col relative ${obs ? '-z-10' : 'z-0'}`}>
-        <TitleBar title='Rooms' />
+      <div className={`flex flex-col relative`}>
+        <TitleBar title='Rooms' > 
+        <RoomsDropdownFilter 
+              options={['all', 'waiting', 'ban', 'select', 'done']}
+              onSelect={setSelectedStatus} 
+              defaultValue="all"
+          />
+          </TitleBar>
         <AnimatePresence mode='wait'>
           <motion.div
             initial={{ opacity: 0 }}
@@ -26,11 +56,15 @@ const RoomsPage = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2, delay: 0.2 }}
           >
-            <Rooms />
+         
+            <RoomsTable filterRooms={filterAllRooms}>
+              {(filteredRooms) => filteredRooms.map(room => (
+                <RoomsRowItem key={room.id} room={room} />
+              ))}
+            </RoomsTable>
           </motion.div>
         </AnimatePresence>
       </div>
-
     </RoomsProvider>
   );
 };
