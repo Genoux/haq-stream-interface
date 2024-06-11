@@ -11,17 +11,32 @@ interface RoomProps {
 
 const Room: React.FC<RoomProps> = ({ room }) => {
   const { setActiveRoom } = useRooms();
-  const teams = [room.blue, room.red];
+
+  const handleOpenDraftWindow = (roomID) => {
+    if (window.ipc && window.ipc.send) {
+      const roomParams = new URLSearchParams({ id: roomID }).toString();
+      window.ipc.send('open-draft-window', roomParams);
+    }
+  };
+
   return (
-    <div className="flex items-center gap-4">
-      <Button onClick={() => {setActiveRoom(null)}}>X</Button>
-      <div className='flex flex-col gap-1'>
-        {teams.map((team: Team) => (
-          <div key={team.id}>
-            <HeroesSelected heroes={team.heroes_selected} color={team.color} />
-            <HeroesBan heroes={team.heroes_ban} color={team.color} />
+    <div className='p-4 flex flex-col gap-4'>
+      <div className='hidden flex items-center gap-2 w-full justify-end'>
+        <Button size='sm' className='h-8' variant='default' onClick={() => { setActiveRoom(null) }}>Change room</Button>
+        <Button className='h-8' onClick={() => handleOpenDraftWindow(room.id)} variant="outline" size={'sm'}>View</Button>
+      </div>
+      <div className="flex items-center gap-4 w-full">
+        <div className='flex w-full justify-between items-center'>
+          <div className='flex flex-col gap-2'>
+            <HeroesBan heroes={room.blue.heroes_ban} color={room.blue.color} />
+            <HeroesSelected heroes={room.blue.heroes_selected} color={room.blue.color} />
           </div>
-        ))}
+          <p>VS</p>
+          <div className='flex flex-col gap-2'>
+            <HeroesBan heroes={room.red.heroes_ban} color={room.red.color} />
+            <HeroesSelected heroes={room.red.heroes_selected} color={room.red.color} />
+          </div>
+        </div>
       </div>
     </div>
   );

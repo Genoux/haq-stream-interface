@@ -3,7 +3,7 @@ interface IpcHandler {
   on(channel: string, callback: (...args: unknown[]) => void): () => void;
 }
 
-interface ElectronAPI {
+interface ElectronAPI { 
   openLink(url: any): unknown;
   closeWindow: () => void;
 }
@@ -31,14 +31,8 @@ export interface Team {
 }
 export interface Room {
   id: string;
-  blue: {
-    name: string;
-    id: string;
-  };
-  red: {
-    name: string;
-    id: string;
-  };
+  blue: Team;
+  red: Team;
   gameType: string;
   blueScore: boolean[];
   redScore: boolean[];

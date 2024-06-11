@@ -23,6 +23,8 @@ type Match = {
 type MatchContextValue = {
   match: Match | null;
   selectedTeams: Team[];
+  matchTitle: string;
+  setMatchTitle: (title: string) => void;
   gameType: 'bo3' | 'bo5';
   selectTeam: (team: Team) => void;
   setMatch: () => void;
@@ -37,6 +39,7 @@ export const MatchProvider = ({ children }: { children: ReactNode }) => {
   const [selectedTeams, setSelectedTeams] = useState<Team[]>([]);
   const [match, setMatchState] = useState<Match | null>(null);
   const [gameType, setGameType] = useState<'bo3' | 'bo5'>('bo3');
+  const [matchTitle, setMatchTitle] = useState('Match 1');
 
   const selectTeam = (team: Team) => {
     setSelectedTeams((prevSelectedTeams) => {
@@ -106,7 +109,18 @@ export const MatchProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <MatchContext.Provider value={{ match, selectedTeams, selectTeam, setMatch, clearMatch, updateScores, gameType, setGameType }}>
+    <MatchContext.Provider value={{
+      match,
+      setMatch,
+      matchTitle,
+      setMatchTitle,
+      selectedTeams,
+      selectTeam,
+      clearMatch,
+      updateScores,
+      gameType,
+      setGameType
+    }}>
       {children}
     </MatchContext.Provider>
   );

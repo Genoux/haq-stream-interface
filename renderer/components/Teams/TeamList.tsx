@@ -69,7 +69,7 @@ const Teams = () => {
                   <SelectItem value="bo5">Best of 5</SelectItem>
                 </SelectContent>
               </Select>
-                <Button onClick={setMatch} variant={selectedTeams.length !== 2 ? 'outline' : 'default'} className="h-8" disabled={selectedTeams.length !== 2}>Set Match</Button>
+                <Button onClick={setMatch} variant={selectedTeams.length !== 2 ? 'outline' : 'default'} className="h-8" disabled={selectedTeams.length !== 2} size='sm'>Set Match</Button>
             </div>
           </div>
         </CardHeader>
