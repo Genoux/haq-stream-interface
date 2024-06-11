@@ -76,9 +76,9 @@ const RoomsRowItem = ({ room, onSetRoom }: ItemProps) => {
         <Badge className="min-w-[70px] flex justify-center w-fit" variant={getBadgeVariant(room.status)}>{room.status}</Badge>
       </TableCell>
       <TableCell className="text-right"></TableCell>
-      <TableCell className="text-right py-4 flex gap-2">
+      <TableCell className="text-right justify-end py-4 flex gap-1">
         <Button onClick={() => handleOpenDraftWindow(room.id)} variant="outline" size={'sm'}>View</Button>
-        {onSetRoom && <Button onClick={onSetRoom} variant="outline" size={'sm'}>Set Match</Button>}
+        {onSetRoom && <Button onClick={onSetRoom} variant="outline" size='sm'>Set Draft</Button>}
       </TableCell>
     </TableRow>
   );

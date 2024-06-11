@@ -17,23 +17,23 @@ const HeroesSelected = ({ heroes, color }) => {
 
   return (
     <TooltipProvider>
-      <div className="flex w-full gap-1">
+      <div className="flex flex-col w-full">
         {heroes.map((hero: Hero, index: number) => (
           <div key={index}>
             <div>
               <Tooltip delayDuration={100}>
                 <TooltipTrigger>
-                  <div key={hero.id} className='flex w-24 h-24 overflow-hidden relative rounded'>
+                  <div key={hero.id} className='flex w-96 h-24 overflow-hidden relative'>
                     {hero.id ? (
                       <Image
-                        src={`https://draft.tournoishaq.ca/images/champions/tiles/${hero.id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`}
+                        src={`https://draft.tournoishaq.ca/images/champions/splash/${hero.id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`}
                         alt={hero.name}
                         layout='fill'
                         objectFit='cover'
                         className='w-full'
                       />
                     ) : (
-                      <div className='bg-zinc-700 bg-opacity-20 w-24 h-24 rounded'></div>
+                      <div className='bg-zinc-700 bg-opacity-20 w-96 h-24 rounded'></div>
                     )}
                   </div>
                 </TooltipTrigger>

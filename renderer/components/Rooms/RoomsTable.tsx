@@ -11,6 +11,7 @@ import EmptyBlock from '@/components/common/EmptyBlock';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRooms } from '@/contexts/RoomsContext';
 import { Room } from '@/types/global'; // Adjust the path to where you defined the Room type
+import SpinnerCircle from '@/components/common/SpinnerCircle';
 
 interface RoomsTableProps {
   children: (filteredRooms: Room[]) => React.ReactNode;
@@ -18,15 +19,21 @@ interface RoomsTableProps {
 }
 
 const RoomsTable: React.FC<RoomsTableProps> = ({ children, filterRooms }) => {
-  const { rooms } = useRooms();
+  const { rooms, loading } = useRooms();
   const [filteredRooms, setFilteredRooms] = useState<Room[]>([]);
 
   useEffect(() => {
     setFilteredRooms(filterRooms(rooms));
   }, [rooms, filterRooms]);
 
+  if(loading) {
+   return <div className="flex flex-col items-center justify-center h-screen">
+     <SpinnerCircle />
+   </div>
+  }
+
   return (
-    <div className={`flex flex-col px-3 py-4 bg-muted/10`} style={{ height: `calc(100vh - 52px)` }}>
+    <div className={`flex flex-col px-3 py-4 bg-muted/10`} style={{ height: `calc(100vh - 120px)` }}>
       {rooms.length === 0 ? (
         <div className='border-t p-4 flex justify-center items-center h-full'>
           <EmptyBlock title='No rooms' message="There's no room in the database yet." />
