@@ -3,7 +3,7 @@ import HeroesSelected from '@/components/HeroesSelected';
 import HeroesBan from '@/components/HeroesBan';
 import { Button } from '@/components/ui/button';
 import { useRooms } from '@/contexts/RoomsContext';
-import type { Room, Team } from '@/types/global';
+import type { Room } from '@/types/global';
 
 interface RoomProps {
   room: Room; // Define a proper type for 'room'
@@ -31,7 +31,9 @@ const Room: React.FC<RoomProps> = ({ room }) => {
             <HeroesBan heroes={room.blue.heroes_ban} color={room.blue.color} />
             <HeroesSelected heroes={room.blue.heroes_selected} color={room.blue.color} />
           </div>
-          <p>VS</p>
+          <div className='flex flex-col gap-2 justify-center items-center'>
+          <Button size='sm' className='h-8' variant='default' onClick={() => { setActiveRoom(null) }}>Change room</Button>
+         </div>
           <div className='flex flex-col gap-2'>
             <HeroesBan heroes={room.red.heroes_ban} color={room.red.color} />
             <HeroesSelected heroes={room.red.heroes_selected} color={room.red.color} />

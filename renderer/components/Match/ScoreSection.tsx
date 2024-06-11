@@ -2,6 +2,8 @@ import React, { useEffect, useState, ReactNode } from 'react';
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion } from 'framer-motion';
 import { useMatch } from '@/contexts/MatchContext';
+import { updateObsScores } from '@/hooks/useObsSceneSetup';
+import { useOBS } from '@/contexts/OBSContext';
 import clsx from 'clsx';
 
 type Team = {
@@ -20,6 +22,7 @@ type ScoreSectionProps = {
 
 const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: Team, className?: string }) => {
   const { match, updateScores, setMatchTitle } = useMatch();
+  const { obs } = useOBS();
   const [isBlueWinner, setIsBlueWinner] = useState(false);
   const [isRedWinner, setIsRedWinner] = useState(false);
   //  const [matchTitle, setMatchTitle] = useState('Match 1');
@@ -28,11 +31,17 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
   const isTeamWinner = team.id === blue.id ? isBlueWinner : isRedWinner;
   const score = team.id === blue.id ? match.scores.blue : match.scores.red;
 
-
   const maxWins = match.gameType === 'bo3' ? 2 : 3;
+
+  useEffect(() => {
+    if (obs) {
+      updateObsScores(obs, match);
+    }
+  }, [match]);
 
   const handleCheckboxChange = (teamColor: 'blue' | 'red', index: number) => {
     updateScores(teamColor, index);
+    updateObsScores(obs, match);
   };
 
   const calculateWins = (score: boolean[]) => {
