@@ -43,15 +43,22 @@ export const useObsHeroImageSetup = (heroes, color, config) => {
 };
 
 
-export const updateObsTeamCard = (obs, textUpdates) => {
-  // This function would call OBS to set text properties
-  // This is a simple simulation of what the function might look like:
-  return Promise.all(Object.entries(textUpdates).map(([source, text]) => {
-    return obs.call('SetInputSettings', {
-      inputName: source,
-      inputSettings: { text: text }
+
+export const updateObsTeamCard = (obs, match) => {
+  console.log("updateObsTeamCard - match:", match);
+  const matchScores = match.scores;
+  const { blue, red } = match;
+  const teams = [blue, red];
+  teams.forEach((team) => {
+    const teamColor = team.id === blue.id ? 'blue' : 'red';
+    const name = team.name.toLowerCase().replace(/\s+/g, '-');
+    obs.call('SetInputSettings', {
+      inputName: `team-${teamColor}-logo`,
+      inputSettings: { file: `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/stream/teams/${name}.png` },
+    }).catch((error: Error) => {
+      console.error(`Failed to update team-${teamColor}-logo:`, error);
     });
-  }));
+  });
 }
 
 export const updateObsLayoutTitle = (obs, text) => {
@@ -61,17 +68,33 @@ export const updateObsLayoutTitle = (obs, text) => {
   })
 }
 
-export const updateObsGameType= (obs, text) => {
+export const updateObsMatchType = (obs, text) => {
+  const textToUpdate = text === 'bo3' ? 'Best of 3' : 'Best of 5';
   return obs.call('SetInputSettings', {
-    inputName: 'Game Type',
-    inputSettings: { file: `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/${text}.png` },
+    inputName: 'match-type',
+    inputSettings: { text: textToUpdate },
   })
 }
 
-export const updateObsWinnerTitle = (obs, text) => {
-  console.log("updateObsWinnerTitle - text:", text);
-  return obs.call('SetInputSettings', {
-    inputName: 'Match Winner',
-    inputSettings: { text: text }
-  })
+export const updateObsScores = (obs, match) => {
+  const matchScores = match.scores;
+  Object.keys(matchScores).forEach((teamColor) => {
+    const score = matchScores[teamColor].filter(Boolean).length;
+
+    obs.call('SetInputSettings', {
+      inputName: `team-${teamColor}-score`,
+      inputSettings: { file: `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/stream/scores/${match.gameType}-${score}.png` },
+    }).catch((error: Error) => {
+      console.error(`Failed to update score for team-${teamColor}-score:`, error);
+    });
+  });
 }
+
+
+// export const updateObsWinnerTitle = (obs, text) => {
+//   console.log("updateObsWinnerTitle - text:", text);
+//   return obs.call('SetInputSettings', {
+//     inputName: 'Match Winner',
+//     inputSettings: { text: text }
+//   })
+// }

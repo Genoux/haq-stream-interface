@@ -27,8 +27,6 @@ import {
 import { Button } from "@/components/ui/button";
 import EmptyBlock from '@/components/common/EmptyBlock';
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { updateObsGameType } from '@/hooks/useObsSceneSetup';
-import { useOBS } from '@/contexts/OBSContext';
 
 type Team = {
   id: string;
@@ -41,12 +39,9 @@ type Team = {
 
 const Teams = () => {
   const { teams } = useTeams();
-  const { obs } = useOBS();
   const { selectedTeams, selectTeam, setMatch, setGameType, gameType } = useMatch();
 
   const handleGameTypeChange = (value: 'bo3' | 'bo5') => {
-    console.log("handleGameTypeChange - value:", value);
-    updateObsGameType(obs,value);
     setGameType(value);
   };
 

@@ -1,5 +1,5 @@
 // pages/Match.tsx
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, cubicBezier } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
@@ -11,12 +11,22 @@ import RoomsTable from '@/components/Rooms/RoomsTable';
 import RoomsRowItem from '@/components/Rooms/RoomsRowItem';
 import Room from '@/components/Rooms/Room';
 import { Room as RoomType } from '@/types/global';
+import { updateObsMatchType, updateObsTeamCard } from '@/hooks/useObsSceneSetup';
+import { useOBS } from '@/contexts/OBSContext';
 
 const MatchContent = () => {
   const { match, clearMatch, matchTitle } = useMatch();
   const { rooms, activeRoom, setActiveRoom } = useRooms();
   const [buttonVisible, setButtonVisible] = useState(false);
   const buttonTimeoutRef = useRef(null);
+  const { obs } = useOBS();
+
+  useEffect(() => {
+    if (obs) {
+      updateObsMatchType(obs, match.gameType);
+      updateObsTeamCard(obs, match);
+    }
+  }, [match]);
 
   const handleSetRoom = (room: RoomType) => {
     setActiveRoom(room);
