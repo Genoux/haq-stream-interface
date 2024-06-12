@@ -42,24 +42,24 @@ export const useObsHeroImageSetup = (heroes, color, config) => {
   }, [obs, heroes, color, config]);
 };
 
-
-
-export const updateObsTeamCard = (obs, match) => {
+export const updateObsTeamCard = async (obs, match) => {
   console.log("updateObsTeamCard - match:", match);
-  const matchScores = match.scores;
   const { blue, red } = match;
   const teams = [blue, red];
-  teams.forEach((team) => {
-    const teamColor = team.id === blue.id ? 'blue' : 'red';
-    const name = team.name.toLowerCase().replace(/\s+/g, '-');
-    obs.call('SetInputSettings', {
-      inputName: `team-${teamColor}-logo`,
-      inputSettings: { file: `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/stream/teams/${name}.png` },
-    }).catch((error: Error) => {
-      console.error(`Failed to update team-${teamColor}-logo:`, error);
-    });
-  });
-}
+  
+  try {
+    for (const team of teams) {
+      const teamColor = team.id === blue.id ? 'blue' : 'red';
+      const name = team.name.toLowerCase().replace(/\s+/g, '-');
+      await obs.call('SetInputSettings', {
+        inputName: `team-${teamColor}-logo`,
+        inputSettings: { file: `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/stream/teams/${name}.png` },
+      });
+    }
+  } catch (error) {
+    console.error(`Failed to update team logos:`, error);
+  }
+};
 
 export const updateObsLayoutTitle = (obs, text) => {
   return obs.call('SetInputSettings', {
@@ -68,13 +68,22 @@ export const updateObsLayoutTitle = (obs, text) => {
   })
 }
 
-export const updateObsMatchType = (obs, text) => {
-  const textToUpdate = text === 'bo3' ? 'Best of 3' : 'Best of 5';
-  return obs.call('SetInputSettings', {
-    inputName: 'match-type',
-    inputSettings: { text: textToUpdate },
-  })
-}
+export const updateObsMatchType = async (obs, text) => {
+  try {
+    const textToUpdate = text === 'bo3' ? 'Best of 3' : 'Best of 5';
+    await obs.call('SetInputSettings', {
+      inputName: 'match-type',
+      inputSettings: { text: textToUpdate },
+    });
+  } catch (error) {
+    if (error.message.includes('No source was found by the name of')) {
+      console.error(`Failed to update match type: The source 'match-type' was not found. Please check if the source name is correct and exists in OBS.`);
+    } else {
+      console.error(`Failed to update match type:`, error);
+    }
+  }
+};
+
 
 export const updateObsScores = (obs, match) => {
   const matchScores = match.scores;

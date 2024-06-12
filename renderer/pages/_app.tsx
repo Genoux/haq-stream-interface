@@ -3,29 +3,19 @@ import type { AppProps } from 'next/app';
 import { ThemeProvider } from "@/components/theme-provider";
 import '@/styles/globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import { OBSProvider } from '@/contexts/OBSContext';
 import Layout from '@/pages/layout';
 import { GeistSans } from 'geist/font/sans';
-import { ServerStatusProvider } from "@/contexts/ServerStatusContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const getLayout = (Component as any).getLayout || ((page: React.ReactNode) => (
+  return(
     <Layout>
       <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-        <OBSProvider>
           <main className={GeistSans.className}>
-            {page}
+          <Component {...pageProps} />
           </main>
           <Toaster />
-        </OBSProvider>
       </ThemeProvider>
     </Layout>
-  ));
-
-  return (
-    <ServerStatusProvider>
-      {getLayout(<Component {...pageProps} />)}
-    </ServerStatusProvider>
   );
 }
 
