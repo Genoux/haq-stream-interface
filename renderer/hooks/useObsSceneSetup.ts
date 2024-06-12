@@ -63,7 +63,7 @@ export const updateObsTeamCard = async (obs, match) => {
 
 export const updateObsLayoutTitle = (obs, text) => {
   return obs.call('SetInputSettings', {
-    inputName: 'Match',
+    inputName: 'match-title',
     inputSettings: { text: text }
   })
 }

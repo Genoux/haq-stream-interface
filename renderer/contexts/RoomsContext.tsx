@@ -68,6 +68,7 @@ export const RoomsProvider = ({ children }) => {
   const fetchSingleRoom = async (roomId: any) => {
     try {
       const { data, error } = await supabase_adp.from('rooms').select('*, red(*), blue(*)').eq('id', roomId);
+      console.log("fetchSingleRoom - data:", data);
       if (error) throw error;
       setRooms((prevRooms) => [...prevRooms, data[0]]);
     } catch (error) {

@@ -105,7 +105,7 @@ const MatchContent = () => {
         </section>
 
         <motion.div
-          className="absolute bottom-0 left-0 w-full h-[50px] flex justify-center items-end"
+          className="absolute bottom-0 left-0 w-full h-[60px] flex justify-center items-end"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -113,7 +113,7 @@ const MatchContent = () => {
             {buttonVisible && (
               <motion.div
                 initial={{ opacity: 0, y: 0 }}
-                animate={{ opacity: 1, y: -12 }}
+                animate={{ opacity: 1, y: -24 }}
                 exit={{ opacity: 0, y: 8 }}
                 transition={{ duration: 0.2, ease: cubicBezier(0.42, 0, 0.58, 1) }}
               >
