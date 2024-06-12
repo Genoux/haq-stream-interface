@@ -2,7 +2,7 @@ import React, { useEffect, useState, ReactNode } from 'react';
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion } from 'framer-motion';
 import { useMatch } from '@/contexts/MatchContext';
-import { updateObsScores } from '@/hooks/useObsSceneSetup';
+import { updateObsScores, updateObsLayoutTitle } from '@/hooks/useObsSceneSetup';
 import { useOBS } from '@/contexts/OBSContext';
 import clsx from 'clsx';
 
@@ -36,6 +36,7 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
   useEffect(() => {
     if (obs) {
       updateObsScores(obs, match);
+      //updateObsLayoutTitle(obs, 'Match 1');
     }
   }, [match]);
 
@@ -69,7 +70,9 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
     const totalMatches = blueWins + redWins;
 
     if (!getWinner().blue && !getWinner().red) {
-      setMatchTitle(`Match ${totalMatches + 1}`);
+      const matchTitle = `Match ${totalMatches + 1}`;
+      setMatchTitle(matchTitle);
+      updateObsLayoutTitle(obs, matchTitle);
     }
   }, [match.scores]);
 
