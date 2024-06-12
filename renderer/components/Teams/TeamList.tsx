@@ -27,6 +27,7 @@ import {
 import { Button } from "@/components/ui/button";
 import EmptyBlock from '@/components/common/EmptyBlock';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import SpinnerCircle from '@/components/common/SpinnerCircle';
 
 type Team = {
   id: string;
@@ -38,12 +39,20 @@ type Team = {
 };
 
 const Teams = () => {
-  const { teams } = useTeams();
+  const { teams, loading } = useTeams();
   const { selectedTeams, selectTeam, setMatch, setGameType, gameType } = useMatch();
 
   const handleGameTypeChange = (value: 'bo3' | 'bo5') => {
     setGameType(value);
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <SpinnerCircle />
+      </div>
+    );
+  }
 
   return (
     <div className={`flex flex-col px-3 py-4 bg-muted/10`} style={{ height: `calc(100vh - 52px)` }}>
@@ -64,7 +73,7 @@ const Teams = () => {
                   <SelectItem value="bo5">Best of 5</SelectItem>
                 </SelectContent>
               </Select>
-                <Button onClick={setMatch} variant={selectedTeams.length !== 2 ? 'outline' : 'default'} className="h-8" disabled={selectedTeams.length !== 2} size='sm'>Set Match</Button>
+              <Button onClick={setMatch} variant={selectedTeams.length !== 2 ? 'outline' : 'default'} className="h-8" disabled={selectedTeams.length !== 2} size='sm'>Set Match</Button>
             </div>
           </div>
         </CardHeader>
@@ -89,7 +98,7 @@ const Teams = () => {
                 <TableBody>
                   {teams.map((team: Team) => (
                     <TeamItem
-                      key={team.id}
+                      key={team.id} // Add key prop here
                       team={team}
                       onSelect={selectTeam}
                       isSelected={selectedTeams.includes(team)}

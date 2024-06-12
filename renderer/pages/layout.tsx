@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import AsideNavigation from "@/components/common/AsideNavigation";
+import React from 'react';
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { OBSProvider } from '@/contexts/OBSContext';
 import '@/utils/strings'; // Import the global utility file here
 
 type LayoutProps = {
@@ -11,13 +11,12 @@ type LayoutProps = {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div>
+    <OBSProvider>
       <TooltipProvider delayDuration={0}>
         <div className="h-full flex items-stretch">
-          <AsideNavigation />
-          <main className="min-h-screen pl-[54px] w-full">{children}</main>
+          <main className="min-h-screen w-full">{children}</main>
         </div>
       </TooltipProvider>
-    </div>
+    </OBSProvider>
   );
 }

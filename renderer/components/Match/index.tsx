@@ -1,4 +1,3 @@
-// pages/Match.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, cubicBezier } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,8 @@ import RoomsRowItem from '@/components/Rooms/RoomsRowItem';
 import Room from '@/components/Rooms/Room';
 import { Room as RoomType } from '@/types/global';
 import { updateObsMatchType, updateObsTeamCard } from '@/hooks/useObsSceneSetup';
-import { useOBS } from '@/contexts/OBSContext';
+import { useOBS } from '@/contexts/OBSContext'
+import { useToast } from '@/components/ui/use-toast';
 
 const MatchContent = () => {
   const { match, clearMatch, matchTitle } = useMatch();
@@ -20,12 +20,28 @@ const MatchContent = () => {
   const [buttonVisible, setButtonVisible] = useState(false);
   const buttonTimeoutRef = useRef(null);
   const { obs } = useOBS();
+  const { toast } = useToast();
 
   useEffect(() => {
-    if (obs) {
-      updateObsMatchType(obs, match.gameType);
-      updateObsTeamCard(obs, match);
-    }
+    const updateOBS = async () => {
+      if (obs) {
+        try {
+          await updateObsMatchType(obs, match.gameType).catch(() => {
+            console.error("Failed to update match type");
+            toast({
+              title: "Failed to update match type",
+              description: "Please check if OBS is running and if the match type is correct.",
+              variant: 'destructive',
+            });
+          });
+          await updateObsTeamCard(obs, match).catch(console.error);
+        } catch (error) {
+          console.error('Error updating OBS:', error);
+        }
+      }
+    };
+
+    updateOBS();
   }, [match]);
 
   const handleSetRoom = (room: RoomType) => {
@@ -79,7 +95,6 @@ const MatchContent = () => {
                     <RoomsRowItem key={room.id} room={room} onSetRoom={() => handleSetRoom(room)} />
                   ))}
                 </RoomsTable>
-
               ) : (
                 <motion.div initial={{ opacity: 0, y: 2 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: 0.2 }}>
                   <Room room={activeRoom} />
