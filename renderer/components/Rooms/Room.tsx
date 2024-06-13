@@ -4,7 +4,6 @@ import HeroesBan from '@/components/HeroesBan';
 import { Button } from '@/components/ui/button';
 import { useRooms } from '@/contexts/RoomsContext';
 import type { Room } from '@/types/global';
-
 interface RoomProps {
   room: Room; // Define a proper type for 'room'
 }
@@ -32,7 +31,8 @@ const Room: React.FC<RoomProps> = ({ room }) => {
             <HeroesSelected heroes={room.blue.heroes_selected} color={room.blue.color} />
           </div>
           <div className='flex flex-col gap-2 justify-center items-center'>
-          <Button size='sm' className='h-8' variant='default' onClick={() => { setActiveRoom(null) }}>Change room</Button>
+            <Button size='sm' className='h-8 w-full' variant='default' onClick={() => { setActiveRoom(null) }}>Change room</Button>
+            <Button className='h-8 w-full' onClick={() => handleOpenDraftWindow(room.id)} variant="outline" size={'sm'}>View</Button>
          </div>
           <div className='flex flex-col gap-2'>
             <HeroesBan heroes={room.red.heroes_ban} color={room.red.color} />

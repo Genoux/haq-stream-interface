@@ -53,7 +53,7 @@ export const updateObsTeamCard = async (obs, match) => {
   console.log("updateObsTeamCard - match:", match);
   const { blue, red } = match;
   const teams = [blue, red];
-  
+
   try {
     for (const team of teams) {
       const teamColor = team.id === blue.id ? 'blue' : 'red';
@@ -63,9 +63,10 @@ export const updateObsTeamCard = async (obs, match) => {
         inputSettings: { file: `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/stream/teams/${name}.png` },
       });
     }
+    return { error: null };
   } catch (error) {
     console.error(`Failed to update team logos:`, error);
-    return error;
+    return { error };
   }
 };
 
@@ -76,9 +77,10 @@ export const updateObsLayoutTitle = async (obs, text) => {
       inputSettings: { text: text }
     });
     console.log(`Successfully updated match title to: ${text}`);
+    return { error: null };
   } catch (error) {
     console.error(`Failed to update match title:`, error);
-    return `Error updating match title: ${error.message}`;
+    return { error };
   }
 };
 
@@ -90,13 +92,14 @@ export const updateObsMatchType = async (obs, text) => {
       inputSettings: { text: textToUpdate },
     });
     console.log(`Successfully updated match type to: ${textToUpdate}`);
+    return { error: null };
   } catch (error) {
     if (error.message.includes('No source was found by the name of')) {
       console.error(`Failed to update match type: The source 'match-type' was not found. Please check if the source name is correct and exists in OBS.`);
     } else {
       console.error(`Failed to update match type:`, error);
     }
-    return error;
+    return { error };
   }
 };
 
@@ -111,16 +114,18 @@ export const updateObsScores = async (obs, match) => {
         inputSettings: { file: `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/stream/scores/${match.gameType}-${score}.png` },
       });
       console.log(`Successfully updated score for team-${teamColor}-score`);
+      return { error: null };
     } catch (error) {
       console.error(`Failed to update score for team-${teamColor}-score:`, error);
-      return error;
+      return { error };
     }
   });
 
   try {
     await Promise.all(operations);
+    return { error: null };
   } catch (error) {
     console.error('Error updating scores:', error);
-    return error;
+    return { error };
   }
 };

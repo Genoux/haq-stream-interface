@@ -31,7 +31,7 @@ const TeamItem = ({ team, onSelect, isSelected }: TeamItemProps) => {
   return (
     <TableRow
       key={team.id}
-      className={` ${isSelected ? 'bg-zinc-900 bg-opacity-50 hover:bg-zinc-900 hover:bg-opacity-80' : 'bg-transparent'} `}
+      className={`h-16 ${isSelected ? ' bg-zinc-900 bg-opacity-50 hover:bg-zinc-900 hover:bg-opacity-80' : 'bg-transparent'} `}
       onClick={handleRowClick}
     >
       <TableCell>

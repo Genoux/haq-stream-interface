@@ -1,5 +1,5 @@
 // contexts/OBSContext.ts
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useEffect, useContext, useState } from 'react';
 import { connectOBS, disconnectOBS } from '@/services/websocket/obsService';
 
 interface OBSContextType {
@@ -43,6 +43,16 @@ export const OBSProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (obs) {
+      obs.on('ConnectionClosed', (err) => {
+        console.error('OBS WebSocket error:', err);
+        setError(err.message);
+        disconnectOBSConnection();
+      });
+    }
+  }, [obs]);
 
   const disconnectOBSConnection = () => {
     if (obs) {

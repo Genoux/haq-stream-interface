@@ -5,8 +5,7 @@ export const connectOBS = async (url, password) => {
   try {
     console.log('Attempting to connect to OBS WebSocket...');
     await obs.connect(url, password).then(() => {
-      console.log("awaitobs.connect - obs:", obs);
-      console.log('Successfully connected to OBS WebSocket');
+      console.log('Connected to OBS WebSocket');
     }).catch((error) => {
       throw error;
     });
@@ -21,7 +20,7 @@ export const disconnectOBS = async (obs) => {
   if (obs) {
     try {
       await obs.disconnect();
-      console.log('Successfully disconnected from OBS WebSocket');
+      console.log('Disconnected from OBS WebSocket');
     } catch (error) {
       console.error('Failed to disconnect from OBS WebSocket:', error);
     }
