@@ -4,6 +4,7 @@ import React from 'react';
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { OBSProvider } from '@/contexts/OBSContext';
 import '@/utils/strings'; // Import the global utility file here
+import Image from 'next/image';
 
 type LayoutProps = {
   children: React.ReactNode;

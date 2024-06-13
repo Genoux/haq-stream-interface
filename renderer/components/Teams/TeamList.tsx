@@ -55,8 +55,8 @@ const Teams = () => {
   }
 
   return (
-    <div className={`flex flex-col px-3 py-4 bg-muted/10`} style={{ height: `calc(100vh - 52px)` }}>
-      <Card className={`flex flex-col flex-grow ${teams.length === 0 ? '0' : 'pr-2'} rounded-sm`}>
+    <div className={`flex flex-col px-3 py-4 bg-muted/10`} style={{ height: `calc(100vh)` }}>
+      <Card className={`flex flex-col flex-grow rounded-sm`}>
         <CardHeader>
           <div className='flex w-full justify-between items-center'>
             <div>

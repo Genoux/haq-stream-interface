@@ -82,7 +82,6 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
       <div className='flex gap-2 items-center w-full'>
         <div className='flex gap-1 justify-start items-center'>
           {team.name}
-          <span className="text-white opacity-50 font-normal">({team.id})</span>
         </div>
         <motion.div
           initial={{ opacity: 0, x: 5 }}

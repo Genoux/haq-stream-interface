@@ -13,37 +13,56 @@ import { Room as RoomType } from '@/types/global';
 import { updateObsMatchType, updateObsTeamCard } from '@/hooks/useObsSceneSetup';
 import { useOBS } from '@/contexts/OBSContext'
 import { useToast } from '@/components/ui/use-toast';
+import SpinnerCircle from '../common/SpinnerCircle';
 
 const MatchContent = () => {
   const { match, clearMatch, matchTitle } = useMatch();
   const { rooms, activeRoom, setActiveRoom } = useRooms();
   const [buttonVisible, setButtonVisible] = useState(false);
+  const [Resyncing, setResyncing] = useState(false);
   const buttonTimeoutRef = useRef(null);
   const { obs } = useOBS();
   const { toast } = useToast();
 
-  useEffect(() => {
-    const updateOBS = async () => {
+  const updateOBS = async () => {
+    setResyncing(true);
       if (obs) {
         try {
-          const { error } = await updateObsMatchType(obs, match.gameType)
-          if (error) {
+          const { error: matchTypeError } = await updateObsMatchType(obs, match.gameType);
+          if (matchTypeError) {
             toast({
               title: "Failed to update match type",
               description: "Please check if OBS is running and if the match type is correct.",
               variant: 'destructive',
             });
-            return
+            return;
           }
-          await updateObsTeamCard(obs, match).catch(console.error);
+  
+          const { error: teamCardError } = await updateObsTeamCard(obs, match);
+          if (teamCardError) {
+            toast({
+              title: "Failed to update team card",
+              description: "Please check if OBS is running and if the team card data is correct.",
+              variant: 'destructive',
+            });
+            return;
+          }
         } catch (error) {
           console.error('Error updating OBS:', error);
+          toast({
+            title: "Error updating OBS",
+            description: "An unexpected error occurred.",
+            variant: 'destructive',
+          });
+        } finally {
+          setResyncing(false);
         }
       }
-    };
+  }
 
+  useEffect(() => {
     updateOBS();
-  }, [match]);
+  }, [match, obs, toast]);
 
   const handleSetRoom = (room: RoomType) => {
     setActiveRoom(room);
@@ -106,7 +125,7 @@ const MatchContent = () => {
         </section>
 
         <motion.div
-          className="absolute bottom-0 left-0 w-full h-[60px] flex justify-center items-end"
+          className="absolute bottom-0 left-0 w-full h-[100px] flex justify-center items-end"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -117,9 +136,14 @@ const MatchContent = () => {
                 animate={{ opacity: 1, y: -24 }}
                 exit={{ opacity: 0, y: 8 }}
                 transition={{ duration: 0.2, ease: cubicBezier(0.42, 0, 0.58, 1) }}
+                className='flex'
               >
-                <Button className='w-fit flex justify-end m-1' size="sm" variant="default" onClick={() => clearMatch()}>
-                  <X size={18} />
+                <Button className='w-fit flex justify-end m-1 text-white bg-red-800 border border-red-900 hover:bg-red-900' size="sm" variant="default" onClick={() => clearMatch()}>
+                  Close
+                </Button>
+                <Button className='flex justify-end m-1 w-16 items-center' size="sm" variant="outline" onClick={() => updateOBS()}>
+                 
+                  {Resyncing ? <SpinnerCircle /> :  <p>Resync</p>}
                 </Button>
               </motion.div>
             )}

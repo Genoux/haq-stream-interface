@@ -33,7 +33,7 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ children, filterRooms }) => {
   }
 
   return (
-    <div className={`flex flex-col px-3 py-4 bg-muted/10`} style={{ height: `calc(100vh - 120px)` }}>
+    <div className={`flex flex-col px-3 py-4`} style={{ height: `calc(100vh - 110px)` }}>
       {rooms.length === 0 ? (
         <div className='border-t p-4 flex justify-center items-center h-full'>
           <EmptyBlock title='No rooms' message="There's no room in the database yet." />
