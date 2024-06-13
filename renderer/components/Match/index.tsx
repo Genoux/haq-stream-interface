@@ -26,14 +26,15 @@ const MatchContent = () => {
     const updateOBS = async () => {
       if (obs) {
         try {
-          await updateObsMatchType(obs, match.gameType).catch(() => {
-            console.error("Failed to update match type");
+          const { error } = await updateObsMatchType(obs, match.gameType)
+          if (error) {
             toast({
               title: "Failed to update match type",
               description: "Please check if OBS is running and if the match type is correct.",
               variant: 'destructive',
             });
-          });
+            return
+          }
           await updateObsTeamCard(obs, match).catch(console.error);
         } catch (error) {
           console.error('Error updating OBS:', error);
