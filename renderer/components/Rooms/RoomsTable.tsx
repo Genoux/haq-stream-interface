@@ -26,10 +26,10 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ children, filterRooms }) => {
     setFilteredRooms(filterRooms(rooms));
   }, [rooms, filterRooms]);
 
-  if(loading) {
-   return <div className="flex flex-col items-center justify-center h-screen">
-     <SpinnerCircle />
-   </div>
+  if (loading) {
+    return <div className="flex flex-col items-center justify-center h-screen">
+      <SpinnerCircle />
+    </div>
   }
 
   return (

@@ -10,23 +10,21 @@ const TeamsPageContent = () => {
   const { match } = useMatch();
 
   return (
-    <div>
-      <div className='relative flex flex-col'>
-        {match && (
-          <Match />
-        )}
-        <div className={`${match ? '-z-10 opacity-50' : 'z-0'}`}>
-          <AnimatePresence mode='wait'>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, delay: 0.2 }}
-            >
-              <Teams />
-            </motion.div>
-          </AnimatePresence>
-        </div>
+    <div className='relative flex flex-col'>
+      {match && (
+        <Match />
+      )}
+      <div className={`${match ? '-z-10 opacity-50' : 'z-0'}`}>
+        <AnimatePresence mode='wait'>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, delay: 0.2 }}
+          >
+            <Teams />
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

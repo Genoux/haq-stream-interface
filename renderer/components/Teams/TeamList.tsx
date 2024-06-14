@@ -28,6 +28,8 @@ import { Button } from "@/components/ui/button";
 import EmptyBlock from '@/components/common/EmptyBlock';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SpinnerCircle from '@/components/common/SpinnerCircle';
+import { useOBS } from '@/contexts/OBSContext';
+import { motion } from 'framer-motion';
 
 type Team = {
   id: string;
@@ -39,23 +41,25 @@ type Team = {
 };
 
 const Teams = () => {
-  const { teams, loading } = useTeams();
+  const { teams, loading, fetchTeams } = useTeams();
+  const { obs } = useOBS();
   const { selectedTeams, selectTeam, setMatch, setGameType, gameType } = useMatch();
+
+  const handleRefresh = () => {
+    console.log('Refreshing teams...');
+    fetchTeams();
+  };
 
   const handleGameTypeChange = (value: 'bo3' | 'bo5') => {
     setGameType(value);
   };
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <SpinnerCircle />
-      </div>
-    );
-  }
-
   return (
-    <div className={`flex flex-col px-3 py-4 bg-muted/10`} style={{ height: `calc(100vh)` }}>
+    <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5, delay: 0.3 }}
+      className={`flex flex-col w-full`} style={{ height: `calc(100vh - 16px)` }}>
       <Card className={`flex flex-col flex-grow rounded-sm`}>
         <CardHeader>
           <div className='flex w-full justify-between items-center'>
@@ -73,45 +77,62 @@ const Teams = () => {
                   <SelectItem value="bo5">Best of 5</SelectItem>
                 </SelectContent>
               </Select>
-              <Button onClick={setMatch} variant={selectedTeams.length !== 2 ? 'outline' : 'default'} className="h-8" disabled={selectedTeams.length !== 2} size='sm'>Set Match</Button>
+              <Button
+                onClick={setMatch}
+                variant={selectedTeams.length !== 2 ? 'outline' : 'default'}
+                className="h-8"
+                disabled={selectedTeams.length !== 2}
+                size='sm'
+              >
+                Set Match
+              </Button>
             </div>
           </div>
         </CardHeader>
-        {teams.length === 0 ? (
+        {loading || !obs ? (
           <div className='border-t p-4 flex justify-center items-center h-full'>
-            <EmptyBlock title='No teams' message="There are no teams available." />
+            <SpinnerCircle />
           </div>
         ) : (
-          <ScrollArea className='flex-grow h-[100px] relative'>
-            <CardContent className="flex-grow flex flex-col px-4 py-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead className='hidden'>Coaches</TableHead>
-                    <TableHead className='hidden'>Players</TableHead>
-                    <TableHead className='hidden'>Substitutes</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {teams.map((team: Team) => (
-                    <TeamItem
-                      key={team.id} // Add key prop here
-                      team={team}
-                      onSelect={selectTeam}
-                      isSelected={selectedTeams.includes(team)}
-                    />
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </ScrollArea>
+          <>
+            {teams.length === 0 ? (
+              <div className='border-t p-4 flex justify-center items-center h-full'>
+                <EmptyBlock handleRefresh={handleRefresh} title='No teams' message="There are no teams available." />
+              </div>
+            ) : (
+              <ScrollArea className='flex-grow h-[100px] relative'>
+                <CardContent className="flex-grow flex flex-col px-4 py-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead className='hidden'>Coaches</TableHead>
+                        <TableHead className='hidden'>Players</TableHead>
+                        <TableHead className='hidden'>Substitutes</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {teams.map((team: Team) => (
+                        <TeamItem
+                          key={team.id}
+                          team={team}
+                          onSelect={selectTeam}
+                          isSelected={selectedTeams.includes(team)}
+                        />
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </ScrollArea>
+            )}
+          </>
         )}
       </Card>
-    </div>
+    </motion.div>
   );
+
 };
 
 export default Teams;
