@@ -30,7 +30,9 @@ const IndexPageContent = () => {
           {match && (
             <Match />
           )}
-          <Teams />
+          <div className={`${match ? 'z-0 opacity-50' : 'z-0'}`}>
+            <Teams />
+          </div>
         </section>
         <section className='w-full hidden'>
           <Card>

@@ -95,7 +95,7 @@ const MatchContent = () => {
   return (
     <AnimatePresence mode='wait'>
       <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}
-        className='absolute h-screen top-0 left-0 z-90 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
+        className='absolute h-screen top-0 left-0 z-10 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
       >
         <section className='bg-black bg-opacity-20 w-full flex flex-col gap-2 p-4 top-0 left-0 relative'>
           <div className='grid grid-cols-3 items-center gap-2 w-full'>
@@ -142,7 +142,6 @@ const MatchContent = () => {
                   Close
                 </Button>
                 <Button className='flex justify-end m-1 w-16 items-center' size="sm" variant="outline" onClick={() => updateOBS()}>
-                 
                   {Resyncing ? <SpinnerCircle /> :  <p>Resync</p>}
                 </Button>
               </motion.div>
