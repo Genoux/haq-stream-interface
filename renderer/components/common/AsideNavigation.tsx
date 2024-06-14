@@ -49,7 +49,9 @@ export default function AsideNavigation() {
         className="min-w-[52px] border-r border-border/40 fixed h-full bg-black z-10 flex flex-col"
       >
         <div className="flex h-[52px] w-[52px] items-center justify-center border-b border-border/40">
-          <Logo fill="white" size={32} />
+          <Link href="/">
+            <Logo fill="white" size={32} />
+          </Link>
         </div>
         <div
           data-collapsed={true}

@@ -32,19 +32,17 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ children, filterRooms }) => {
   }, [rooms, filterRooms]);
 
   return (
-    <div className={`flex flex-col px-3 py-4`} style={{ height: `calc(100vh - 110px)` }}>
+    <div className='relative flex flex-grow  h-full w-full'>
       {loading ? (
-        <div className='flex flex-col justify-center items-center h-full'>
+        <div className='flex flex-col justify-center items-center h-full w-full'>
           <SpinnerCircle />
         </div>
       ) : (
-        <>
+        <div className='flex flex-col justify-center items-center h-full w-full'>
           {rooms.length === 0 ? (
-            <div className='p-4 flex justify-center items-center h-full'>
-              <EmptyBlock handleRefresh={handleRefresh} title='No rooms' message="There's no room in the database yet." />
-            </div>
+            <EmptyBlock className='' handleRefresh={handleRefresh} title='No rooms' message="There's no room in the database yet." />
           ) : (
-            <ScrollArea className='flex-grow h-[100px] relative'>
+            <ScrollArea className='flex-grow w-full h-full relative'>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -73,7 +71,7 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ children, filterRooms }) => {
               </Table>
             </ScrollArea>
           )}
-        </>
+        </div>
       )}
 
     </div>
