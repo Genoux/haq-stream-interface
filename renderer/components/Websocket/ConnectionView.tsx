@@ -31,10 +31,10 @@ const ConnectionView = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 5 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
-      className='z-90 absolute h-screen top-0 left-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className='z-50 absolute h-screen top-0 left-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
     >
       {loading ? (
         <div className="flex gap-2 items-center justify-center h-screen">
@@ -42,7 +42,10 @@ const ConnectionView = () => {
           <SpinnerCircle />
         </div>
       ) : (
-        <section className='flex h-full w-full flex-col items-center justify-center gap-2'>
+        <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, delay: 0.2 }} className='flex h-full w-full flex-col items-center justify-center gap-2'>
           <div className='flex flex-col items-center justify-center gap-4 text-center h-full w-fit'>
             <h1 className='text-xl font-bold'>Connect to OBS</h1>
             <Input
@@ -52,7 +55,7 @@ const ConnectionView = () => {
             />
             <Button onClick={handleConnect}>Connect</Button>
           </div>
-        </section>
+        </motion.div>
       )}
     </motion.div>
   );
