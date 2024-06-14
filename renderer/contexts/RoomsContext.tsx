@@ -8,6 +8,7 @@ type RoomsContextValue = {
   error: Error | null;
   activeRoom: Room | null;
   setActiveRoom: (room: Room | null) => void;
+  fetchRooms: () => void;
 };
 
 const RoomsContext = createContext<RoomsContextValue>({
@@ -15,7 +16,8 @@ const RoomsContext = createContext<RoomsContextValue>({
   loading: false,
   error: null,
   activeRoom: null,
-  setActiveRoom: () => {},
+  setActiveRoom: () => { },
+  fetchRooms: () => { },
 });
 
 export const RoomsProvider = ({ children }) => {
@@ -24,22 +26,22 @@ export const RoomsProvider = ({ children }) => {
   const [error, setError] = useState<Error | null>(null);
   const [activeRoom, setActiveRoomState] = useState<Room | null>(null);
 
-  useEffect(() => {
-    const fetchRooms = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase_adp.from('rooms').select('*, red(*), blue(*)');
-        if (error) {
-          throw new Error(error.message);
-        }
-        setRooms(data || []);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
+  const fetchRooms = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase_adp.from('rooms').select('*, red(*), blue(*)');
+      if (error) {
+        throw new Error(error.message);
       }
-    };
+      setRooms(data || []);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchRooms();
   }, []);
 
@@ -109,7 +111,7 @@ export const RoomsProvider = ({ children }) => {
   };
 
   return (
-    <RoomsContext.Provider value={{ rooms, loading, error, activeRoom, setActiveRoom }}>
+    <RoomsContext.Provider value={{ rooms, loading, error, activeRoom, setActiveRoom, fetchRooms }}>
       {children}
     </RoomsContext.Provider>
   );
