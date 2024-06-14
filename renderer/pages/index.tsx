@@ -7,18 +7,17 @@ import Match from '@/components/Match';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useOBS } from '@/contexts/OBSContext';
 import ConnectionView from '@/components/Websocket/ConnectionView';
+import RoomsRowItem from '@/components/Rooms/RoomsRowItem';
+import RoomsTable from '@/components/Rooms/RoomsTable';
+import { RoomsProvider } from '@/contexts/RoomsContext';
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-
-// HERE check for obs connection and prompt a input to connect
 const IndexPageContent = () => {
   const { match } = useMatch();
   const { obs } = useOBS();
+
+  const filterAllRooms = (rooms) => {
+    return rooms;
+  };
 
   return (
     <div className=''>
@@ -34,18 +33,26 @@ const IndexPageContent = () => {
             <Teams />
           </div>
         </section>
-        <section className='w-full hidden'>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
-              <p className="text-xs text-muted-foreground">+20.1% from last month</p>
-            </CardContent>
-          </Card>
 
-        </section>
+        <AnimatePresence mode='wait'>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, delay: 0.2 }}
+            className='border rounded-sm bg-background w-full hidden'
+          >
+            <RoomsProvider>
+              <RoomsTable filterRooms={filterAllRooms}>
+                {(filteredRooms) => filteredRooms.map(room => (
+                  <RoomsRowItem key={room.id} room={room} />
+                ))}
+              </RoomsTable>
+            </RoomsProvider>
+          </motion.div>
+        </AnimatePresence>
+
+
       </div>
     </div>
   );

@@ -90,15 +90,13 @@ const Teams = () => {
           </div>
         </CardHeader>
         {loading || !obs ? (
-          <div className='border-t p-4 flex justify-center items-center h-full'>
+          <div className='p-4 flex justify-center items-center h-full'>
             <SpinnerCircle />
           </div>
         ) : (
           <>
             {teams.length === 0 ? (
-              <div className='border-t p-4 flex justify-center items-center h-full'>
                 <EmptyBlock handleRefresh={handleRefresh} title='No teams' message="There are no teams available." />
-              </div>
             ) : (
               <ScrollArea className='flex-grow h-[100px] relative'>
                 <CardContent className="flex-grow flex flex-col px-4 py-0">

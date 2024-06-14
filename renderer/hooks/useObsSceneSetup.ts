@@ -49,8 +49,18 @@ export const useObsHeroImageSetup = (heroes, color, config) => {
   }, [obs, heroes, color, config]);
 };
 
+export const updateObsScene = async (obs, scene) => {
+  try {
+    await obs.call('SetCurrentProgramScene', {
+      sceneName: 'PreMatch',
+    });
+  } catch (error) {
+    console.error(`Failed to update team logos:`, error);
+    return { error };
+  }
+};
+
 export const updateObsTeamCard = async (obs, match) => {
-  console.log("updateObsTeamCard - match:", match);
   const { blue, red } = match;
   const teams = [blue, red];
 

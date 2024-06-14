@@ -60,7 +60,6 @@ export const RoomsProvider = ({ children }) => {
           filter: `id=eq.${activeRoom.id}`,
         },
         async (payload: any) => {
-          console.log('Active room update received:', payload);
           if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
             try {
               const { data, error } = await supabase_adp
