@@ -14,7 +14,6 @@ import { updateObsMatchType, updateObsTeamCard } from '@/hooks/useObsSceneSetup'
 import { useOBS } from '@/contexts/OBSContext'
 import { useToast } from '@/components/ui/use-toast';
 import SpinnerCircle from '../common/SpinnerCircle';
-import { SceneDrawer } from './SceneDrawer';
 
 const MatchContent = () => {
   const { match, clearMatch, matchTitle } = useMatch();
@@ -144,7 +143,6 @@ const MatchContent = () => {
                 <Button className='flex justify-end m-1 w-16 items-center' size="sm" variant="outline" onClick={() => updateOBS()}>
                   {Resyncing ? <SpinnerCircle /> :  <p>Resync</p>}
                 </Button>
-                <SceneDrawer />
               </motion.div>
             )}
           </AnimatePresence>

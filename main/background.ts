@@ -1,5 +1,5 @@
 import path from 'path';
-import { app, ipcMain, BrowserWindow } from 'electron';
+import { app, ipcMain, BrowserWindow, Tray } from 'electron';
 import serve from 'electron-serve';
 import { createWindow } from './helpers';
 
@@ -15,6 +15,7 @@ if (isProd) {
 }
 
 let mainWindow: BrowserWindow | null;
+let tray: Tray | null;
 
 (async () => {
   const Store = (await import('electron-store')).default;
@@ -29,10 +30,18 @@ let mainWindow: BrowserWindow | null;
     },
   });
 
-//   mainWindow.on('minimize', (event: { preventDefault: () => void; }) => {
-//     event.preventDefault();
-//     mainWindow.hide();  // Hides the window to tray instead of minimizing
-// });
+
+  mainWindow.on('minimize', (event) => {
+    event.preventDefault();
+    mainWindow.setBounds({ width: 1, height: 1, x: 0, y: 0 });
+  });
+
+  // Restore window size when the app is restored
+  mainWindow.on('restore', () => {
+    mainWindow.setBounds({ width: 800, height: 600, x: 0, y: 0 });
+  });
+
+  tray = new Tray(path.join(__dirname, 'icon.png')); // Add path to your tray icon image
 
   mainWindow.center();
 
@@ -56,22 +65,28 @@ ipcMain.on('close-window', (event) => {
   }
 });
 
+
 //get the client aream menu bare height as a variable
 
 ipcMain.on('open-draft-window', (event, roomID) => {
 
   const draftWindow = new BrowserWindow({
-    width: 1536,
-    height: 864 + 28,
-    minWidth: 1536,
-    minHeight: 864 + 28,
-    maxWidth: 1920, // maxWidth to prevent resizing
-    maxHeight: 1080, // Add maxHeight and
+    title: `Aram Draft Pick - Room View`,
+    //width: 1536,
+  //  height: 864 + 28,
+    //minWidth: 1536,
+    // minHeight: 864 + 28,
+    width: 1920*0.8,
+    height: 1080 * 0.8,
+    minWidth: 1920*0.8,
+    minHeight: 1080 * 0.8,
+    maxWidth: 1920* 0.8, // maxWidth to prevent resizing
+    maxHeight: 1080* 0.8, // Add maxHeight and
     x: 0,
     y: 0,
     roundedCorners: false,
     thickFrame:false,
-    //frame: false,
+    frame: false,
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),

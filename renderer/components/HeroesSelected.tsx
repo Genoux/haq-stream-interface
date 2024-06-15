@@ -16,35 +16,32 @@ const HeroesSelected = ({ heroes, color }) => {
   useObsHeroImageSetup(heroes, color, selectConfiguration);
 
   return (
-    <TooltipProvider>
-      <div className="flex gap-2 flex-col w-full">
-        {heroes.map((hero: Hero, index: number) => (
-          <div key={index}>
-            <div>
-              <div key={hero.id} className='flex w-96 h-24 overflow-hidden relative'>
-                {'id' in hero && hero.id ? (
-                  <Tooltip delayDuration={100}>
-                    <TooltipTrigger>
-                      <Image
-                        src={`https://draft.tournoishaq.ca/images/champions/splash/${hero.id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`}
-                        alt={hero.name}
-                        layout='fill'
-                        objectFit='cover'
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{hero.id}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                ) : (
-                  <div className='bg-zinc-700 bg-opacity-20 w-96 h-24 rounded'></div>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </TooltipProvider>
+    <div className="flex gap-2">
+      {heroes.map((hero: Hero, index: number) => (
+        <div key={`${hero.id}-${index}`} className='flex justify-center items-center overflow-hidden rounded-md relative h-56 w-full'>
+          {'id' in hero && hero.id ? (
+            <TooltipProvider>
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger>
+                  <Image
+                    src={`https://draft.tournoishaq.ca/images/champions/splash/${hero.id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`}
+                    alt={hero.name}
+                    objectFit='cover'
+                    layout='fill'
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{hero.id}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            <div className='flex justify-center items-center overflow-hidden rounded-md relative h-56 w-full bg-zinc-900 bg-opacity-50'></div>
+          )}
+        </div>
+      ))}
+    </div>
+
   );
 };
 

@@ -2,7 +2,7 @@
   "private": true,
   "name": "haq-stream-tool",
   "description": "Display data from HAQ tournament to OBS",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "author": "John Barry <john.olivierb@gmail.com>",
   "main": "app/background.js",
   "scripts": {
