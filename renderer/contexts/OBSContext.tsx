@@ -1,10 +1,10 @@
 // contexts/OBSContext.ts
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useEffect, useContext, useState } from 'react';
 import { connectOBS, disconnectOBS } from '@/services/websocket/obsService';
 
 interface OBSContextType {
   obs: any;
-  connectToOBS: () => Promise<{ error: string | null }>;
+  connectToOBS: (url: string) => Promise<{ error: string | null }>;
   disconnectOBS: () => void;
   loading: boolean;
   error: string | null;
@@ -25,37 +25,34 @@ export const OBSProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const initializeOBS = async () => {
-      const { error } = await connectToOBS();
-      if (error) {
-        console.error(error);
-      }
-    };
-    initializeOBS();
-    return () => {
-      if (obs) {
-        disconnectOBS(obs);
-      }
-    };
-  }, []); // Only run on mount and unmount
-
-  const connectToOBS = async () => {
+  const connectToOBS = async (url: string) => {
+    console.log("connectToOBS - url:", url);
     try {
       setLoading(true);
-      const obsInstance = await connectOBS('ws://localhost:4455', '123456');
+      const obsInstance = await connectOBS(url, '12345');
       setObs(obsInstance);
       console.log("Successfully connected to OBS WebSocket");
+      setError(null); // Reset error state on successful connection
       return { error: null };
-    } catch (error) {
-      console.error('Failed to connect to OBS:', error.message || error);
+    } catch (err) {
       const errorMessage = "Failed to connect to OBS. Please check your network and OBS settings.";
+      console.error(errorMessage, err);
       setError(errorMessage);
       return { error: errorMessage };
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (obs) {
+      obs.on('ConnectionClosed', (err) => {
+        console.error('OBS WebSocket error:', err);
+        setError(err.message);
+        disconnectOBSConnection();
+      });
+    }
+  }, [obs]);
 
   const disconnectOBSConnection = () => {
     if (obs) {

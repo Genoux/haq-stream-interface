@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import AsideNavigation from "@/components/common/AsideNavigation";
+import React from 'react';
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { OBSProvider } from '@/contexts/OBSContext';
 import '@/utils/strings'; // Import the global utility file here
+import { motion } from 'framer-motion';
+import  AsideNavigation  from '@/components/common/AsideNavigation';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -11,13 +13,15 @@ type LayoutProps = {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div>
-      <TooltipProvider delayDuration={0}>
-        <div className="h-full flex items-stretch">
-          <AsideNavigation />
-          <main className="min-h-screen pl-[54px] w-full">{children}</main>
-        </div>
+    <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.1 }}> 
+    <OBSProvider>
+        <TooltipProvider delayDuration={0}>
+          <main className="min-h-screen w-full h-full bg-muted/10">{children}</main>
       </TooltipProvider>
-    </div>
+      </OBSProvider>
+      </motion.div>
   );
 }

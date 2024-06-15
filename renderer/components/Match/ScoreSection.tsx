@@ -2,7 +2,7 @@ import React, { useEffect, useState, ReactNode } from 'react';
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion } from 'framer-motion';
 import { useMatch } from '@/contexts/MatchContext';
-import { updateObsScores } from '@/hooks/useObsSceneSetup';
+import { updateObsScores, updateObsLayoutTitle } from '@/hooks/useObsSceneSetup';
 import { useOBS } from '@/contexts/OBSContext';
 import clsx from 'clsx';
 
@@ -31,11 +31,12 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
   const isTeamWinner = team.id === blue.id ? isBlueWinner : isRedWinner;
   const score = team.id === blue.id ? match.scores.blue : match.scores.red;
 
-  const maxWins = match.gameType === 'bo3' ? 2 : 3;
+  const maxWins = match.gameType === 'bo3' ? 2 : 1;
 
   useEffect(() => {
     if (obs) {
       updateObsScores(obs, match);
+      //updateObsLayoutTitle(obs, 'Match 1');
     }
   }, [match]);
 
@@ -69,7 +70,9 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
     const totalMatches = blueWins + redWins;
 
     if (!getWinner().blue && !getWinner().red) {
-      setMatchTitle(`Match ${totalMatches + 1}`);
+      const matchTitle = `Match ${totalMatches + 1}`;
+      setMatchTitle(matchTitle);
+      updateObsLayoutTitle(obs, matchTitle);
     }
   }, [match.scores]);
 
@@ -79,7 +82,6 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
       <div className='flex gap-2 items-center w-full'>
         <div className='flex gap-1 justify-start items-center'>
           {team.name}
-          <span className="text-white opacity-50 font-normal">({team.id})</span>
         </div>
         <motion.div
           initial={{ opacity: 0, x: 5 }}

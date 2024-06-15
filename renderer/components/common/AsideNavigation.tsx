@@ -10,15 +10,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import ServerStatusDot from "@/components/common/ServerStatusDot";
 import { useRouter } from 'next/router';
 import { appVersion } from '@/utils/version';
 import { useContext } from "react";
-import { ServerStatusContext } from "@/contexts/ServerStatusContext";
 import { Logo } from 'haq-assets';
 
 export default function AsideNavigation() {
-  const { allServersHealthy } = useContext(ServerStatusContext);
   const router = useRouter();
 
   const links = [
@@ -52,7 +49,9 @@ export default function AsideNavigation() {
         className="min-w-[52px] border-r border-border/40 fixed h-full bg-black z-10 flex flex-col"
       >
         <div className="flex h-[52px] w-[52px] items-center justify-center border-b border-border/40">
-          <Logo fill="white" size={32} />
+          <Link href="/">
+            <Logo fill="white" size={32} />
+          </Link>
         </div>
         <div
           data-collapsed={true}
@@ -87,19 +86,6 @@ export default function AsideNavigation() {
             )}
           </nav>
         </div>
-        <section className="mt-auto flex flex-col">
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger >
-              <ServerStatusDot />
-            </TooltipTrigger>
-            <TooltipContent side="right" className="flex items-center gap-4">
-              {allServersHealthy ? "All servers are healthy" : "Some servers are unhealthy"}
-            </TooltipContent>
-          </Tooltip>
-          <div className="flex justify-center items-center w-full h-12">
-            <span className="font-normal text-xs tracking-wider">{appVersion}</span>
-          </div>
-        </section>
       </aside>
 
     </TooltipProvider>

@@ -19,55 +19,61 @@ interface RoomsTableProps {
 }
 
 const RoomsTable: React.FC<RoomsTableProps> = ({ children, filterRooms }) => {
-  const { rooms, loading } = useRooms();
+  const { rooms, loading, fetchRooms } = useRooms();
   const [filteredRooms, setFilteredRooms] = useState<Room[]>([]);
+
+  const handleRefresh = () => {
+    console.log('Refreshing rooms...');
+    fetchRooms();
+  };
 
   useEffect(() => {
     setFilteredRooms(filterRooms(rooms));
   }, [rooms, filterRooms]);
 
-  if(loading) {
-   return <div className="flex flex-col items-center justify-center h-screen">
-     <SpinnerCircle />
-   </div>
-  }
-
   return (
-    <div className={`flex flex-col px-3 py-4 bg-muted/10`} style={{ height: `calc(100vh - 120px)` }}>
-      {rooms.length === 0 ? (
-        <div className='border-t p-4 flex justify-center items-center h-full'>
-          <EmptyBlock title='No rooms' message="There's no room in the database yet." />
+    <div className='relative flex flex-grow  h-full w-full'>
+      {loading ? (
+        <div className='flex flex-col justify-center items-center h-full w-full'>
+          <SpinnerCircle />
         </div>
       ) : (
-        <ScrollArea className='flex-grow h-[100px] relative'>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>
-                  <div className='flex gap-1 items-center'>
-                    <span className='w-2 h-2 rounded-full bg-blue-600'></span>
-                    <p>Blue</p>
-                  </div>
-                </TableHead>
-                <TableHead>
-                  <div className='flex gap-1 items-center'>
-                    <span className='w-2 h-2 rounded-full bg-red-600'></span>
-                    <p>Red</p>
-                  </div>
-                </TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className='text-right'></TableHead>
-                <TableHead className="text-right"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {children(filteredRooms)}
-            </TableBody>
-          </Table>
-        </ScrollArea>
+        <div className='flex flex-col justify-center items-center h-full w-full'>
+          {rooms.length === 0 ? (
+            <EmptyBlock className='' handleRefresh={handleRefresh} title='No rooms' message="There's no room in the database yet." />
+          ) : (
+            <ScrollArea className='flex-grow w-full h-full relative'>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>
+                      <div className='flex gap-1 items-center'>
+                        <span className='w-2 h-2 rounded-full bg-blue-600'></span>
+                        <p>Blue</p>
+                      </div>
+                    </TableHead>
+                    <TableHead>
+                      <div className='flex gap-1 items-center'>
+                        <span className='w-2 h-2 rounded-full bg-red-600'></span>
+                        <p>Red</p>
+                      </div>
+                    </TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className='text-right'></TableHead>
+                    <TableHead className="text-right"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {children(filteredRooms)}
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          )}
+        </div>
       )}
+
     </div>
   );
 };

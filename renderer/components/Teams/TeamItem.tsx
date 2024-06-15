@@ -30,7 +30,8 @@ const TeamItem = ({ team, onSelect, isSelected }: TeamItemProps) => {
 
   return (
     <TableRow
-      className={` ${isSelected ? 'bg-zinc-900 bg-opacity-50 hover:bg-zinc-900 hover:bg-opacity-80' : 'bg-transparent'} `}
+      key={team.id}
+      className={`h-16 ${isSelected ? ' bg-zinc-900 bg-opacity-50 hover:bg-zinc-900 hover:bg-opacity-80' : 'bg-transparent'} `}
       onClick={handleRowClick}
     >
       <TableCell>
@@ -50,8 +51,8 @@ const TeamItem = ({ team, onSelect, isSelected }: TeamItemProps) => {
       </TableCell>
       <TableCell className="w-[200px] pl-0 hidden">
         <p>coaches</p>
-        {team.coaches.map((coache) => (
-          <p key={coache.discord}>{coache.discord}</p>
+        {team.coaches.map((coache, index) => (
+          <p key={index}>{coache.discord}</p>
         ))}
       </TableCell>
       <TableCell className="w-[200px] pl-0 hidden">
@@ -62,8 +63,8 @@ const TeamItem = ({ team, onSelect, isSelected }: TeamItemProps) => {
       </TableCell>
       <TableCell className="w-[200px] pl-0 hidden">
         <p>Substitutes</p>
-        {team.substitutes.map((sub) => (
-          <p key={sub.discord}>{sub.discord}</p>
+        {team.substitutes.map((sub, index) => (
+          <p key={index}>{sub.discord}</p>
         ))}
       </TableCell>
     </TableRow>

@@ -14,26 +14,28 @@ const HeroesBan = ({ heroes, color }) => {
 
   return (
     <TooltipProvider>
-      <div className="flex w-full gap-2">
+      <div className="flex w-fit gap-2">
         {heroes.map((hero: { id: string; name: string; }, index: React.Key) => (
-          <div key={index} className="flex-grow w-full h-12 grayscale">
-            <Tooltip delayDuration={100}>
-              <TooltipTrigger>
-                  {hero.id ? (
-                      <Image
-                        src={`https://draft.tournoishaq.ca/images/champions/tiles/${hero.id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`}
-                        alt={hero.name}
-                        layout='fill'
-                        objectFit='cover'
-                      />
-                  ) : (
-                    <div className='bg-zinc-700 bg-opacity-20 w-full h-full rounded-sm'></div>
-                  )}
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{hero.id}</p>
-              </TooltipContent>
-            </Tooltip>
+          <div key={index} className="w-20 h-20 relative flex justify-center items-center">
+            <div className='absolute top-0 left-0 h-full w-full z-40 overflow-hidden bg-gradient-to-t from-black via-transparent'></div>
+            {'id' in hero && hero.id ? (
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger>
+                  <Image
+                    src={`https://draft.tournoishaq.ca/images/champions/tiles/${hero.id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`}
+                    alt={hero.name}
+                    objectFit='cover'
+                    layout='fill'
+                    className='grayscale rounded-sm '
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{hero.id}</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <div className='flex justify-center items-center overflow-hidden rounded-md relative w-20 h-20 bg-zinc-900 bg-opacity-50'></div>
+            )}
           </div>
         ))}
       </div>
