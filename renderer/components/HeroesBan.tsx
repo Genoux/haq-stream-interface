@@ -1,65 +1,45 @@
-import React, { use, useEffect } from 'react';
-
-interface Hero {
-  id: string;
-  name: string;
-}
+import React from 'react';
+import Image from 'next/image';
+import { useObsHeroImageSetup } from '@/hooks/useObsSceneSetup'; // Adjust the import path as needed
+import { banConfiguration } from '@/lib/constants';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const HeroesBan = ({ heroes, color }) => {
-  // useEffect(() => {
-
-  //   if (obs) {
-  //     heroes.forEach((hero: Hero, index: number) => {
-  
-  //         let imageLink = ''
-  //         if (hero.id) {
-  //           imageLink = `https://draft.tournoishaq.ca/images/champions/splash/${hero.id
-  //             .toLowerCase()
-  //             .replace(/\s+/g, '')
-  //             .replace(/[\W_]+/g, '')}.jpg`
-  //         } else {
-  //           imageLink = `https://dummyimage.com/1280x720/00d5ff/0010f0.jpg`
-  //         }
-  //         console.log("heroes.forEach - imageLink:", imageLink);
-  //         obs.call('SetInputSettings', {
-  //           inputName: `${color}-h-${index}`, // Dynamic inputName based on the index
-  //           inputSettings: {
-  //             file: imageLink
-  //           }
-  //         }).catch(error => {
-  //           console.error(`Failed to update OBS input settings for logo-dummy${index}`, error);
-  //         });
- 
-  //     });
-  //   }
-  // }, [heroes, obs]); // Depend on heroes and obs to re-run the effect
+  useObsHeroImageSetup(heroes, color, banConfiguration);
 
   return (
-    <div className="flex flex-wrap justify-center items-center">
-      {heroes.map((hero: Hero, index: number) => {
-        if (hero.id) {
-          return (
-            <div key={index} className="m-2 p-2 border rounded-lg shadow-lg">
-              <div className="flex flex-col items-center">
-                <img
-                  src={`https://draft.tournoishaq.ca/images/champions/splash/${hero.id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.jpg`}
-                  alt={hero.name}
-                  className="h-24 w-24 object-cover rounded-full"
-                />
-                <p className="mt-2 font-semibold">{hero.name}</p>
-              </div>
-            </div>
-          );
-        } else {
-          // Render an empty box if hero.id is undefined
-          return (
-            <div key={index} className="m-2 p-2 border rounded-lg shadow-lg flex justify-center items-center h-24 w-24">
-              <span className="text-gray-400">No Hero</span>
-            </div>
-          );
-        }
-      })}
-    </div>
+    <TooltipProvider>
+      <div className="flex w-fit gap-2">
+        {heroes.map((hero: { id: string; name: string; }, index: React.Key) => (
+          <div key={index} className="w-20 h-20 relative flex justify-center items-center">
+            <div className='absolute top-0 left-0 h-full w-full z-40 overflow-hidden bg-gradient-to-t from-black via-transparent'></div>
+            {'id' in hero && hero.id ? (
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger>
+                  <Image
+                    src={`https://draft.tournoishaq.ca/images/champions/tiles/${hero.id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`}
+                    alt={hero.name}
+                    objectFit='cover'
+                    layout='fill'
+                    className='grayscale rounded-sm '
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{hero.id}</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <div className='flex justify-center items-center overflow-hidden rounded-md relative w-20 h-20 bg-zinc-900 bg-opacity-50'></div>
+            )}
+          </div>
+        ))}
+      </div>
+    </TooltipProvider>
   );
 };
 

@@ -1,22 +1,72 @@
-import React from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
-import RoomList from '@/components/RoomsList';
-import { Button } from '@/components/ui/button';
+import React, { useState } from 'react';
+import RoomsRowItem from '@/components/Rooms/RoomsRowItem';
+import RoomsTable from '@/components/Rooms/RoomsTable';
+import { RoomsProvider } from '@/contexts/RoomsContext';
+import TitleBar from '@/components/common/TitleBar';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export default function Rooms() {
+const RoomsDropdownFilter = ({ options, onSelect, defaultValue }) => {
   return (
-    <React.Fragment>
-      <Head>
-        <title>Home - Nextron (with-tailwindcss)</title>
-      </Head>
-
-      <body className="grid grid-col-1 text-2xl w-full text-center">
-        <h1 className="text-3xl font-bold">Rooms Page</h1>
-        <Link href={'/home'}><Button>Home</Button></Link>
-        <RoomList />
-      </body>
-
-    </React.Fragment>
+    <Select onValueChange={(value) => onSelect(value)} defaultValue={defaultValue}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="All" />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((option) => (
+          <SelectItem key={option} value={option.toLowerCase()}>
+            {option.charAt(0).toUpperCase() + option.slice(1)}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
-}
+};
+
+const RoomsPage = () => {
+  const [selectedStatus, setSelectedStatus] = useState('all');
+
+  const filterAllRooms = (rooms) => {
+    if (selectedStatus === 'all') {
+      return rooms;
+    }
+    return rooms.filter(room => room.status.toLowerCase() === selectedStatus);
+  };
+
+  return (
+    <RoomsProvider>
+      <div className={`flex flex-col relative`}>
+        <TitleBar title='Rooms' > 
+        <RoomsDropdownFilter 
+              options={['all', 'waiting', 'ban', 'select', 'done']}
+              onSelect={setSelectedStatus} 
+              defaultValue="all"
+          />
+          </TitleBar>
+        <AnimatePresence mode='wait'>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, delay: 0.2 }}
+          >
+         
+            <RoomsTable filterRooms={filterAllRooms}>
+              {(filteredRooms) => filteredRooms.map(room => (
+                <RoomsRowItem key={room.id} room={room} />
+              ))}
+            </RoomsTable>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </RoomsProvider>
+  );
+};
+
+export default RoomsPage;
