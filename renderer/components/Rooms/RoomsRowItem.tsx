@@ -60,7 +60,7 @@ const RoomsRowItem = ({ room, onSetRoom }: ItemProps) => {
     <TableRow>
       <TableCell className="w-[125px]">
         <div className="flex items-center gap-2">
-          <p className="font-medium">{room.id}</p>
+        <Button  onClick={() => openLinkExternally(`${domain}/room/${room.id}/spectator`)} variant="link">{room.id}</Button>
         </div>
       </TableCell>
       <TableCell className="w-[200px] pl-0">

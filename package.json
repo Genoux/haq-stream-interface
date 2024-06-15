@@ -2,7 +2,7 @@
   "private": true,
   "name": "haq-stream-tool",
   "description": "Display data from HAQ tournament to OBS",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "author": "John Barry <john.olivierb@gmail.com>",
   "main": "app/background.js",
   "scripts": {
@@ -50,7 +50,8 @@
     "styled-components": "^6.1.11",
     "tailwind-merge": "^2.3.0",
     "tailwind-scrollbar": "^3.1.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^0.9.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.16",

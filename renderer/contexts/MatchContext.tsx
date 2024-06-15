@@ -13,7 +13,7 @@ type Team = {
 type Match = {
   blue: Team;
   red: Team;
-  gameType: 'bo3' | 'bo5';
+  gameType: 'bo3' | 'bo1';
   scores: {
     blue: boolean[];
     red: boolean[];
@@ -25,12 +25,12 @@ type MatchContextValue = {
   selectedTeams: Team[];
   matchTitle: string;
   setMatchTitle: (title: string) => void;
-  gameType: 'bo3' | 'bo5';
+  gameType: 'bo3' | 'bo1';
   selectTeam: (team: Team) => void;
   setMatch: () => void;
   clearMatch: () => void;
   updateScores: (teamColor: 'blue' | 'red', index: number) => void;
-  setGameType: (gameType: 'bo3' | 'bo5') => void;
+  setGameType: (gameType: 'bo3' | 'bo1') => void;
 };
 
 const MatchContext = createContext<MatchContextValue | undefined>(undefined);
@@ -38,7 +38,7 @@ const MatchContext = createContext<MatchContextValue | undefined>(undefined);
 export const MatchProvider = ({ children }: { children: ReactNode }) => {
   const [selectedTeams, setSelectedTeams] = useState<Team[]>([]);
   const [match, setMatchState] = useState<Match | null>(null);
-  const [gameType, setGameType] = useState<'bo3' | 'bo5'>('bo3');
+  const [gameType, setGameType] = useState<'bo3' | 'bo1'>('bo3');
   const [matchTitle, setMatchTitle] = useState('Match 1');
 
   const selectTeam = (team: Team) => {
@@ -60,8 +60,8 @@ export const MatchProvider = ({ children }: { children: ReactNode }) => {
         red: selectedTeams[1],
         gameType,
         scores: {
-          blue: Array(gameType === 'bo3' ? 2 : 3).fill(false),
-          red: Array(gameType === 'bo3' ? 2 : 3).fill(false),
+          blue: Array(gameType === 'bo3' ? 2 : 1).fill(false),
+          red: Array(gameType === 'bo3' ? 2 : 1).fill(false),
         },
       });
     }
@@ -77,7 +77,7 @@ export const MatchProvider = ({ children }: { children: ReactNode }) => {
       console.log("updateScores - teamColor:", teamColor);
       const newScores = { ...match.scores };
       const opponentColor = teamColor === 'blue' ? 'red' : 'blue';
-      const maxWins = match.gameType === 'bo3' ? 2 : 3;
+      const maxWins = match.gameType === 'bo3' ? 2 : 1;
 
       if (newScores[teamColor][index]) {
         for (let i = index; i < newScores[teamColor].length; i++) {
