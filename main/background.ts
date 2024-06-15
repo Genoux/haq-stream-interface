@@ -41,8 +41,6 @@ let tray: Tray | null;
     mainWindow.setBounds({ width: 800, height: 600, x: 0, y: 0 });
   });
 
-  tray = new Tray(path.join(__dirname, 'icon.png')); // Add path to your tray icon image
-
   mainWindow.center();
 
   if (isProd) {
@@ -64,7 +62,6 @@ ipcMain.on('close-window', (event) => {
     window.close();
   }
 });
-
 
 //get the client aream menu bare height as a variable
 
@@ -89,7 +86,7 @@ ipcMain.on('open-draft-window', (event, roomID) => {
     frame: false,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, '/preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
     },

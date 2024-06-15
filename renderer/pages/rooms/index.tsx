@@ -56,7 +56,6 @@ const RoomsPage = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2, delay: 0.2 }}
           >
-         
             <RoomsTable filterRooms={filterAllRooms}>
               {(filteredRooms) => filteredRooms.map(room => (
                 <RoomsRowItem key={room.id} room={room} />

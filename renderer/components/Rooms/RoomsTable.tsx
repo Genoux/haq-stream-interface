@@ -1,4 +1,3 @@
-// components/Rooms/RoomsTable.tsx
 import React, { useState, useEffect } from 'react';
 import {
   Table,
@@ -38,7 +37,7 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ children, filterRooms }) => {
           <SpinnerCircle />
         </div>
       ) : (
-        <div className='flex flex-col justify-center items-center h-full w-full'>
+          <div className='flex flex-col justify-center items-center h-full w-full'>
           {rooms.length === 0 ? (
             <EmptyBlock className='' handleRefresh={handleRefresh} title='No rooms' message="There's no room in the database yet." />
           ) : (
@@ -73,7 +72,6 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ children, filterRooms }) => {
           )}
         </div>
       )}
-
     </div>
   );
 };

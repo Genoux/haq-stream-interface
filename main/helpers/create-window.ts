@@ -101,10 +101,10 @@ export const createWindow = (
   win.loadURL('http://localhost:8888');
 
   
-  win.on('minimize', (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-    win.hide();  // Hides the window to tray instead of minimizing
-  });
+  // win.on('minimize', (event: { preventDefault: () => void; }) => {
+  //   event.preventDefault();
+  //   win.hide();  // Hides the window to tray instead of minimizing
+  // });
 
   ipcMain.on('open-external-link', (event, url) => {
     shell.openExternal(url);
@@ -113,35 +113,35 @@ export const createWindow = (
   console.log('state:', state);
   win.on('close', saveState);
 
-  createTray(win);
+  //createTray(win);
 
   return win;
 };
 
-const createTray = (win: BrowserWindow) => {
-  const trayIcon = path.join(__dirname, '../resources/icon.ico');
-  tray = new Tray(trayIcon);
+// const createTray = (win: BrowserWindow) => {
+//   const trayIcon = path.join(__dirname, '../resources/icon.ico');
+//   tray = new Tray(trayIcon);
 
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: 'Show App',
-      click: () => {
-        win.show();
-      },
-    },
-    {
-      label: 'Quit',
-      click: () => {
-        app.quit();
-      },
-    },
-  ]);
+//   const contextMenu = Menu.buildFromTemplate([
+//     {
+//       label: 'Show App',
+//       click: () => {
+//         win.show();
+//       },
+//     },
+//     {
+//       label: 'Quit',
+//       click: () => {
+//         app.quit();
+//       },
+//     },
+//   ]);
 
-  tray.setToolTip('Aram Draft Pick');
-  tray.setContextMenu(contextMenu);
+//   tray.setToolTip('Aram Draft Pick');
+//   tray.setContextMenu(contextMenu);
 
-  tray.on('click', () => {
-    win.isVisible() ? win.hide() : win.show();
-  });
-};
+//   tray.on('click', () => {
+//     win.isVisible() ? win.hide() : win.show();
+//   });
+// };
 

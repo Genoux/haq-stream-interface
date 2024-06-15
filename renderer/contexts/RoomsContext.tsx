@@ -16,8 +16,8 @@ const RoomsContext = createContext<RoomsContextValue>({
   loading: false,
   error: null,
   activeRoom: null,
-  setActiveRoom: () => { },
-  fetchRooms: () => { },
+  setActiveRoom: () => {},
+  fetchRooms: () => {},
 });
 
 export const RoomsProvider = ({ children }) => {
@@ -46,11 +46,41 @@ export const RoomsProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    // Subscribe to inserts and deletions in the rooms table
+    const channel = supabase_adp
+      .channel('aram_draft_pick:rooms')
+      .on('postgres_changes', { event: 'INSERT', schema: 'aram_draft_pick', table: 'rooms' }, async (payload) => {
+        try {
+          const { data, error } = await supabase_adp
+            .from('rooms')
+            .select('*, red(*), blue(*)')
+            .eq('id', payload.new.id)
+            .single();
+          if (error) throw error;
+          setRooms((prevRooms) => [...prevRooms, data]);
+        console.log("Rooms list:", rooms);
+
+        } catch (error) {
+          console.error('Error fetching new room:', error.message);
+        }
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'aram_draft_pick', table: 'rooms' }, (payload) => {
+        const deletedRoomId = payload.old.id;
+        setRooms((prevRooms) => prevRooms.filter((room) => room.id !== deletedRoomId));
+      })
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
     if (!activeRoom) return;
 
     // Subscribe to updates for the active room
     const channel = supabase_adp
-      .channel('*')
+      .channel(`room-${activeRoom.id}`)
       .on(
         'postgres_changes',
         {
@@ -79,13 +109,10 @@ export const RoomsProvider = ({ children }) => {
           }
         }
       )
-      .subscribe(() => {
-        console.log('Subscribed to active room updates.');
-      });
+      .subscribe();
 
     return () => {
       channel.unsubscribe();
-      console.log('Unsubscribed from active room updates.');
     };
   }, [activeRoom]);
 
