@@ -19,7 +19,7 @@ export default function Layout({ children }: LayoutProps) {
     transition={{ duration: 0.1 }}> 
     <OBSProvider>
         <TooltipProvider delayDuration={0}>
-          <main className="min-h-screen w-full h-full bg-muted/10 p-2">{children}</main>
+          <main className="min-h-screen w-full h-full bg-muted/10">{children}</main>
       </TooltipProvider>
       </OBSProvider>
       </motion.div>

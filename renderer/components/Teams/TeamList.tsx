@@ -50,7 +50,7 @@ const Teams = () => {
     fetchTeams();
   };
 
-  const handleGameTypeChange = (value: 'bo3' | 'bo5') => {
+  const handleGameTypeChange = (value: 'bo3' | 'bo1') => {
     setGameType(value);
   };
 
@@ -74,7 +74,7 @@ const Teams = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="bo3">Best of 3</SelectItem>
-                  <SelectItem value="bo5">Best of 5</SelectItem>
+                  <SelectItem value="bo1">Best of 1</SelectItem>
                 </SelectContent>
               </Select>
               <Button

@@ -10,6 +10,7 @@ interface RoomProps {
 
 const Room: React.FC<RoomProps> = ({ room }) => {
   const { setActiveRoom } = useRooms();
+  const domain = process.env.NEXT_PUBLIC_DRAFT || 'http://localhost:3000';
 
   const handleOpenDraftWindow = (roomID) => {
     if (window.ipc && window.ipc.send) {
@@ -18,29 +19,37 @@ const Room: React.FC<RoomProps> = ({ room }) => {
     }
   };
 
+  function openLinkExternally(url: string) {
+    window.ipc.send('open-external-link', url);
+  }
+
   return (
-    <div className='p-4 flex flex-col gap-4'>
-      <div className='hidden flex items-center gap-2 w-full justify-end'>
-        <Button size='sm' className='h-8' variant='default' onClick={() => { setActiveRoom(null) }}>Change room</Button>
-        <Button className='h-8' onClick={() => handleOpenDraftWindow(room.id)} variant="outline" size={'sm'}>View</Button>
+    <div className='p-4 gap-6 flex flex-col w-full justify-between'>
+      <div className='border-b pb-2 flex w-full justify-between items-center'>
+        <div className='flex'>
+          <Button size={'sm'} onClick={() => openLinkExternally(`${domain}/room/${room.id}/spectator`)} variant="ghost">Room: {room.id}</Button>
+          <Button size={'sm'} onClick={() => openLinkExternally(`${domain}/room/${room.id}/${room.blue.id}`)} variant="ghost">{room.blue.name}<span className='text-xs text-muted-foreground pl-1'>({room.blue.id})</span></Button>
+          <Button size={'sm'} onClick={() => openLinkExternally(`${domain}/room/${room.id}/${room.red.id}`)} variant="ghost">{room.red.name}<span className='text-xs text-muted-foreground pl-1'>({room.red.id})</span></Button>
+       </div>
+        <div className='flex gap-2'>
+          <Button size='sm' className='h-8 w-full' variant='default' onClick={() => { setActiveRoom(null) }}>Change room</Button>
+          <Button className='h-8 w-full' onClick={() => handleOpenDraftWindow(room.id)} variant="outline" size={'sm'}>View</Button>
+        </div>
       </div>
-      <div className="flex items-center gap-4 w-full">
-        <div className='flex w-full justify-between items-center'>
-          <div className='flex flex-col gap-2'>
-            <HeroesBan heroes={room.blue.heroes_ban} color={room.blue.color} />
-            <HeroesSelected heroes={room.blue.heroes_selected} color={room.blue.color} />
-          </div>
-          <div className='flex flex-col gap-2 justify-center items-center'>
-            <Button size='sm' className='h-8 w-full' variant='default' onClick={() => { setActiveRoom(null) }}>Change room</Button>
-            <Button className='h-8 w-full' onClick={() => handleOpenDraftWindow(room.id)} variant="outline" size={'sm'}>View</Button>
-         </div>
-          <div className='flex flex-col gap-2'>
-            <HeroesBan heroes={room.red.heroes_ban} color={room.red.color} />
-            <HeroesSelected heroes={room.red.heroes_selected} color={room.red.color} />
-          </div>
+      <div className='flex w-full justify-between gap-12'>
+
+        <div className='flex flex-col w-full gap-2'>
+          <HeroesBan heroes={room.blue.heroes_ban} color={room.blue.color} />
+          <HeroesSelected heroes={room.blue.heroes_selected} color={room.blue.color} />
+        </div>
+
+        <div className='flex flex-col w-full gap-2'>
+          <div className='ml-auto'><HeroesBan heroes={room.red.heroes_ban} color={room.red.color} /></div>
+          <HeroesSelected heroes={room.red.heroes_selected} color={room.red.color} />
         </div>
       </div>
     </div>
+
   );
 };
 

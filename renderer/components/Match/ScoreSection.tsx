@@ -31,7 +31,7 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
   const isTeamWinner = team.id === blue.id ? isBlueWinner : isRedWinner;
   const score = team.id === blue.id ? match.scores.blue : match.scores.red;
 
-  const maxWins = match.gameType === 'bo3' ? 2 : 3;
+  const maxWins = match.gameType === 'bo3' ? 2 : 1;
 
   useEffect(() => {
     if (obs) {

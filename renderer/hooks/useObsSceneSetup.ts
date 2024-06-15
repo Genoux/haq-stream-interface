@@ -7,7 +7,7 @@ const generateImageUrl = (id, type) => {
     return `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/misc/${type}_empty.png`;
   }
 
-  return `https://draft.tournoishaq.ca/images/champions/${type}/${id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`;
+  return `C:/Users/John/Dropbox/In.Progress/Howling Abyss Quebec/aram-draft-pick/champions_update/output/process/${type}/${id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`;
 };
 
 export const useObsHeroImageSetup = (heroes, color, config) => {
@@ -96,7 +96,7 @@ export const updateObsLayoutTitle = async (obs, text) => {
 
 export const updateObsMatchType = async (obs, text) => {
   try {
-    const textToUpdate = text === 'bo3' ? 'Best of 3' : 'Best of 5';
+    const textToUpdate = text === 'bo3' ? 'Best of 3' : 'Best of 1';
     await obs.call('SetInputSettings', {
       inputName: 'match-type',
       inputSettings: { text: textToUpdate },
@@ -121,7 +121,7 @@ export const updateObsScores = async (obs, match) => {
     try {
       await obs.call('SetInputSettings', {
         inputName: `team-${teamColor}-score`,
-        inputSettings: { file: `https://sdedknsmucuwsvgfxrxs.supabase.co/storage/v1/object/public/Assets/stream/scores/${match.gameType}-${score}.png` },
+        inputSettings: { file: `C:/Users/John/Dropbox/In.Progress/Howling Abyss Quebec/twitch/assets/scores/${match.gameType}-${score}.png` },
       });
       console.log(`Successfully updated score for team-${teamColor}-score`);
       return { error: null };

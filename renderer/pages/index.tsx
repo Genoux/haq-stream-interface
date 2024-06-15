@@ -20,7 +20,7 @@ const IndexPageContent = () => {
   };
 
   return (
-    <div className=''>
+    <div className='p-2'>
       {!obs && (
         <ConnectionView />
       )}
