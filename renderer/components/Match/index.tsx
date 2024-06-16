@@ -14,10 +14,13 @@ import { updateObsMatchType, updateObsTeamCard } from '@/hooks/useObsSceneSetup'
 import { useOBS } from '@/contexts/OBSContext';
 import { useToast } from '@/components/ui/use-toast';
 import SpinnerCircle from '../common/SpinnerCircle';
+import { set } from 'date-fns';
 
 const MatchContent = () => {
   const { match, clearMatch, matchTitle } = useMatch();
   const { rooms, activeRoom, setActiveRoom } = useRooms();
+  console.log("MatchContent - rooms:", rooms);
+  const [roomsList, setRoomsList] = useState<RoomType[]>([]);
   const [buttonVisible, setButtonVisible] = useState(false);
   const [Resyncing, setResyncing] = useState(false);
   const buttonTimeoutRef = useRef(null);
@@ -78,6 +81,7 @@ const MatchContent = () => {
   const handleMouseLeave = () => {
     setButtonVisible(false);
   };
+
 
   const filterRoomsByMatch = (rooms: RoomType[], match: { blue: { name: string }, red: { name: string } }): RoomType[] => {
     const { blue, red } = match;

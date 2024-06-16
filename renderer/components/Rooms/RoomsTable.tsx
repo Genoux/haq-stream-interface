@@ -31,14 +31,14 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ children, filterRooms }) => {
   }, [rooms, filterRooms]);
 
   return (
-    <div className='relative flex flex-grow  h-full w-full'>
+    <div className='relative flex flex-grow h-full w-full'>
       {loading ? (
         <div className='flex flex-col justify-center items-center h-full w-full'>
           <SpinnerCircle />
         </div>
       ) : (
-          <div className='flex flex-col justify-center items-center h-full w-full'>
-          {rooms.length === 0 ? (
+        <div className='flex flex-col justify-center items-center h-full w-full'>
+          {filteredRooms.length === 0 ? (
             <EmptyBlock className='' handleRefresh={handleRefresh} title='No rooms' message="There's no room in the database yet." />
           ) : (
             <ScrollArea className='flex-grow w-full h-full relative'>

@@ -46,10 +46,11 @@ export const RoomsProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    // Subscribe to inserts and deletions in the rooms table
+    // Subscribe to inserts, updates, and deletions in the rooms table
     const channel = supabase_adp
       .channel('aram_draft_pick:rooms')
       .on('postgres_changes', { event: 'INSERT', schema: 'aram_draft_pick', table: 'rooms' }, async (payload) => {
+        console.log(".on - payload:", payload);
         try {
           const { data, error } = await supabase_adp
             .from('rooms')
@@ -58,10 +59,22 @@ export const RoomsProvider = ({ children }) => {
             .single();
           if (error) throw error;
           setRooms((prevRooms) => [...prevRooms, data]);
-        console.log("Rooms list:", rooms);
-
         } catch (error) {
           console.error('Error fetching new room:', error.message);
+        }
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'aram_draft_pick', table: 'rooms' }, async (payload) => {
+        console.log(".on - payload:", payload);
+        try {
+          const { data, error } = await supabase_adp
+            .from('rooms')
+            .select('*, red(*), blue(*)')
+            .eq('id', payload.new.id)
+            .single();
+          if (error) throw error;
+          setRooms((prevRooms) => prevRooms.map((room) => (room.id === payload.new.id ? data : room)));
+        } catch (error) {
+          console.error('Error fetching updated room:', error.message);
         }
       })
       .on('postgres_changes', { event: 'DELETE', schema: 'aram_draft_pick', table: 'rooms' }, (payload) => {
@@ -90,6 +103,7 @@ export const RoomsProvider = ({ children }) => {
           filter: `id=eq.${activeRoom.id}`,
         },
         async (payload: any) => {
+          console.log("payload:", payload);
           if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
             try {
               const { data, error } = await supabase_adp
