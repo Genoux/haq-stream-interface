@@ -12,15 +12,12 @@ const Room: React.FC<RoomProps> = ({ room }) => {
   const { setActiveRoom } = useRooms();
   const domain = process.env.NEXT_PUBLIC_DRAFT || 'http://localhost:3000';
 
-  const handleOpenDraftWindow = (roomID) => {
-    if (window.ipc && window.ipc.send) {
-      const roomParams = new URLSearchParams({ id: roomID }).toString();
-      window.ipc.send('open-draft-window', roomParams);
-    }
-  };
-
   function openLinkExternally(url: string) {
-    window.ipc.send('open-external-link', url);
+    if (typeof window !== 'undefined' && window.ipc && window.ipc.send) {
+      window.ipc.send('open-external-link', url);
+    } else {
+      console.error('IPC is not available.');
+    }
   }
 
   return (
@@ -33,7 +30,6 @@ const Room: React.FC<RoomProps> = ({ room }) => {
        </div>
         <div className='flex gap-2'>
           <Button size='sm' className='h-8 w-full' variant='default' onClick={() => { setActiveRoom(null) }}>Change room</Button>
-          <Button className='h-8 w-full' onClick={() => handleOpenDraftWindow(room.id)} variant="outline" size={'sm'}>View</Button>
         </div>
       </div>
       <div className='flex w-full justify-between gap-12'>

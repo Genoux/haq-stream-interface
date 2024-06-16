@@ -1,5 +1,5 @@
 import path from 'path';
-import { app, ipcMain, BrowserWindow, Tray } from 'electron';
+import { app, ipcMain, BrowserWindow, shell } from 'electron';
 import serve from 'electron-serve';
 import { createWindow } from './helpers';
 
@@ -15,7 +15,6 @@ if (isProd) {
 }
 
 let mainWindow: BrowserWindow | null;
-let tray: Tray | null;
 
 (async () => {
   const Store = (await import('electron-store')).default;
@@ -29,7 +28,6 @@ let tray: Tray | null;
       preload: path.join(__dirname, 'preload.js'),
     },
   });
-
 
   mainWindow.on('minimize', (event) => {
     event.preventDefault();
@@ -50,52 +48,14 @@ let tray: Tray | null;
     await mainWindow.loadURL(`http://localhost:${port}/`);
     mainWindow.webContents.openDevTools();
   }
+
+  ipcMain.on('open-external-link', (event, url) => {
+    console.log("ipcMain.on - url:", url);
+    shell.openExternal(url);
+  });
+
 })();
 
 app.on('window-all-closed', () => {
   app.quit();
-});
-
-ipcMain.on('close-window', (event) => {
-  const window = BrowserWindow.fromWebContents(event.sender);
-  if (window) {
-    window.close();
-  }
-});
-
-//get the client aream menu bare height as a variable
-
-ipcMain.on('open-draft-window', (event, roomID) => {
-
-  const draftWindow = new BrowserWindow({
-    title: `Aram Draft Pick - Room View`,
-    //width: 1536,
-  //  height: 864 + 28,
-    //minWidth: 1536,
-    // minHeight: 864 + 28,
-    width: 1920*0.8,
-    height: 1080 * 0.8,
-    minWidth: 1920*0.8,
-    minHeight: 1080 * 0.8,
-    maxWidth: 1920* 0.8, // maxWidth to prevent resizing
-    maxHeight: 1080* 0.8, // Add maxHeight and
-    x: 0,
-    y: 0,
-    roundedCorners: false,
-    thickFrame:false,
-    frame: false,
-    autoHideMenuBar: true,
-    webPreferences: {
-      preload: path.join(__dirname, '/preload.js'),
-      contextIsolation: true,
-      nodeIntegration: false,
-    },
-  });
-
-  const url = isProd 
-    ? `app://./draft?${roomID}` 
-    : `http://localhost:${process.argv[2]}/draft?${roomID}`;
-
-  draftWindow.loadURL(url);
-  draftWindow.webContents.openDevTools();
 });

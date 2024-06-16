@@ -48,8 +48,13 @@ const RoomsRowItem = ({ room, onSetRoom }: ItemProps) => {
     return { message: 'Copied to clipboard' };
   };
 
+
   function openLinkExternally(url: string) {
-    window.ipc.send('open-external-link', url);
+    if (typeof window !== 'undefined' && window.ipc && window.ipc.send) {
+      window.ipc.send('open-external-link', url);
+    } else {
+      console.error('IPC is not available.');
+    }
   }
 
   const getBadgeVariant = (status) => {

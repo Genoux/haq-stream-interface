@@ -4,15 +4,11 @@ import {
   BrowserWindowConstructorOptions,
   Rectangle,
   ipcMain,
-  shell,
-  Tray,
-  Menu,
-  app
+  shell
+
 } from 'electron';
 import Store from 'electron-store';
 import path from 'path';
-
-let tray: Tray | null;
 
 export const createWindow = (
   windowName: string,
@@ -28,8 +24,6 @@ export const createWindow = (
   let state = {};
 
   const restore = () => store.get(key, defaultSize);
-
-  
 
   const getCurrentPosition = () => {
     const position = win.getPosition();
@@ -64,8 +58,6 @@ export const createWindow = (
       return windowWithinBounds(windowState, display.bounds);
     });
     if (!visible) {
-      // Window is partially or fully not visible now.
-      // Reset it to safe defaults.
       return resetToDefaults();
     }
     return windowState;
@@ -93,55 +85,17 @@ export const createWindow = (
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: __dirname + '/preload.js',
+      preload: path.join(__dirname, '/preload.js'),  // Ensure this path is correct
       ...options.webPreferences,
     },
   });
 
   win.loadURL('http://localhost:8888');
 
-  
-  // win.on('minimize', (event: { preventDefault: () => void; }) => {
-  //   event.preventDefault();
-  //   win.hide();  // Hides the window to tray instead of minimizing
-  // });
-
   ipcMain.on('open-external-link', (event, url) => {
     shell.openExternal(url);
   });
 
-  console.log('state:', state);
   win.on('close', saveState);
-
-  //createTray(win);
-
   return win;
 };
-
-// const createTray = (win: BrowserWindow) => {
-//   const trayIcon = path.join(__dirname, '../resources/icon.ico');
-//   tray = new Tray(trayIcon);
-
-//   const contextMenu = Menu.buildFromTemplate([
-//     {
-//       label: 'Show App',
-//       click: () => {
-//         win.show();
-//       },
-//     },
-//     {
-//       label: 'Quit',
-//       click: () => {
-//         app.quit();
-//       },
-//     },
-//   ]);
-
-//   tray.setToolTip('Aram Draft Pick');
-//   tray.setContextMenu(contextMenu);
-
-//   tray.on('click', () => {
-//     win.isVisible() ? win.hide() : win.show();
-//   });
-// };
-
