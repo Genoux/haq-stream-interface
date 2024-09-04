@@ -25,8 +25,8 @@ const Room: React.FC<RoomProps> = ({ room }) => {
       <div className='border-b pb-2 flex w-full justify-between items-center'>
         <div className='flex'>
           <Button size={'sm'} onClick={() => openLinkExternally(`${domain}/room/${room.id}/spectator`)} variant="ghost">Room: {room.id}</Button>
-          <Button size={'sm'} onClick={() => openLinkExternally(`${domain}/room/${room.id}/${room.blue.id}`)} variant="ghost">{room.blue.name}<span className='text-xs text-muted-foreground pl-1'>({room.blue.id})</span></Button>
-          <Button size={'sm'} onClick={() => openLinkExternally(`${domain}/room/${room.id}/${room.red.id}`)} variant="ghost">{room.red.name}<span className='text-xs text-muted-foreground pl-1'>({room.red.id})</span></Button>
+          <Button size={'sm'} onClick={() => openLinkExternally(`${domain}/room/${room.id}/${room.blue_team_id.id}`)} variant="ghost">{room.blue_team_id.name}<span className='text-xs text-muted-foreground pl-1'>({room.blue_team_id.id})</span></Button>
+          <Button size={'sm'} onClick={() => openLinkExternally(`${domain}/room/${room.id}/${room.red_team_id.id}`)} variant="ghost">{room.red_team_id.name}<span className='text-xs text-muted-foreground pl-1'>({room.red_team_id.id})</span></Button>
        </div>
         <div className='flex gap-2'>
           <Button size='sm' className='h-8 w-full' variant='default' onClick={() => { setActiveRoom(null) }}>Change room</Button>
@@ -35,13 +35,13 @@ const Room: React.FC<RoomProps> = ({ room }) => {
       <div className='flex w-full justify-between gap-12'>
 
         <div className='flex flex-col w-full gap-2'>
-          <HeroesBan heroes={room.blue.heroes_ban} color={room.blue.color} />
-          <HeroesSelected heroes={room.blue.heroes_selected} color={room.blue.color} />
+          <HeroesBan heroes={room.blue_team_id.heroes_ban} color={room.blue_team_id.color} />
+          <HeroesSelected heroes={room.blue_team_id.heroes_selected} color={room.blue_team_id.color} />
         </div>
 
         <div className='flex flex-col w-full gap-2'>
-          <div className='ml-auto'><HeroesBan heroes={room.red.heroes_ban} color={room.red.color} /></div>
-          <HeroesSelected heroes={room.red.heroes_selected} color={room.red.color} />
+          <div className='ml-auto'><HeroesBan heroes={room.red_team_id.heroes_ban} color={room.red_team_id.color} /></div>
+          <HeroesSelected heroes={room.red_team_id.heroes_selected} color={room.red_team_id.color} />
         </div>
       </div>
     </div>

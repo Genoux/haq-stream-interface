@@ -31,8 +31,8 @@ export interface Team {
 }
 export interface Room {
   id: string;
-  blue: Team;
-  red: Team;
+  blue_team_id: Team;
+  red_team_id: Team;
   gameType: string;
   blueScore: boolean[];
   redScore: boolean[];

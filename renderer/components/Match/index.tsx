@@ -24,6 +24,8 @@ const MatchContent = () => {
   const { obs } = useOBS();
   const { toast } = useToast();
 
+ if(!match) return null;
+
   const updateOBS = async () => {
     setResyncing(true);
     if (obs) {
@@ -87,7 +89,7 @@ const MatchContent = () => {
     }
     return rooms
       .filter(room => {
-        const teams = [room.blue.name, room.red.name];
+        const teams = [room.blue_team_id.name, room.red_team_id.name];
         return teams.includes(blue.name) && teams.includes(red.name);
       })
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
@@ -98,7 +100,7 @@ const MatchContent = () => {
       <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}
         className='absolute h-screen top-0 left-0 z-10 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
       >
-        <section className='bg-black bg-opacity-20 w-full flex flex-col gap-2 p-4 top-0 left-0 relative'>
+        <section className='bg-black pt-7 bg-opacity-20 w-full flex flex-col gap-2 px-3 top-0 left-0 relative'>
           <div className='grid grid-cols-3 items-center gap-2 w-full'>
             <ScoreSection team={match.blue} />
             <div className='flex flex-col items-center justify-center gap-2'>
@@ -108,7 +110,7 @@ const MatchContent = () => {
             <ScoreSection team={match.red} />
           </div>
           <AnimatePresence>
-            <div className='border rounded-md' style={{ height: `calc(100vh - 102px)` }}>
+            <div className='border rounded-md' style={{ height: `calc(100vh - 111px)` }}>
               {!activeRoom ? (
                 <RoomsTable filterRooms={(rooms) => filterRoomsByMatch(rooms, match)}>
                   {(filteredRooms) => filteredRooms.map(room => (

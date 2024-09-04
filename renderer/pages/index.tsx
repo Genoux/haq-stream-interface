@@ -20,7 +20,7 @@ const IndexPageContent = () => {
   };
 
   return (
-    <div className='p-2'>
+    <div className='px-3 pt-9'>
       {!obs && (
         <ConnectionView />
       )}

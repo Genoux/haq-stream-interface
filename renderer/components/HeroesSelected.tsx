@@ -24,7 +24,7 @@ const HeroesSelected = ({ heroes, color }) => {
               <Tooltip delayDuration={0}>
                 <TooltipTrigger>
                   <Image
-                    src={`https://draft.tournoishaq.ca/images/champions/splash/${hero.id.toLowerCase().replace(/\s+/g, '').replace(/[\W_]+/g, '')}.webp`}
+                    src={`https://sunny-reprieve-production.up.railway.app/upload/w_700,h_700/https://ddragon.leagueoflegends.com/cdn/img/champion/centered/${hero.id}_0.jpg`}
                     alt={hero.name}
                     objectFit='cover'
                     layout='fill'
@@ -36,7 +36,7 @@ const HeroesSelected = ({ heroes, color }) => {
               </Tooltip>
             </TooltipProvider>
           ) : (
-            <div className='flex justify-center items-center overflow-hidden rounded-md relative h-56 w-full bg-zinc-900 bg-opacity-50'></div>
+            <div className='flex justify-center items-center overflow-hidden relative h-56 w-full bg-neutral-800 bg-opacity-20 rounded-md'></div>
           )}
         </div>
       ))}

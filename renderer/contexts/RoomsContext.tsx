@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase_adp } from '@/utils/supabase/client';
+import { supabase } from '@/utils/supabase/client';
 import { Room } from '@/types/global';
 
 type RoomsContextValue = {
@@ -29,7 +29,7 @@ export const RoomsProvider = ({ children }) => {
   const fetchRooms = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase_adp.from('rooms').select('*, red(*), blue(*)');
+      const { data, error } = await supabase.from('rooms').select('*, red_team_id(*), blue_team_id(*)');
       if (error) {
         throw new Error(error.message);
       }
@@ -47,14 +47,14 @@ export const RoomsProvider = ({ children }) => {
 
   useEffect(() => {
     // Subscribe to inserts, updates, and deletions in the rooms table
-    const channel = supabase_adp
-      .channel('aram_draft_pick:rooms')
-      .on('postgres_changes', { event: 'INSERT', schema: 'aram_draft_pick', table: 'rooms' }, async (payload) => {
+    const channel = supabase
+      .channel('rooms')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'rooms' }, async (payload) => {
         console.log(".on - payload:", payload);
         try {
-          const { data, error } = await supabase_adp
+          const { data, error } = await supabase
             .from('rooms')
-            .select('*, red(*), blue(*)')
+            .select('*, red_team_id(*), blue_team_id(*)')
             .eq('id', payload.new.id)
             .single();
           if (error) throw error;
@@ -63,12 +63,12 @@ export const RoomsProvider = ({ children }) => {
           console.error('Error fetching new room:', error.message);
         }
       })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'aram_draft_pick', table: 'rooms' }, async (payload) => {
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms' }, async (payload) => {
         console.log(".on - payload:", payload);
         try {
-          const { data, error } = await supabase_adp
+          const { data, error } = await supabase
             .from('rooms')
-            .select('*, red(*), blue(*)')
+            .select('*, red_team_id(*), blue_team_id(*)')
             .eq('id', payload.new.id)
             .single();
           if (error) throw error;
@@ -77,7 +77,7 @@ export const RoomsProvider = ({ children }) => {
           console.error('Error fetching updated room:', error.message);
         }
       })
-      .on('postgres_changes', { event: 'DELETE', schema: 'aram_draft_pick', table: 'rooms' }, (payload) => {
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'rooms' }, (payload) => {
         const deletedRoomId = payload.old.id;
         setRooms((prevRooms) => prevRooms.filter((room) => room.id !== deletedRoomId));
       })
@@ -92,13 +92,13 @@ export const RoomsProvider = ({ children }) => {
     if (!activeRoom) return;
 
     // Subscribe to updates for the active room
-    const channel = supabase_adp
+    const channel = supabase
       .channel(`room-${activeRoom.id}`)
       .on(
         'postgres_changes',
         {
           event: '*',
-          schema: 'aram_draft_pick',
+          schema: 'public',
           table: 'rooms',
           filter: `id=eq.${activeRoom.id}`,
         },
@@ -106,9 +106,9 @@ export const RoomsProvider = ({ children }) => {
           console.log("payload:", payload);
           if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
             try {
-              const { data, error } = await supabase_adp
+              const { data, error } = await supabase
                 .from('rooms')
-                .select('*, red(*), blue(*)')
+                .select('*, red_team_id(*), blue_team_id(*)')
                 .eq('id', payload.new.id)
                 .single();
 
@@ -133,9 +133,9 @@ export const RoomsProvider = ({ children }) => {
   const setActiveRoom = async (room: Room | null) => {
     if (room) {
       try {
-        const { data, error } = await supabase_adp
+        const { data, error } = await supabase
           .from('rooms')
-          .select('*, red(*), blue(*)')
+          .select('*, red_team_id(*), blue_team_id(*)')
           .eq('id', room.id)
           .single();
 

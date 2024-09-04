@@ -23,6 +23,7 @@ interface ItemProps {
 }
 
 const RoomsRowItem = ({ room, onSetRoom }: ItemProps) => {
+  console.log("room:", room);
   const { activeRoom } = useRooms(); // Access setActiveRoom from context
   const domain = process.env.NEXT_PUBLIC_DRAFT || 'http://localhost:3000';
   const timeZone = 'America/New_York'; // EST timezone
@@ -102,12 +103,12 @@ const RoomsRowItem = ({ room, onSetRoom }: ItemProps) => {
         <ContextMenu onOpenChange={() => setCopiedItem(null)}>
           <ContextMenuTrigger>
             <div className="flex items-center gap-2">
-              <Button className="px-1" onClick={() => openLinkExternally(`${domain}/room/${room.id}/${room.blue.id}`)} variant="link">{room.blue.name}</Button>
-              <span className="text-white opacity-50 font-normal">({room.blue.id})</span>
+              <Button className="px-1" onClick={() => openLinkExternally(`${domain}/room/${room.id}/${room.blue_team_id.id}`)} variant="link">{room.blue_team_id.name}</Button>
+              <span className="text-white opacity-50 font-normal">({room.blue_team_id.id})</span>
             </div>
           </ContextMenuTrigger>
           <ContextMenuContent>
-            <ContextMenuItem onClick={() => copyToClipboard(`/room/${room.id}/${room.blue.id}`, 'blue')}>
+            <ContextMenuItem onClick={() => copyToClipboard(`/room/${room.id}/${room.blue_team_id.id}`, 'blue')}>
               {copiedItem === 'blue' ? 'Copied!' : 'Copy blue team link'}
             </ContextMenuItem>
           </ContextMenuContent>
@@ -117,12 +118,12 @@ const RoomsRowItem = ({ room, onSetRoom }: ItemProps) => {
         <ContextMenu onOpenChange={() => setCopiedItem(null)}>
           <ContextMenuTrigger>
             <div className="flex items-center gap-2">
-              <Button className="px-1" onClick={() => openLinkExternally(`${domain}/room/${room.id}/${room.red.id}`)} variant="link">{room.red.name}</Button>
-              <span className="text-white opacity-50 font-normal">({room.red.id})</span>
+              <Button className="px-1" onClick={() => openLinkExternally(`${domain}/room/${room.id}/${room.red_team_id.id}`)} variant="link">{room.red_team_id.name}</Button>
+              <span className="text-white opacity-50 font-normal">({room.red_team_id.id})</span>
             </div>
           </ContextMenuTrigger>
           <ContextMenuContent>
-            <ContextMenuItem onClick={() => copyToClipboard(`/room/${room.id}/${room.red.id}`, 'red')}>
+            <ContextMenuItem onClick={() => copyToClipboard(`/room/${room.id}/${room.red_team_id.id}`, 'red')}>
               {copiedItem === 'red' ? 'Copied!' : 'Copy red team link'}
             </ContextMenuItem>
           </ContextMenuContent>

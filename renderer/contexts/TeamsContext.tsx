@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase_ttm } from '@/utils/supabase/client';
+import { supabase } from '@/utils/supabase/client';
 
 type Team = {
-  id: string; // Ensure this matches your team ID field type
+  id: string;
   [key: string]: any;
 };
 
@@ -29,7 +29,7 @@ export const TeamsProvider = ({ children }) => {
       const fetchTeams = async () => {
         try {
           setLoading(true);
-          const { data, error } = await supabase_ttm.from('teams').select('*');
+          const { data, error } = await supabase.from('registrations').select('*');
           if (error) {
             throw new Error(error.message);
           }
