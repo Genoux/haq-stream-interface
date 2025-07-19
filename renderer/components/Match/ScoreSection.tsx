@@ -27,11 +27,11 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
   const [isRedWinner, setIsRedWinner] = useState(false);
   //  const [matchTitle, setMatchTitle] = useState('Match 1');
 
-  const { blue, red } = match;
+  const { blue, red } = match as any;
   const isTeamWinner = team.id === blue.id ? isBlueWinner : isRedWinner;
-  const score = team.id === blue.id ? match.scores.blue : match.scores.red;
+  const score = team.id === blue.id ? match?.scores.blue : match?.scores.red;
 
-  const maxWins = match.gameType === 'bo3' ? 2 : 1;
+  const maxWins = match?.gameType === 'bo3' ? 2 : 1;
 
   useEffect(() => {
     if (obs) {
@@ -50,8 +50,8 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
   };
 
   const getWinner = () => {
-    const blueWins = calculateWins(match.scores.blue);
-    const redWins = calculateWins(match.scores.red);
+    const blueWins = calculateWins(match?.scores.blue as any);
+    const redWins = calculateWins(match?.scores.red as any);
     return {
       blue: blueWins === maxWins,
       red: redWins === maxWins,
@@ -62,11 +62,11 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
     const winner = getWinner();
     setIsBlueWinner(winner.blue);
     setIsRedWinner(winner.red);
-  }, [match.scores]);
+  }, [match?.scores]);
 
   useEffect(() => {
-    const blueWins = calculateWins(match.scores.blue);
-    const redWins = calculateWins(match.scores.red);
+    const blueWins = calculateWins(match?.scores.blue as any);
+    const redWins = calculateWins(match?.scores.red as any);
     const totalMatches = blueWins + redWins;
 
     if (!getWinner().blue && !getWinner().red) {
@@ -74,7 +74,7 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
       setMatchTitle(matchTitle);
       updateObsLayoutTitle(obs, matchTitle);
     }
-  }, [match.scores]);
+  }, [match?.scores]);
 
   return (
 
@@ -98,9 +98,9 @@ const ScoreSection: React.FC<ScoreSectionProps> = ({ team, className }: { team: 
       <div className='flex gap-1'>
         {Array.from({ length: maxWins }, (_, index) => (
           <Checkbox
-            className={`rounded-full ${score[index] ? 'w-8' : ' w-4'} h-3 hide-check-icon transition-all duration-200`}
+            className={`rounded-full ${score?.[index] ? 'w-8' : ' w-4'} h-3 hide-check-icon transition-all duration-200`}
             key={index}
-            checked={score[index] || false}
+            checked={score?.[index] || false}
             onCheckedChange={() => handleCheckboxChange(team.id === blue.id ? 'blue' : 'red', index)}
           />
         ))}

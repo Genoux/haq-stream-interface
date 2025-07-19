@@ -13,7 +13,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { useRouter } from 'next/router';
 import { appVersion } from '@/utils/version';
 import { useContext } from "react";
-import { Logo } from 'haq-assets';
+//import { Logo } from 'haq-assets';
 
 export default function AsideNavigation() {
   const router = useRouter();
@@ -50,7 +50,6 @@ export default function AsideNavigation() {
       >
         <div className="flex h-[52px] w-[52px] items-center justify-center border-b border-border/40">
           <Link href="/">
-            <Logo fill="white" size={32} />
           </Link>
         </div>
         <div

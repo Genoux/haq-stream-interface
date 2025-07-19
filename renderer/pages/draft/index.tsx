@@ -14,7 +14,7 @@ const DraftPage = () => {
 
   useEffect(() => {
     const query = router.query;
-    setRoom(query.id);
+    setRoom(query.id as any);
   }, [router]);
 
   const handleIframeLoad = () => {
